@@ -360,16 +360,6 @@
             background: rgba(255,255,255,0.1);
         }
 
-        /* Reinboge Section */
-        .section-header {
-            padding: 12px 20px;
-            background: #E3F2FD;
-            border-left: 4px solid #2196F3;
-            margin: 20px 0 12px 0;
-            font-weight: 600;
-            color: #1976D2;
-        }
-
         /* Hidden */
         .hidden {
             display: none !important;
@@ -421,27 +411,16 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getDatabase, ref, get, update, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyAo65QoOD-Lj-UEJJlBjSIX1-BWZEIhw1o",
-  authDomain: "boomhut-vervoer.firebaseapp.com",
-  databaseURL: "https://boomhut-vervoer-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "boomhut-vervoer",
-  storageBucket: "boomhut-vervoer.firebasestorage.app",
-  messagingSenderId: "350002772602",
-  appId: "1:350002772602:web:f252856892a9547c3bd9c3"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-
-
-        
+        // ⭐ Firebase Configuratie - Boomhut Vervoer
+        const firebaseConfig = {
+            apiKey: "AIzaSyAo65QoOD-Lj-UEJJlBjSIX1-BWZEIhw1o",
+            authDomain: "boomhut-vervoer.firebaseapp.com",
+            databaseURL: "https://boomhut-vervoer-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "boomhut-vervoer",
+            storageBucket: "boomhut-vervoer.firebasestorage.app",
+            messagingSenderId: "350002772602",
+            appId: "1:350002772602:web:f252856892a9547c3bd9c3"
+        };
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
@@ -495,10 +474,12 @@ const app = initializeApp(firebaseConfig);
                         option.textContent = pm.naam;
                         pmSelect.appendChild(option);
                     });
+                    
+                    console.log('✅ PMs geladen:', pms.length);
                 }
             } catch (error) {
                 console.error('Error loading PMs:', error);
-                showError('Fout bij laden PM lijst');
+                showError('Fout bij laden PM lijst: ' + error.message);
             }
         }
 
@@ -707,8 +688,6 @@ const app = initializeApp(firebaseConfig);
         // Render Lijst
         function renderLijst() {
             const piratenskipKinderen = kinderenData.filter(k => k.is_piratenskip);
-            const boomhutKinderen = kinderenData.filter(k => !k.is_piratenskip);
-            
             const totaal = kinderenData.length;
             const afgevinkt = kinderenData.filter(k => k.afgevinkt).length;
 
