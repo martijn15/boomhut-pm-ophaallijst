@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#4CAF50">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%234CAF50'/%3E%3Ctext x='50' y='70' font-size='60' text-anchor='middle' fill='white'%3E🌳%3C/text%3E%3C/svg%3E">
+    <title>PM Ophaallijst - De Boomhut</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 20px;
+            padding-top: calc(20px + env(safe-area-inset-top));
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .header .subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            padding: 40px 20px;
+        }
+
+        .login-screen h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #4CAF50;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn:active {
+            background: #45a049;
+            transform: scale(0.98);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Lijst Screen */
+        .lijst-screen {
+            display: none;
+        }
+
+        .lijst-header {
+            padding: 20px;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .lijst-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .vervoer-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #f0f0f0;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .vervoer-icon {
+            font-size: 24px;
+        }
+
+        .kind-count {
+            background: #4CAF50;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .piratenskip-banner {
+            background: linear-gradient(135deg, #FF5722 0%, #f4511e 100%);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .piratenskip-banner .icon {
+            font-size: 24px;
+        }
+
+        /* Kinderen Lijst */
+        .kinderen-lijst {
+            padding: 20px;
+        }
+
+        .kind-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.3s;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .kind-card:active {
+            transform: scale(0.98);
+        }
+
+        .kind-card.afgevinkt {
+            background: #E8F5E9;
+            border-color: #4CAF50;
+        }
+
+        .kind-card.piratenskip {
+            border-color: #FF5722;
+            background: #FFF3E0;
+        }
+
+        .kind-card.piratenskip.afgevinkt {
+            background: #FFEBEE;
+            border-color: #FF5722;
+        }
+
+        .checkbox {
+            width: 28px;
+            height: 28px;
+            border: 2px solid #ccc;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+
+        .kind-card.afgevinkt .checkbox {
+            background: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .kind-card.piratenskip.afgevinkt .checkbox {
+            background: #FF5722;
+            border-color: #FF5722;
+        }
+
+        .checkbox::after {
+            content: '✓';
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .kind-card.afgevinkt .checkbox::after {
+            display: block;
+        }
+
+        .nummer-badge {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #4CAF50;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .kind-card.afgevinkt .nummer-badge {
+            background: #9E9E9E;
+        }
+
+        .kind-card.piratenskip .nummer-badge {
+            background: #FF5722;
+        }
+
+        .kind-card.piratenskip.afgevinkt .nummer-badge {
+            background: #9E9E9E;
+        }
+
+        .kind-info {
+            flex: 1;
+        }
+
+        .kind-naam {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .kind-card.afgevinkt .kind-naam {
+            text-decoration: line-through;
+            color: #666;
+        }
+
+        .kind-details {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .status-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .kind-card.piratenskip .status-badge {
+            background: #FF5722;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4CAF50;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Error */
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 20px;
+            text-align: center;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state .icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        /* Logout Button */
+        .logout-btn {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+
+        .logout-btn:active {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* Reinboge Section */
+        .section-header {
+            padding: 12px 20px;
+            background: #E3F2FD;
+            border-left: 4px solid #2196F3;
+            margin: 20px 0 12px 0;
+            font-weight: 600;
+            color: #1976D2;
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Screen -->
+        <div id="loginScreen" class="login-screen">
+            <h2>🌳 PM Ophaallijst</h2>
+            
+            <div class="form-group">
+                <label for="pmSelect">Selecteer je naam:</label>
+                <select id="pmSelect">
+                    <option value="">-- Kies PM --</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="datumInput">Datum:</label>
+                <input type="date" id="datumInput">
+            </div>
+
+            <button class="btn" id="loginBtn" disabled>Ophaallijst Laden</button>
+
+            <div id="loginError" class="error hidden"></div>
+        </div>
+
+        <!-- Lijst Screen -->
+        <div id="lijstScreen" class="lijst-screen">
+            <div class="header">
+                <h1 id="pmNaam">PM Naam</h1>
+                <div class="subtitle" id="datumText">Datum</div>
+                <button class="logout-btn" id="logoutBtn">← Terug</button>
+            </div>
+
+            <div id="lijstContent">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <div>Ophaallijst laden...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getDatabase, ref, get, update, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+        // ⭐ VERVANG DIT MET JOUW FIREBASE CONFIG!
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            databaseURL: "https://YOUR_PROJECT.firebaseio.com",
+            projectId: "YOUR_PROJECT",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // State
+        let currentPM = null;
+        let currentDatum = null;
+        let currentVervoer = null;
+        let kinderenData = [];
+        let listener = null;
+
+        // Elements
+        const loginScreen = document.getElementById('loginScreen');
+        const lijstScreen = document.getElementById('lijstScreen');
+        const pmSelect = document.getElementById('pmSelect');
+        const datumInput = document.getElementById('datumInput');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginError = document.getElementById('loginError');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const lijstContent = document.getElementById('lijstContent');
+        const pmNaamEl = document.getElementById('pmNaam');
+        const datumTextEl = document.getElementById('datumText');
+
+        // Set default date to today
+        datumInput.valueAsDate = new Date();
+
+        // Load PMs from Firebase
+        async function loadPMs() {
+            try {
+                const pmsRef = ref(db, 'pedagogisch_medewerkers');
+                const snapshot = await get(pmsRef);
+                
+                if (snapshot.exists()) {
+                    const pms = [];
+                    snapshot.forEach(child => {
+                        const data = child.val();
+                        pms.push({
+                            id: child.key,
+                            naam: data.naam || 'Onbekend'
+                        });
+                    });
+
+                    // Sort alphabetically
+                    pms.sort((a, b) => a.naam.localeCompare(b.naam));
+
+                    // Add to dropdown
+                    pms.forEach(pm => {
+                        const option = document.createElement('option');
+                        option.value = pm.id;
+                        option.textContent = pm.naam;
+                        pmSelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading PMs:', error);
+                showError('Fout bij laden PM lijst');
+            }
+        }
+
+        // Enable/disable login button
+        pmSelect.addEventListener('change', checkLoginReady);
+        datumInput.addEventListener('change', checkLoginReady);
+
+        function checkLoginReady() {
+            loginBtn.disabled = !pmSelect.value || !datumInput.value;
+        }
+
+        // Login
+        loginBtn.addEventListener('click', async () => {
+            const pmId = pmSelect.value;
+            const datum = datumInput.value;
+            
+            if (!pmId || !datum) return;
+
+            currentPM = {
+                id: pmId,
+                naam: pmSelect.options[pmSelect.selectedIndex].text
+            };
+            currentDatum = datum;
+
+            await loadOphaallijst();
+        });
+
+        // Logout
+        logoutBtn.addEventListener('click', () => {
+            if (listener) {
+                listener(); // Unsubscribe
+                listener = null;
+            }
+            currentPM = null;
+            currentDatum = null;
+            currentVervoer = null;
+            kinderenData = [];
+            
+            loginScreen.classList.remove('hidden');
+            lijstScreen.style.display = 'none';
+            loginError.classList.add('hidden');
+        });
+
+        // Load Ophaallijst
+        async function loadOphaallijst() {
+            try {
+                showLoading();
+                loginScreen.classList.add('hidden');
+                lijstScreen.style.display = 'block';
+
+                pmNaamEl.textContent = `Ophaallijst - ${currentPM.naam}`;
+                datumTextEl.textContent = formatDatum(currentDatum);
+
+                const datumKey = currentDatum.replace(/-/g, '_');
+                const vervoerRef = ref(db, `vervoer_verdeling/${datumKey}`);
+                
+                // Set up realtime listener
+                if (listener) listener();
+                listener = onValue(vervoerRef, async (snapshot) => {
+                    if (!snapshot.exists()) {
+                        showEmpty('Geen ophaallijst gevonden voor deze datum');
+                        return;
+                    }
+
+                    // Find vervoer for this PM
+                    let found = false;
+                    snapshot.forEach(child => {
+                        const data = child.val();
+                        if (data.pmId === currentPM.id) {
+                            found = true;
+                            currentVervoer = {
+                                key: child.key,
+                                ...data
+                            };
+                        }
+                    });
+
+                    if (!found) {
+                        showEmpty('Geen vervoer toegewezen voor vandaag');
+                        return;
+                    }
+
+                    await loadKinderen();
+                    await loadPiratenskipKinderen();
+                    renderLijst();
+                });
+
+            } catch (error) {
+                console.error('Error loading ophaallijst:', error);
+                showError('Fout bij laden ophaallijst: ' + error.message);
+            }
+        }
+
+        // Load Kinderen
+        async function loadKinderen() {
+            const datumKey = currentDatum.replace(/-/g, '_');
+            const kindIds = currentVervoer.kindIds || [];
+            const kinderenRef = ref(db, `kinderen_per_dag/${datumKey}`);
+            const snapshot = await get(kinderenRef);
+
+            kinderenData = [];
+
+            if (snapshot.exists()) {
+                for (const kindId of kindIds) {
+                    const kindSnap = snapshot.child(kindId);
+                    if (kindSnap.exists()) {
+                        const data = kindSnap.val();
+                        kinderenData.push({
+                            id: kindId,
+                            naam: data.naam || 'Onbekend',
+                            leeftijd: data.leeftijd || 0,
+                            afgevinkt: data.afgevinkt || false,
+                            is_piratenskip: false,
+                            ophaal_volgorde: 999
+                        });
+                    }
+                }
+            }
+
+            // Load ophaal_volgorde
+            if (currentVervoer.ophaal_volgorde) {
+                const ophaalVolgorde = currentVervoer.ophaal_volgorde;
+                ophaalVolgorde.forEach(item => {
+                    const kind = kinderenData.find(k => k.id === item.kindId);
+                    if (kind && !item.is_piratenskip) {
+                        kind.ophaal_volgorde = item.ophaal_volgorde || 999;
+                    }
+                });
+            }
+
+            // Sort by ophaal_volgorde
+            kinderenData.sort((a, b) => a.ophaal_volgorde - b.ophaal_volgorde);
+        }
+
+        // Load Piratenskip Kinderen
+        async function loadPiratenskipKinderen() {
+            // Check if dinsdag
+            const datum = new Date(currentDatum);
+            const isDinsdag = datum.getDay() === 2;
+            
+            if (!isDinsdag) return;
+            if (!currentVervoer.vervoerNaam?.toLowerCase().includes('stint 1')) return;
+
+            try {
+                const selectieRef = ref(db, 'tussenstops_selectie/dinsdag/piratenskip/geselecteerde_ids');
+                const snapshot = await get(selectieRef);
+
+                if (!snapshot.exists()) return;
+
+                const geselecteerdeIds = [];
+                snapshot.forEach(child => {
+                    if (child.val()) {
+                        geselecteerdeIds.push(child.val().toString());
+                    }
+                });
+
+                // Load details
+                for (const kindId of geselecteerdeIds) {
+                    const kindRef = ref(db, `piratenskip_kinderen/${kindId}`);
+                    const kindSnap = await get(kindRef);
+
+                    if (kindSnap.exists()) {
+                        const data = kindSnap.val();
+                        kinderenData.push({
+                            id: kindId,
+                            naam: data.naam || 'Onbekend',
+                            leeftijd: data.leeftijd || 0,
+                            afgevinkt: data.afgeleverd || false,
+                            is_piratenskip: true,
+                            ophaal_volgorde: 999
+                        });
+                    }
+                }
+
+                // Update ophaal_volgorde voor Piratenskip
+                if (currentVervoer.ophaal_volgorde) {
+                    const ophaalVolgorde = currentVervoer.ophaal_volgorde;
+                    ophaalVolgorde.forEach(item => {
+                        if (item.is_piratenskip) {
+                            const kind = kinderenData.find(k => k.id === item.kindId);
+                            if (kind) {
+                                kind.ophaal_volgorde = item.ophaal_volgorde || 999;
+                            }
+                        }
+                    });
+                }
+
+                // Fallback: geef kinderen zonder volgorde het volgende nummer
+                const kinderenZonderVolgorde = kinderenData.filter(k => k.ophaal_volgorde === 999);
+                if (kinderenZonderVolgorde.length > 0) {
+                    const hoogsteVolgorde = Math.max(...kinderenData.filter(k => k.ophaal_volgorde !== 999).map(k => k.ophaal_volgorde), 0);
+                    let volgNummer = hoogsteVolgorde + 1;
+                    kinderenZonderVolgorde.forEach(kind => {
+                        kind.ophaal_volgorde = volgNummer++;
+                    });
+                }
+
+                // Sort opnieuw
+                kinderenData.sort((a, b) => a.ophaal_volgorde - b.ophaal_volgorde);
+
+            } catch (error) {
+                console.error('Error loading Piratenskip:', error);
+            }
+        }
+
+        // Render Lijst
+        function renderLijst() {
+            const piratenskipKinderen = kinderenData.filter(k => k.is_piratenskip);
+            const boomhutKinderen = kinderenData.filter(k => !k.is_piratenskip);
+            
+            const totaal = kinderenData.length;
+            const afgevinkt = kinderenData.filter(k => k.afgevinkt).length;
+
+            let html = `
+                <div class="lijst-header">
+                    <div class="lijst-info">
+                        <div class="vervoer-badge">
+                            <span class="vervoer-icon">🚲</span>
+                            <span>${currentVervoer.vervoerNaam || 'Vervoer'}</span>
+                        </div>
+                        <div class="kind-count">${afgevinkt}/${totaal}</div>
+                    </div>
+            `;
+
+            if (piratenskipKinderen.length > 0) {
+                html += `
+                    <div class="piratenskip-banner">
+                        <span class="icon">🏴‍☠️</span>
+                        <div>
+                            <strong>LET OP:</strong> ${piratenskipKinderen.length} ${piratenskipKinderen.length === 1 ? 'kind' : 'kinderen'} afleveren bij Pirateskip BSO
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += `</div><div class="kinderen-lijst">`;
+
+            kinderenData.forEach(kind => {
+                const afgevinktClass = kind.afgevinkt ? 'afgevinkt' : '';
+                const piratenskipClass = kind.is_piratenskip ? 'piratenskip' : '';
+                const statusText = kind.afgevinkt ? (kind.is_piratenskip ? 'Afgeleverd' : 'Opgehaald') : '';
+                const emoji = kind.is_piratenskip ? ' 🏴‍☠️' : '';
+
+                html += `
+                    <div class="kind-card ${afgevinktClass} ${piratenskipClass}" data-id="${kind.id}">
+                        <div class="checkbox"></div>
+                        <div class="nummer-badge">${kind.ophaal_volgorde}</div>
+                        <div class="kind-info">
+                            <div class="kind-naam">${kind.naam}${emoji}</div>
+                            <div class="kind-details">${kind.leeftijd} jaar${kind.is_piratenskip ? ' • Pirateskip' : ''}</div>
+                        </div>
+                        ${statusText ? `<div class="status-badge">${statusText}</div>` : ''}
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+
+            lijstContent.innerHTML = html;
+
+            // Add click handlers
+            document.querySelectorAll('.kind-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const kindId = card.dataset.id;
+                    toggleAfgevinkt(kindId);
+                });
+            });
+        }
+
+        // Toggle Afgevinkt
+        async function toggleAfgevinkt(kindId) {
+            const kind = kinderenData.find(k => k.id === kindId);
+            if (!kind) return;
+
+            const newValue = !kind.afgevinkt;
+            kind.afgevinkt = newValue;
+
+            // Update UI immediately
+            renderLijst();
+
+            // Update Firebase
+            try {
+                if (kind.is_piratenskip) {
+                    await update(ref(db, `piratenskip_kinderen/${kindId}`), {
+                        afgeleverd: newValue
+                    });
+                } else {
+                    const datumKey = currentDatum.replace(/-/g, '_');
+                    await update(ref(db, `kinderen_per_dag/${datumKey}/${kindId}`), {
+                        afgevinkt: newValue
+                    });
+                }
+            } catch (error) {
+                console.error('Error updating afgevinkt:', error);
+                // Revert on error
+                kind.afgevinkt = !newValue;
+                renderLijst();
+            }
+        }
+
+        // Utility Functions
+        function showLoading() {
+            lijstContent.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <div>Ophaallijst laden...</div>
+                </div>
+            `;
+        }
+
+        function showEmpty(message) {
+            lijstContent.innerHTML = `
+                <div class="empty-state">
+                    <div class="icon">📋</div>
+                    <div>${message}</div>
+                </div>
+            `;
+        }
+
+        function showError(message) {
+            loginError.textContent = message;
+            loginError.classList.remove('hidden');
+        }
+
+        function formatDatum(datum) {
+            const date = new Date(datum);
+            const dagen = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
+            const maanden = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'];
+            
+            return `${dagen[date.getDay()]} ${date.getDate()} ${maanden[date.getMonth()]} ${date.getFullYear()}`;
+        }
+
+        // Initialize
+        loadPMs();
+    </script>
+</body>
+</html>
