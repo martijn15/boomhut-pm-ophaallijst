@@ -17,7 +17,7 @@
             --primary-light: #81C784;
             --accent: #FF5722;
             --accent-light: #FF8A65;
-            --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
             --card-shadow: 0 4px 20px rgba(0,0,0,0.1);
             --card-shadow-hover: 0 8px 30px rgba(0,0,0,0.15);
         }
@@ -30,7 +30,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
             color: #333;
             -webkit-font-smoothing: antialiased;
             padding-bottom: env(safe-area-inset-bottom);
@@ -187,6 +187,8 @@
         .lijst-screen {
             display: none;
             background: #f5f7fa;
+            min-height: 100vh;
+            padding-bottom: 60px;
         }
 
         .lijst-header {
@@ -259,6 +261,7 @@
         /* Kinderen Lijst */
         .kinderen-lijst {
             padding: 20px;
+            padding-bottom: 40px;
         }
 
         .kind-card {
@@ -409,6 +412,8 @@
 
         .kind-info {
             flex: 1;
+            min-width: 0;
+            overflow: visible;
         }
 
         .kind-naam {
@@ -417,6 +422,8 @@
             margin-bottom: 5px;
             color: #2c3e50;
             letter-spacing: -0.2px;
+            overflow: visible;
+            white-space: nowrap;
         }
 
         .kind-card.afgevinkt .kind-naam {
@@ -428,6 +435,8 @@
             font-size: 14px;
             color: #7f8c8d;
             font-weight: 500;
+            white-space: nowrap;
+            overflow: visible;
         }
 
         .status-badge {
