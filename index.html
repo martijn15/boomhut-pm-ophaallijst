@@ -2,547 +2,205 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#4CAF50">
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%234CAF50'/%3E%3Ctext x='50' y='70' font-size='60' text-anchor='middle' fill='white'%3E🌳%3C/text%3E%3C/svg%3E">
-    <title>PM Ophaallijst - De Boomhut</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PM Ophaallijst</title>
     <style>
-        :root {
-            --primary: #4CAF50;
-            --primary-dark: #388E3C;
-            --primary-light: #81C784;
-            --accent: #FF5722;
-            --accent-light: #FF8A65;
-            --background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
-            --card-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            --card-shadow-hover: 0 8px 30px rgba(0,0,0,0.15);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
-            color: #333;
-            -webkit-font-smoothing: antialiased;
-            padding-bottom: env(safe-area-inset-bottom);
             min-height: 100vh;
         }
-
+        
         .container {
             max-width: 600px;
             margin: 0 auto;
             background: white;
             min-height: 100vh;
-            box-shadow: 0 0 50px rgba(0,0,0,0.3);
         }
-
-        /* Header */
+        
         .header {
             background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
             color: white;
-            padding: 30px 20px 25px 20px;
-            padding-top: calc(30px + env(safe-area-inset-top));
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            position: relative;
-            overflow: hidden;
+            padding: 20px;
         }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -10%;
-            width: 200px;
-            height: 200px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
+        
+        .header h1 { font-size: 24px; margin-bottom: 5px; }
+        .header .date { font-size: 14px; opacity: 0.9; }
+        
+        .terug-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
         }
-
-        .header::after {
-            content: '';
-            position: absolute;
-            bottom: -30%;
-            left: -5%;
-            width: 150px;
-            height: 150px;
-            background: rgba(255,255,255,0.08);
-            border-radius: 50%;
-        }
-
-        .header h1 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 5px;
-            position: relative;
-            z-index: 1;
-            letter-spacing: -0.5px;
-        }
-
-        .header .subtitle {
-            font-size: 15px;
-            opacity: 0.95;
-            position: relative;
-            z-index: 1;
-            font-weight: 500;
-        }
-
-        /* Login Screen */
+        
         .login-screen {
-            padding: 40px 25px;
-            background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
-            min-height: 100vh;
+            padding: 40px 20px;
         }
-
+        
         .login-screen h2 {
             text-align: center;
-            margin-bottom: 40px;
-            font-size: 32px;
-            background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
+            color: #4CAF50;
+            margin-bottom: 30px;
+            font-size: 28px;
         }
-
+        
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
-
+        
         .form-group label {
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-weight: 600;
             color: #555;
-            font-size: 15px;
-            letter-spacing: 0.3px;
         }
-
+        
         .form-group select,
         .form-group input {
             width: 100%;
-            padding: 16px;
-            border: 2px solid #e8e8e8;
-            border-radius: 12px;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
             font-size: 16px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
-
-        .form-group select:focus,
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 4px 16px rgba(76, 175, 80, 0.2);
-            transform: translateY(-2px);
-        }
-
+        
         .btn {
             width: 100%;
-            padding: 18px;
+            padding: 15px;
             background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
             color: white;
             border: none;
-            border-radius: 12px;
-            font-size: 17px;
-            font-weight: 700;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
-            letter-spacing: 0.5px;
             margin-top: 10px;
         }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(76, 175, 80, 0.4);
-        }
-
-        .btn:active {
-            transform: translateY(0px);
-            box-shadow: 0 2px 10px rgba(76, 175, 80, 0.3);
-        }
-
+        
         .btn:disabled {
-            background: linear-gradient(135deg, #ccc 0%, #999 100%);
+            background: #ccc;
             cursor: not-allowed;
-            box-shadow: none;
-            transform: none;
         }
-
-        /* Rit Selectie Screen */
-        .rit-selectie-screen {
-            display: none;
-            padding: 40px 25px;
-            background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
-            min-height: 100vh;
-        }
-
-        .rit-selectie-screen h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 24px;
-            color: #2c3e50;
-            font-weight: 700;
-        }
-
-        .rit-selectie-screen p {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #666;
-            font-size: 16px;
-        }
-
-        .rit-card {
-            background: white;
-            border: 2px solid #e8e8e8;
-            border-radius: 16px;
+        
+        .lijst-screen { display: none; }
+        
+        .lijst-content {
             padding: 20px;
-            margin-bottom: 15px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
         }
-
-        .rit-card:hover {
-            border-color: #4CAF50;
-            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .rit-card:active {
-            transform: scale(0.98);
-        }
-
-        .rit-card h3 {
-            font-size: 20px;
-            color: #2c3e50;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .rit-card .rit-icon {
-            font-size: 24px;
-        }
-
-        .rit-card .rit-info {
-            color: #666;
-            font-size: 15px;
-        }
-
-        /* Lijst Screen */
-        .lijst-screen {
-            display: none;
-            background: #f5f7fa;
-            min-height: 100vh;
-            padding-bottom: 60px;
-        }
-
-        .lijst-header {
-            padding: 25px;
-            background: white;
-            border-bottom: 1px solid #e8e8e8;
-        }
-
-        .lijst-info {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 15px;
-        }
-
+        
         .vervoer-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
-            padding: 12px 20px;
-            border-radius: 25px;
-            font-weight: 600;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-        }
-
-        .vervoer-icon {
-            font-size: 26px;
-        }
-
-        .kind-count {
-            background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
-            color: white;
-            padding: 10px 18px;
-            border-radius: 20px;
-            font-size: 16px;
-            font-weight: 700;
-            box-shadow: 0 3px 12px rgba(76, 175, 80, 0.3);
-            letter-spacing: 0.5px;
-        }
-
-        .piratenskip-banner {
-            background: linear-gradient(135deg, #FF5722 0%, #E64A19 100%);
-            color: white;
-            padding: 16px;
+            background: #f0f0f0;
+            padding: 15px;
             border-radius: 12px;
-            margin-top: 15px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 4px 15px rgba(255, 87, 34, 0.3);
-            animation: slideIn 0.5s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .piratenskip-banner .icon {
-            font-size: 28px;
-        }
-
-        /* Warning Banner */
-        .warning-banner {
-            background: linear-gradient(135deg, #FFC107 0%, #FF9800 100%);
-            color: #663C00;
-            padding: 16px;
-            border-radius: 12px;
-            margin-top: 15px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+            margin-bottom: 20px;
             font-weight: 600;
         }
-
-        .warning-banner .icon {
-            font-size: 28px;
-        }
-
-        /* Kinderen Lijst */
-        .kinderen-lijst {
-            padding: 20px;
-            padding-bottom: 40px;
-        }
-
+        
         .kind-card {
             background: white;
-            border: 2px solid transparent;
-            border-radius: 16px;
-            padding: 18px;
-            margin-bottom: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 16px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            gap: 15px;
             cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            position: relative;
-            overflow: visible;
-            min-height: 80px;
         }
-
-        .kind-card::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 4px;
-            background: linear-gradient(to bottom, #4CAF50 0%, #388E3C 100%);
-            transition: width 0.3s ease;
-        }
-
-        .kind-card:active {
-            transform: scale(0.98);
-        }
-
-        .kind-card:hover {
-            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-            transform: translateY(-2px);
-        }
-
+        
         .kind-card.afgevinkt {
-            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+            background: #E8F5E9;
             border-color: #4CAF50;
-            box-shadow: 0 3px 15px rgba(76, 175, 80, 0.2);
         }
-
-        .kind-card.afgevinkt::before {
-            width: 100%;
-            background: linear-gradient(to right, rgba(76, 175, 80, 0.3) 0%, rgba(76, 175, 80, 0.1) 100%);
-        }
-
-        .kind-card.piratenskip {
-            border-color: #FF5722;
-            background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
-        }
-
-        .kind-card.piratenskip::before {
-            background: linear-gradient(to bottom, #FF5722 0%, #E64A19 100%);
-        }
-
-        .kind-card.piratenskip.afgevinkt {
-            background: linear-gradient(135deg, #FFEBEE 0%, #FFCDD2 100%);
-            border-color: #FF5722;
-            box-shadow: 0 3px 15px rgba(255, 87, 34, 0.2);
-        }
-
+        
         .checkbox {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             border: 3px solid #ddd;
-            border-radius: 8px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: white;
         }
-
+        
         .kind-card.afgevinkt .checkbox {
-            background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
+            background: #4CAF50;
             border-color: #4CAF50;
-            transform: rotate(360deg);
         }
-
-        .kind-card.piratenskip.afgevinkt .checkbox {
-            background: linear-gradient(135deg, #FF5722 0%, #E64A19 100%);
-            border-color: #FF5722;
-        }
-
+        
         .checkbox::after {
             content: '✓';
             color: white;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
             display: none;
         }
-
+        
         .kind-card.afgevinkt .checkbox::after {
             display: block;
-            animation: checkPop 0.3s ease-out;
         }
-
-        @keyframes checkPop {
-            0% {
-                transform: scale(0);
-            }
-            50% {
-                transform: scale(1.2);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-
+        
         .nummer-badge {
-            width: 46px;
-            height: 46px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
+            background: #4CAF50;
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 800;
-            font-size: 19px;
+            font-weight: bold;
+            font-size: 18px;
             flex-shrink: 0;
-            box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3);
-            transition: all 0.3s ease;
         }
-
-        .kind-card:hover .nummer-badge {
-            transform: scale(1.1);
-        }
-
+        
         .kind-card.afgevinkt .nummer-badge {
-            background: linear-gradient(135deg, #9E9E9E 0%, #757575 100%);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            background: #999;
         }
-
-        .kind-card.piratenskip .nummer-badge {
-            background: linear-gradient(135deg, #FF5722 0%, #E64A19 100%);
-            box-shadow: 0 3px 10px rgba(255, 87, 34, 0.3);
-        }
-
-        .kind-card.piratenskip.afgevinkt .nummer-badge {
-            background: linear-gradient(135deg, #9E9E9E 0%, #757575 100%);
-        }
-
+        
         .kind-info {
             flex: 1;
-            min-width: 0;
-            overflow: visible;
         }
-
+        
         .kind-naam {
-            font-weight: 700;
-            font-size: 17px;
-            margin-bottom: 5px;
-            color: #2c3e50;
-            letter-spacing: -0.2px;
-            overflow: visible;
-            white-space: nowrap;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 3px;
         }
-
+        
         .kind-card.afgevinkt .kind-naam {
             text-decoration: line-through;
             color: #888;
         }
-
+        
         .kind-details {
             font-size: 14px;
-            color: #7f8c8d;
-            font-weight: 500;
-            white-space: nowrap;
-            overflow: visible;
+            color: #666;
         }
-
+        
         .status-badge {
-            background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
+            background: #4CAF50;
             color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 700;
-            flex-shrink: 0;
-            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
-            letter-spacing: 0.3px;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
         }
-
-        .kind-card.piratenskip .status-badge {
-            background: linear-gradient(135deg, #FF5722 0%, #E64A19 100%);
-            box-shadow: 0 2px 8px rgba(255, 87, 34, 0.3);
-        }
-
-        /* Loading */
+        
         .loading {
             text-align: center;
             padding: 60px 20px;
         }
-
+        
         .spinner {
             border: 4px solid #f3f3f3;
             border-top: 4px solid #4CAF50;
@@ -550,100 +208,15 @@
             width: 50px;
             height: 50px;
             animation: spin 0.8s linear infinite;
-            margin: 0 auto 25px;
+            margin: 0 auto 20px;
         }
-
+        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-        .loading div:last-child {
-            color: #666;
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        /* Error */
-        .error {
-            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
-            color: #c62828;
-            padding: 16px;
-            border-radius: 12px;
-            margin: 20px;
-            text-align: center;
-            border-left: 4px solid #c62828;
-            box-shadow: 0 2px 10px rgba(198, 40, 40, 0.2);
-            font-weight: 600;
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 80px 20px;
-            color: #999;
-        }
-
-        .empty-state .icon {
-            font-size: 72px;
-            margin-bottom: 20px;
-            opacity: 0.6;
-        }
-
-        .empty-state div:last-child {
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        /* Logout Button */
-        .logout-btn {
-            background: rgba(255,255,255,0.2);
-            border: 2px solid white;
-            color: white;
-            padding: 10px 18px;
-            border-radius: 10px;
-            font-size: 15px;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            backdrop-filter: blur(10px);
-        }
-
-        .logout-btn:active {
-            background: rgba(255,255,255,0.3);
-            transform: scale(0.95);
-        }
-
-        /* Hidden */
-        .hidden {
-            display: none !important;
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .kind-card {
-            animation: fadeIn 0.4s ease-out backwards;
-        }
-
-        .kind-card:nth-child(1) { animation-delay: 0.05s; }
-        .kind-card:nth-child(2) { animation-delay: 0.1s; }
-        .kind-card:nth-child(3) { animation-delay: 0.15s; }
-        .kind-card:nth-child(4) { animation-delay: 0.2s; }
-        .kind-card:nth-child(5) { animation-delay: 0.25s; }
-        .kind-card:nth-child(6) { animation-delay: 0.3s; }
-        .kind-card:nth-child(7) { animation-delay: 0.35s; }
-        .kind-card:nth-child(8) { animation-delay: 0.4s; }
+        
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -653,36 +226,26 @@
             <h2>🌳 PM Ophaallijst</h2>
             
             <div class="form-group">
-                <label for="pmSelect">Selecteer je naam:</label>
+                <label>Selecteer je naam:</label>
                 <select id="pmSelect">
                     <option value="">-- Kies PM --</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="datumInput">Datum:</label>
+                <label>Datum:</label>
                 <input type="date" id="datumInput">
             </div>
 
             <button class="btn" id="loginBtn" disabled>Ophaallijst Laden</button>
-
-            <div id="loginError" class="error hidden"></div>
-        </div>
-
-        <!-- Rit Selectie Screen -->
-        <div id="ritSelectieScreen" class="rit-selectie-screen">
-            <h2>Selecteer een rit</h2>
-            <p id="ritSelectieInfo">Je hebt meerdere ritten vandaag</p>
-            <div id="rittenLijst"></div>
-            <button class="btn" id="ritSelectieTerug" style="margin-top: 30px;">← Terug naar login</button>
         </div>
 
         <!-- Lijst Screen -->
         <div id="lijstScreen" class="lijst-screen">
             <div class="header">
                 <h1 id="pmNaam">PM Naam</h1>
-                <div class="subtitle" id="datumText">Datum</div>
-                <button class="logout-btn" id="logoutBtn">← Terug</button>
+                <div class="date" id="datumText">Datum</div>
+                <button class="terug-btn" id="logoutBtn">← Terug</button>
             </div>
 
             <div id="lijstContent">
@@ -694,12 +257,10 @@
         </div>
     </div>
 
-    <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getDatabase, ref, get, update, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+        import { getDatabase, ref, get, update } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
-        // ⭐ Firebase Configuratie - Boomhut Vervoer
         const firebaseConfig = {
             apiKey: "AIzaSyAo65QoOD-Lj-UEJJlBjSIX1-BWZEIhw1o",
             authDomain: "boomhut-vervoer.firebaseapp.com",
@@ -710,234 +271,175 @@
             appId: "1:350002772602:web:f252856892a9547c3bd9c3"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // State
         let currentPM = null;
         let currentDatum = null;
         let currentVervoer = null;
-        let alleRitten = [];
         let kinderenData = [];
-        let listener = null;
 
-        // Elements
         const loginScreen = document.getElementById('loginScreen');
-        const ritSelectieScreen = document.getElementById('ritSelectieScreen');
         const lijstScreen = document.getElementById('lijstScreen');
         const pmSelect = document.getElementById('pmSelect');
         const datumInput = document.getElementById('datumInput');
         const loginBtn = document.getElementById('loginBtn');
-        const loginError = document.getElementById('loginError');
-        const ritSelectieTerug = document.getElementById('ritSelectieTerug');
         const logoutBtn = document.getElementById('logoutBtn');
         const lijstContent = document.getElementById('lijstContent');
         const pmNaamEl = document.getElementById('pmNaam');
         const datumTextEl = document.getElementById('datumText');
-        const rittenLijst = document.getElementById('rittenLijst');
-        const ritSelectieInfo = document.getElementById('ritSelectieInfo');
 
-        // Set default date to today
         datumInput.valueAsDate = new Date();
 
-        // Load PMs from Firebase
+        // Load PMs
         async function loadPMs() {
             try {
-                const pmsRef = ref(db, 'pedagogisch_medewerkers');
-                const snapshot = await get(pmsRef);
-                
+                const snapshot = await get(ref(db, 'pedagogisch_medewerkers'));
                 if (snapshot.exists()) {
                     const pms = [];
                     snapshot.forEach(child => {
-                        const data = child.val();
                         pms.push({
                             id: child.key,
-                            naam: data.naam || 'Onbekend'
+                            naam: child.val().naam || 'Onbekend'
                         });
                     });
-
                     pms.sort((a, b) => a.naam.localeCompare(b.naam));
-
                     pms.forEach(pm => {
                         const option = document.createElement('option');
                         option.value = pm.id;
                         option.textContent = pm.naam;
                         pmSelect.appendChild(option);
                     });
-                    
-                    console.log('✅ PMs geladen:', pms.length);
                 }
             } catch (error) {
                 console.error('Error loading PMs:', error);
-                showError('Fout bij laden PM lijst: ' + error.message);
             }
         }
 
-        // Enable/disable login button
-        pmSelect.addEventListener('change', checkLoginReady);
-        datumInput.addEventListener('change', checkLoginReady);
-
-        function checkLoginReady() {
+        pmSelect.addEventListener('change', () => {
             loginBtn.disabled = !pmSelect.value || !datumInput.value;
-        }
+        });
+        
+        datumInput.addEventListener('change', () => {
+            loginBtn.disabled = !pmSelect.value || !datumInput.value;
+        });
 
         // Login
         loginBtn.addEventListener('click', async () => {
-            const pmId = pmSelect.value;
-            const datum = datumInput.value;
-            
-            if (!pmId || !datum) return;
-
             currentPM = {
-                id: pmId,
+                id: pmSelect.value,
                 naam: pmSelect.options[pmSelect.selectedIndex].text
             };
-            currentDatum = datum;
-
-            await findAlleRitten();
+            currentDatum = datumInput.value;
+            await loadOphaallijst();
         });
 
-        // Find alle ritten voor deze PM
-        async function findAlleRitten() {
-            try {
-                const datumKey = currentDatum.replace(/-/g, '_');
-                const vervoerRef = ref(db, `vervoer_verdeling/${datumKey}`);
-                const snapshot = await get(vervoerRef);
-
-                if (!snapshot.exists()) {
-                    showError('Geen ophaallijst gevonden voor deze datum');
-                    return;
-                }
-
-                // Find ALL ritten for this PM
-                alleRitten = [];
-                snapshot.forEach(child => {
-                    const data = child.val();
-                    if (data.pmId === currentPM.id) {
-                        alleRitten.push({
-                            key: child.key,
-                            ...data
-                        });
-                    }
-                });
-
-                if (alleRitten.length === 0) {
-                    showError('Geen vervoer toegewezen voor deze datum');
-                    return;
-                }
-
-                if (alleRitten.length === 1) {
-                    // Direct laden als er maar 1 rit is
-                    currentVervoer = alleRitten[0];
-                    await loadOphaallijst();
-                } else {
-                    // Toon rit selectie scherm
-                    toonRitSelectie();
-                }
-
-            } catch (error) {
-                console.error('Error finding ritten:', error);
-                showError('Fout bij laden ritten: ' + error.message);
-            }
-        }
-
-        // Toon rit selectie
-        function toonRitSelectie() {
-            loginScreen.style.display = 'none';
-            ritSelectieScreen.style.display = 'block';
-
-            ritSelectieInfo.textContent = `Je hebt ${alleRitten.length} ritten vandaag, kies er één:`;
-
-            let html = '';
-            alleRitten.forEach((rit, index) => {
-                const kinderAantal = (rit.kindIds || []).length;
-                html += `
-                    <div class="rit-card" data-index="${index}">
-                        <h3>
-                            <span class="rit-icon">🚲</span>
-                            ${rit.vervoerNaam || 'Rit ' + (index + 1)}
-                        </h3>
-                        <div class="rit-info">${kinderAantal} ${kinderAantal === 1 ? 'kind' : 'kinderen'}</div>
-                    </div>
-                `;
-            });
-
-            rittenLijst.innerHTML = html;
-
-            // Add click handlers
-            document.querySelectorAll('.rit-card').forEach(card => {
-                card.addEventListener('click', () => {
-                    const index = parseInt(card.dataset.index);
-                    currentVervoer = alleRitten[index];
-                    loadOphaallijst();
-                });
-            });
-        }
-
-        // Rit selectie terug button
-        ritSelectieTerug.addEventListener('click', () => {
-            ritSelectieScreen.style.display = 'none';
-            loginScreen.style.display = 'block';
-            alleRitten = [];
-        });
-
-        // Logout - SUPER SIMPEL, ALTIJD WERKT
+        // Logout - SUPER SIMPEL!
         logoutBtn.addEventListener('click', () => {
-            // Hard reload = altijd betrouwbaar!
             window.location.reload();
         });
 
         // Load Ophaallijst
         async function loadOphaallijst() {
             try {
-                showLoading();
-                loginScreen.style.display = 'none';
-                ritSelectieScreen.style.display = 'none';
+                loginScreen.classList.add('hidden');
                 lijstScreen.style.display = 'block';
 
                 pmNaamEl.textContent = `Ophaallijst - ${currentPM.naam}`;
                 datumTextEl.textContent = formatDatum(currentDatum);
 
                 const datumKey = currentDatum.replace(/-/g, '_');
-                const vervoerRef = ref(db, `vervoer_verdeling/${datumKey}/${currentVervoer.key}`);
-                
-                // Set up realtime listener
-                if (listener) listener();
-                listener = onValue(vervoerRef, async (snapshot) => {
-                    if (!snapshot.exists()) {
-                        showEmpty('Rit niet meer beschikbaar');
-                        return;
+                const vervoerSnapshot = await get(ref(db, `vervoer_verdeling/${datumKey}`));
+
+                if (!vervoerSnapshot.exists()) {
+                    lijstContent.innerHTML = '<div style="padding:40px;text-align:center;">Geen ophaallijst gevonden</div>';
+                    return;
+                }
+
+                // Find vervoer for this PM
+                let found = null;
+                vervoerSnapshot.forEach(child => {
+                    const data = child.val();
+                    if (data.pmId === currentPM.id) {
+                        found = {
+                            key: child.key,
+                            ...data
+                        };
                     }
-
-                    currentVervoer = {
-                        key: currentVervoer.key,
-                        ...snapshot.val()
-                    };
-
-                    await loadKinderen();
-                    await loadPiratenskipKinderen();
-                    renderLijst();
                 });
 
+                if (!found) {
+                    lijstContent.innerHTML = '<div style="padding:40px;text-align:center;">Geen vervoer toegewezen</div>';
+                    return;
+                }
+
+                currentVervoer = found;
+                console.log('📦 Vervoer data:', currentVervoer);
+                console.log('📊 ophaal_volgorde:', currentVervoer.ophaal_volgorde);
+
+                await loadKinderen();
+                renderLijst();
+
             } catch (error) {
-                console.error('Error loading ophaallijst:', error);
-                showError('Fout bij laden ophaallijst: ' + error.message);
+                console.error('Error:', error);
+                lijstContent.innerHTML = `<div style="padding:40px;text-align:center;color:red;">Fout: ${error.message}</div>`;
             }
         }
 
         // Load Kinderen
         async function loadKinderen() {
             const datumKey = currentDatum.replace(/-/g, '_');
-            const kindIds = currentVervoer.kindIds || [];
-            const kinderenRef = ref(db, `kinderen_per_dag/${datumKey}`);
-            const snapshot = await get(kinderenRef);
-
             kinderenData = [];
 
-            if (snapshot.exists()) {
+            // Check of er ophaal_volgorde is
+            if (currentVervoer.ophaal_volgorde && Array.isArray(currentVervoer.ophaal_volgorde)) {
+                console.log('✅ ophaal_volgorde GEVONDEN!');
+                
+                // Laad kinderen op basis van ophaal_volgorde
+                for (const item of currentVervoer.ophaal_volgorde) {
+                    const kindId = item.kindId;
+                    const volgorde = item.ophaal_volgorde || 999;
+                    
+                    let kindData = null;
+                    
+                    // Check of het Piratenskip kind is
+                    if (item.is_piratenskip) {
+                        const piratenskipSnap = await get(ref(db, `piratenskip_kinderen/${kindId}`));
+                        if (piratenskipSnap.exists()) {
+                            kindData = piratenskipSnap.val();
+                        }
+                    } else {
+                        // Regulier kind
+                        const kindSnap = await get(ref(db, `kinderen_per_dag/${datumKey}/${kindId}`));
+                        if (kindSnap.exists()) {
+                            kindData = kindSnap.val();
+                        }
+                    }
+                    
+                    if (kindData) {
+                        kinderenData.push({
+                            id: kindId,
+                            naam: kindData.naam || item.naam || 'Onbekend',
+                            leeftijd: kindData.leeftijd || 0,
+                            afgevinkt: item.is_piratenskip ? (kindData.afgeleverd || false) : (kindData.afgevinkt || false),
+                            ophaal_volgorde: volgorde,
+                            is_piratenskip: item.is_piratenskip || false
+                        });
+                    }
+                }
+                
+                console.log('📋 Kinderen geladen:', kinderenData.length);
+                kinderenData.forEach(k => {
+                    console.log(`   ${k.naam}: volgorde ${k.ophaal_volgorde}`);
+                });
+                
+            } else {
+                console.warn('⚠️ GEEN ophaal_volgorde array!');
+                
+                // Fallback: laad via kindIds
+                const kindIds = currentVervoer.kindIds || [];
                 for (const kindId of kindIds) {
-                    const kindSnap = snapshot.child(kindId);
+                    const kindSnap = await get(ref(db, `kinderen_per_dag/${datumKey}/${kindId}`));
                     if (kindSnap.exists()) {
                         const data = kindSnap.val();
                         kinderenData.push({
@@ -945,148 +447,36 @@
                             naam: data.naam || 'Onbekend',
                             leeftijd: data.leeftijd || 0,
                             afgevinkt: data.afgevinkt || false,
-                            is_piratenskip: false,
-                            ophaal_volgorde: 999
+                            ophaal_volgorde: 999,
+                            is_piratenskip: false
                         });
                     }
                 }
             }
 
-            // Load ophaal_volgorde
-            if (currentVervoer.ophaal_volgorde) {
-                console.log('📊 OPHAAL_VOLGORDE DATA:', currentVervoer.ophaal_volgorde);
-                const ophaalVolgorde = currentVervoer.ophaal_volgorde;
-                ophaalVolgorde.forEach(item => {
-                    const kind = kinderenData.find(k => k.id === item.kindId);
-                    if (kind && !item.is_piratenskip) {
-                        console.log(`✅ Kind ${kind.naam}: volgorde ${item.ophaal_volgorde}`);
-                        kind.ophaal_volgorde = item.ophaal_volgorde || 999;
-                    }
-                });
-            } else {
-                console.warn('⚠️ GEEN ophaal_volgorde data in Firebase!');
-            }
-
+            // Sorteer op ophaal_volgorde
             kinderenData.sort((a, b) => a.ophaal_volgorde - b.ophaal_volgorde);
-            console.log('📋 FINALE LIJST:', kinderenData.map(k => `${k.naam}: ${k.ophaal_volgorde}`));
-        }
-
-        // Load Piratenskip Kinderen
-        async function loadPiratenskipKinderen() {
-            const datum = new Date(currentDatum);
-            const isDinsdag = datum.getDay() === 2;
-            
-            if (!isDinsdag) return;
-            if (!currentVervoer.vervoerNaam?.toLowerCase().includes('stint 1')) return;
-
-            try {
-                const selectieRef = ref(db, 'tussenstops_selectie/dinsdag/piratenskip/geselecteerde_ids');
-                const snapshot = await get(selectieRef);
-
-                if (!snapshot.exists()) return;
-
-                const geselecteerdeIds = [];
-                snapshot.forEach(child => {
-                    if (child.val()) {
-                        geselecteerdeIds.push(child.val().toString());
-                    }
-                });
-
-                for (const kindId of geselecteerdeIds) {
-                    const kindRef = ref(db, `piratenskip_kinderen/${kindId}`);
-                    const kindSnap = await get(kindRef);
-
-                    if (kindSnap.exists()) {
-                        const data = kindSnap.val();
-                        kinderenData.push({
-                            id: kindId,
-                            naam: data.naam || 'Onbekend',
-                            leeftijd: data.leeftijd || 0,
-                            afgevinkt: data.afgeleverd || false,
-                            is_piratenskip: true,
-                            ophaal_volgorde: 999
-                        });
-                    }
-                }
-
-                if (currentVervoer.ophaal_volgorde) {
-                    const ophaalVolgorde = currentVervoer.ophaal_volgorde;
-                    ophaalVolgorde.forEach(item => {
-                        if (item.is_piratenskip) {
-                            const kind = kinderenData.find(k => k.id === item.kindId);
-                            if (kind) {
-                                kind.ophaal_volgorde = item.ophaal_volgorde || 999;
-                            }
-                        }
-                    });
-                }
-
-                const kinderenZonderVolgorde = kinderenData.filter(k => k.ophaal_volgorde === 999);
-                if (kinderenZonderVolgorde.length > 0) {
-                    const hoogsteVolgorde = Math.max(...kinderenData.filter(k => k.ophaal_volgorde !== 999).map(k => k.ophaal_volgorde), 0);
-                    let volgNummer = hoogsteVolgorde + 1;
-                    kinderenZonderVolgorde.forEach(kind => {
-                        kind.ophaal_volgorde = volgNummer++;
-                    });
-                }
-
-                kinderenData.sort((a, b) => a.ophaal_volgorde - b.ophaal_volgorde);
-
-            } catch (error) {
-                console.error('Error loading Piratenskip:', error);
-            }
         }
 
         // Render Lijst
         function renderLijst() {
-            const piratenskipKinderen = kinderenData.filter(k => k.is_piratenskip);
             const totaal = kinderenData.length;
             const afgevinkt = kinderenData.filter(k => k.afgevinkt).length;
-            const heeft999 = kinderenData.some(k => k.ophaal_volgorde === 999);
 
             let html = `
-                <div class="lijst-header">
-                    <div class="lijst-info">
-                        <div class="vervoer-badge">
-                            <span class="vervoer-icon">🚲</span>
-                            <span>${currentVervoer.vervoerNaam || 'Vervoer'}</span>
-                        </div>
-                        <div class="kind-count">${afgevinkt}/${totaal}</div>
+                <div class="lijst-content">
+                    <div class="vervoer-badge">
+                        🚲 ${currentVervoer.vervoerNaam || 'Vervoer'} - ${afgevinkt}/${totaal} opgehaald
                     </div>
             `;
 
-            if (heeft999) {
-                html += `
-                    <div class="warning-banner">
-                        <span class="icon">⚠️</span>
-                        <div>
-                            <strong>LET OP:</strong> Deze planning is oud! Maak een nieuwe planning in de admin app voor correcte nummering.
-                        </div>
-                    </div>
-                `;
-            }
-
-            if (piratenskipKinderen.length > 0) {
-                html += `
-                    <div class="piratenskip-banner">
-                        <span class="icon">🏴‍☠️</span>
-                        <div>
-                            <strong>LET OP:</strong> ${piratenskipKinderen.length} ${piratenskipKinderen.length === 1 ? 'kind' : 'kinderen'} afleveren bij Pirateskip BSO
-                        </div>
-                    </div>
-                `;
-            }
-
-            html += `</div><div class="kinderen-lijst">`;
-
             kinderenData.forEach(kind => {
                 const afgevinktClass = kind.afgevinkt ? 'afgevinkt' : '';
-                const piratenskipClass = kind.is_piratenskip ? 'piratenskip' : '';
                 const statusText = kind.afgevinkt ? (kind.is_piratenskip ? 'Afgeleverd' : 'Opgehaald') : '';
                 const emoji = kind.is_piratenskip ? ' 🏴‍☠️' : '';
 
                 html += `
-                    <div class="kind-card ${afgevinktClass} ${piratenskipClass}" data-id="${kind.id}">
+                    <div class="kind-card ${afgevinktClass}" data-id="${kind.id}">
                         <div class="checkbox"></div>
                         <div class="nummer-badge">${kind.ophaal_volgorde}</div>
                         <div class="kind-info">
@@ -1102,6 +492,7 @@
 
             lijstContent.innerHTML = html;
 
+            // Add click handlers
             document.querySelectorAll('.kind-card').forEach(card => {
                 card.addEventListener('click', () => {
                     const kindId = card.dataset.id;
@@ -1115,62 +506,34 @@
             const kind = kinderenData.find(k => k.id === kindId);
             if (!kind) return;
 
-            const newValue = !kind.afgevinkt;
-            kind.afgevinkt = newValue;
-
+            kind.afgevinkt = !kind.afgevinkt;
             renderLijst();
 
             try {
                 if (kind.is_piratenskip) {
                     await update(ref(db, `piratenskip_kinderen/${kindId}`), {
-                        afgeleverd: newValue
+                        afgeleverd: kind.afgevinkt
                     });
                 } else {
                     const datumKey = currentDatum.replace(/-/g, '_');
                     await update(ref(db, `kinderen_per_dag/${datumKey}/${kindId}`), {
-                        afgevinkt: newValue
+                        afgevinkt: kind.afgevinkt
                     });
                 }
             } catch (error) {
-                console.error('Error updating afgevinkt:', error);
-                kind.afgevinkt = !newValue;
+                console.error('Error updating:', error);
+                kind.afgevinkt = !kind.afgevinkt;
                 renderLijst();
             }
-        }
-
-        // Utility Functions
-        function showLoading() {
-            lijstContent.innerHTML = `
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <div>Ophaallijst laden...</div>
-                </div>
-            `;
-        }
-
-        function showEmpty(message) {
-            lijstContent.innerHTML = `
-                <div class="empty-state">
-                    <div class="icon">📋</div>
-                    <div>${message}</div>
-                </div>
-            `;
-        }
-
-        function showError(message) {
-            loginError.textContent = message;
-            loginError.classList.remove('hidden');
         }
 
         function formatDatum(datum) {
             const date = new Date(datum);
             const dagen = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
             const maanden = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'];
-            
             return `${dagen[date.getDay()]} ${date.getDate()} ${maanden[date.getMonth()]} ${date.getFullYear()}`;
         }
 
-        // Initialize
         loadPMs();
     </script>
 </body>
