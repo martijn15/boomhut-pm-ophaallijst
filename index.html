@@ -882,23 +882,10 @@
             alleRitten = [];
         });
 
-        // Logout
+        // Logout - SUPER SIMPEL, ALTIJD WERKT
         logoutBtn.addEventListener('click', () => {
-            console.log('Logout clicked');
-            if (listener) {
-                listener();
-                listener = null;
-            }
-            currentPM = null;
-            currentDatum = null;
-            currentVervoer = null;
-            kinderenData = [];
-            alleRitten = [];
-            
-            lijstScreen.style.display = 'none';
-            ritSelectieScreen.style.display = 'none';
-            loginScreen.style.display = 'block';
-            loginError.classList.add('hidden');
+            // Hard reload = altijd betrouwbaar!
+            window.location.reload();
         });
 
         // Load Ophaallijst
@@ -967,16 +954,21 @@
 
             // Load ophaal_volgorde
             if (currentVervoer.ophaal_volgorde) {
+                console.log('📊 OPHAAL_VOLGORDE DATA:', currentVervoer.ophaal_volgorde);
                 const ophaalVolgorde = currentVervoer.ophaal_volgorde;
                 ophaalVolgorde.forEach(item => {
                     const kind = kinderenData.find(k => k.id === item.kindId);
                     if (kind && !item.is_piratenskip) {
+                        console.log(`✅ Kind ${kind.naam}: volgorde ${item.ophaal_volgorde}`);
                         kind.ophaal_volgorde = item.ophaal_volgorde || 999;
                     }
                 });
+            } else {
+                console.warn('⚠️ GEEN ophaal_volgorde data in Firebase!');
             }
 
             kinderenData.sort((a, b) => a.ophaal_volgorde - b.ophaal_volgorde);
+            console.log('📋 FINALE LIJST:', kinderenData.map(k => `${k.naam}: ${k.ophaal_volgorde}`));
         }
 
         // Load Piratenskip Kinderen
