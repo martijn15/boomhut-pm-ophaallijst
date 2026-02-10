@@ -74,6 +74,29 @@
         .lijst-screen { display: none; }
         .lijst-content { padding: 20px; }
         .vervoer-badge { background: #f0f0f0; padding: 15px; border-radius: 12px; margin-bottom: 20px; font-weight: 600; }
+        .wacht-waarschuwing {
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
+            border: 3px solid #F57C00;
+        }
+        .wacht-waarschuwing .icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .wacht-waarschuwing .title {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+        .wacht-waarschuwing .message {
+            font-size: 16px;
+            opacity: 0.95;
+        }
         .kind-card {
             background: white;
             border: 2px solid #e0e0e0;
@@ -383,6 +406,7 @@
 
             console.log('📊 Vervoer data:', currentVervoer);
             console.log('📊 ophaal_volgorde:', currentVervoer.ophaal_volgorde);
+            console.log('🚏 wachtVoorBusjeRit2:', currentVervoer.wachtVoorBusjeRit2);
 
             await loadKinderen();
             renderLijst();
@@ -461,6 +485,7 @@
             
             const totaal = kinderenData.length;
             const afgevinkt = kinderenData.filter(k => k.afgevinkt).length;
+            const moetWachten = currentVervoer.wachtVoorBusjeRit2 === true;
 
             let html = `
                 <div class="lijst-content">
@@ -468,6 +493,18 @@
                         ${getVervoerIcon(currentVervoer)} ${currentVervoer.vervoerNaam || 'Vervoer'} - ${afgevinkt}/${totaal}
                     </div>
             `;
+
+            // Toon waarschuwing als stint moet wachten
+            if (moetWachten) {
+                console.log('🚏 WAARSCHUWING: Stint moet wachten op schoolplein!');
+                html += `
+                    <div class="wacht-waarschuwing">
+                        <div class="icon">🚏</div>
+                        <div class="title">⚠️ LET OP: Wacht op schoolplein!</div>
+                        <div class="message">Blijf wachten tot Busje Rit 2 klaar is met ophalen</div>
+                    </div>
+                `;
+            }
 
             kinderenData.forEach(kind => {
                 const klass = kind.afgevinkt ? 'afgevinkt' : '';
