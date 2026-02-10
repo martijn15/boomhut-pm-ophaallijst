@@ -97,6 +97,12 @@
         .wacht-waarschuwing .title { font-size: 20px; margin-bottom: 8px; }
         .wacht-waarschuwing .message { font-size: 16px; opacity: 0.95; }
         .wacht-waarschuwing .progress { font-size: 14px; opacity: 0.9; margin-top: 5px; }
+        .wacht-waarschuwing .auto-refresh {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 10px;
+            font-style: italic;
+        }
         .kind-card {
             background: white;
             border: 2px solid #e0e0e0;
@@ -251,6 +257,7 @@
         let kinderenData = [];
         let alleRitten = [];
         let busjeRit2Status = null;
+        let autoRefreshInterval = null;
 
         // Elements
         const loginScreen = document.getElementById('loginScreen');
@@ -328,10 +335,12 @@
         });
 
         terugNaarLogin.addEventListener('click', () => {
+            stopAutoRefresh();
             window.location.reload();
         });
 
         logoutBtn.addEventListener('click', () => {
+            stopAutoRefresh();
             window.location.reload();
         });
 
@@ -418,6 +427,7 @@
             
             if (currentVervoer.wachtVoorBusjeRit2) {
                 await checkBusjeRit2Status();
+                startAutoRefresh();
             }
             
             renderLijst();
@@ -494,35 +504,113 @@
                 
                 if (!snapshot.exists()) return;
 
+                // Find Busje Rit 2
+                let busjeRit2Data = null;
                 snapshot.forEach(child => {
                     const data = child.val();
                     if (data.vervoerNaam && data.vervoerNaam.includes('Busje - Rit 2')) {
-                        console.log('🚐 Found Busje Rit 2:', data);
-                        
-                        let afgevinkt = 0;
-                        let totaal = 0;
-                        
-                        if (data.ophaal_volgorde && Array.isArray(data.ophaal_volgorde)) {
-                            totaal = data.ophaal_volgorde.length;
-                            
-                            data.ophaal_volgorde.forEach(item => {
-                                if (item.afgevinkt) afgevinkt++;
-                            });
-                        } else {
-                            totaal = (data.kindIds || []).length;
-                        }
-                        
-                        busjeRit2Status = {
-                            totaal: totaal,
-                            afgevinkt: afgevinkt,
-                            klaar: afgevinkt === totaal && totaal > 0
-                        };
-                        
-                        console.log('🚐 Busje Rit 2 status:', busjeRit2Status);
+                        busjeRit2Data = data;
                     }
                 });
+
+                if (!busjeRit2Data) {
+                    console.log('⚠️ Busje Rit 2 niet gevonden');
+                    return;
+                }
+
+                console.log('🚐 Found Busje Rit 2:', busjeRit2Data);
+
+                // Load afgevinkte status for each kind
+                let afgevinkt = 0;
+                let totaal = 0;
+
+                if (busjeRit2Data.ophaal_volgorde && Array.isArray(busjeRit2Data.ophaal_volgorde)) {
+                    totaal = busjeRit2Data.ophaal_volgorde.length;
+                    
+                    // Check ECHTE afgevinkte status in Firebase
+                    for (const item of busjeRit2Data.ophaal_volgorde) {
+                        let isAfgevinkt = false;
+                        
+                        if (item.is_piratenskip) {
+                            const snap = await get(ref(db, `piratenskip_kinderen/${item.kindId}`));
+                            if (snap.exists()) {
+                                const data = snap.val();
+                                isAfgevinkt = data.afgeleverd || false;
+                            }
+                        } else {
+                            const snap = await get(ref(db, `kinderen_per_dag/${datumKey}/${item.kindId}`));
+                            if (snap.exists()) {
+                                const data = snap.val();
+                                isAfgevinkt = data.afgevinkt || false;
+                            }
+                        }
+                        
+                        if (isAfgevinkt) {
+                            afgevinkt++;
+                            console.log(`  ✓ ${item.naam} afgevinkt`);
+                        } else {
+                            console.log(`  ☐ ${item.naam} nog niet afgevinkt`);
+                        }
+                    }
+                } else {
+                    totaal = (busjeRit2Data.kindIds || []).length;
+                    
+                    // Fallback: check via kindIds
+                    for (const kindId of (busjeRit2Data.kindIds || [])) {
+                        const snap = await get(ref(db, `kinderen_per_dag/${datumKey}/${kindId}`));
+                        if (snap.exists()) {
+                            const data = snap.val();
+                            if (data.afgevinkt) afgevinkt++;
+                        }
+                    }
+                }
+                
+                busjeRit2Status = {
+                    totaal: totaal,
+                    afgevinkt: afgevinkt,
+                    klaar: afgevinkt === totaal && totaal > 0
+                };
+                
+                console.log('🚐 Busje Rit 2 status:', busjeRit2Status);
+                
             } catch (error) {
                 console.error('❌ Error checking Busje Rit 2:', error);
+            }
+        }
+
+        // Auto-refresh systeem
+        function startAutoRefresh() {
+            if (autoRefreshInterval) return; // Al actief
+            
+            console.log('🔄 Auto-refresh gestart (elke 30 seconden)');
+            
+            autoRefreshInterval = setInterval(async () => {
+                console.log('🔄 Auto-refresh Busje Rit 2 status...');
+                const oudeStatus = busjeRit2Status ? {...busjeRit2Status} : null;
+                
+                await checkBusjeRit2Status();
+                
+                // Check of status is veranderd
+                if (oudeStatus && busjeRit2Status) {
+                    if (oudeStatus.afgevinkt !== busjeRit2Status.afgevinkt || 
+                        oudeStatus.klaar !== busjeRit2Status.klaar) {
+                        console.log('⚡ Status veranderd! Re-rendering...');
+                        renderLijst();
+                    } else {
+                        console.log('✓ Status onveranderd');
+                    }
+                } else if (!oudeStatus && busjeRit2Status) {
+                    console.log('✓ Eerste status geladen');
+                    renderLijst();
+                }
+            }, 30000); // 30 seconden
+        }
+
+        function stopAutoRefresh() {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+                autoRefreshInterval = null;
+                console.log('🛑 Auto-refresh gestopt');
             }
         }
 
