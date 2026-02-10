@@ -145,34 +145,42 @@
 </head>
 <body>
     <div class="container">
+        <!-- Login Screen -->
         <div id="loginScreen" class="login-screen">
             <h2>🌳 PM Ophaallijst</h2>
             <div class="form-group">
-                <label>Selecteer je naam:</label>
-                <select id="pmSelect"><option value="">-- Kies PM --</option></select>
+                <label for="pmSelect">Selecteer je naam:</label>
+                <select id="pmSelect">
+                    <option value="">-- Kies PM --</option>
+                </select>
             </div>
             <div class="form-group">
-                <label>Datum:</label>
+                <label for="datumInput">Datum:</label>
                 <input type="date" id="datumInput">
             </div>
             <button class="btn" id="loginBtn" disabled>Ophaallijst Laden</button>
         </div>
 
+        <!-- Rit Selectie Screen -->
         <div id="ritSelectieScreen" class="rit-selectie-screen">
             <h2>Selecteer een rit</h2>
             <p style="text-align:center;color:#666;margin-bottom:20px;">Je hebt meerdere ritten vandaag</p>
             <div id="rittenLijst"></div>
-            <button class="btn" onclick="window.location.reload()" style="margin-top:20px;">← Terug naar login</button>
+            <button class="btn" id="terugNaarLogin" style="margin-top:20px;">← Terug naar login</button>
         </div>
 
+        <!-- Lijst Screen -->
         <div id="lijstScreen" class="lijst-screen">
             <div class="header">
                 <h1 id="pmNaam">PM Naam</h1>
                 <div class="date" id="datumText">Datum</div>
-                <button class="terug-btn" onclick="window.location.reload()">← Terug</button>
+                <button class="terug-btn" id="logoutBtn">← Terug</button>
             </div>
             <div id="lijstContent">
-                <div class="loading"><div class="spinner"></div><div>Ophaallijst laden...</div></div>
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <div>Ophaallijst laden...</div>
+                </div>
             </div>
         </div>
     </div>
@@ -181,7 +189,8 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getDatabase, ref, get, update } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
-        const app = initializeApp({
+        // Firebase Config
+        const firebaseConfig = {
             apiKey: "AIzaSyAo65QoOD-Lj-UEJJlBjSIX1-BWZEIhw1o",
             authDomain: "boomhut-vervoer.firebaseapp.com",
             databaseURL: "https://boomhut-vervoer-default-rtdb.europe-west1.firebasedatabase.app",
@@ -189,57 +198,129 @@
             storageBucket: "boomhut-vervoer.firebasestorage.app",
             messagingSenderId: "350002772602",
             appId: "1:350002772602:web:f252856892a9547c3bd9c3"
-        });
+        };
+
+        const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        let currentPM, currentDatum, currentVervoer, kinderenData = [], alleRitten = [];
+        // State
+        let currentPM = null;
+        let currentDatum = null;
+        let currentVervoer = null;
+        let kinderenData = [];
+        let alleRitten = [];
 
+        // Elements
         const loginScreen = document.getElementById('loginScreen');
         const ritSelectieScreen = document.getElementById('ritSelectieScreen');
         const lijstScreen = document.getElementById('lijstScreen');
+        const pmSelect = document.getElementById('pmSelect');
+        const datumInput = document.getElementById('datumInput');
+        const loginBtn = document.getElementById('loginBtn');
+        const terugNaarLogin = document.getElementById('terugNaarLogin');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const rittenLijst = document.getElementById('rittenLijst');
+        const lijstContent = document.getElementById('lijstContent');
+        const pmNaamEl = document.getElementById('pmNaam');
+        const datumTextEl = document.getElementById('datumText');
 
-        document.getElementById('datumInput').valueAsDate = new Date();
+        // Set datum to today
+        datumInput.valueAsDate = new Date();
 
-        // Load PMs
-        (async () => {
-            const snap = await get(ref(db, 'pedagogisch_medewerkers'));
-            if (snap.exists()) {
+        // Load PMs from Firebase
+        async function loadPMs() {
+            console.log('📋 Loading PMs from Firebase...');
+            try {
+                const snapshot = await get(ref(db, 'pedagogisch_medewerkers'));
+                if (!snapshot.exists()) {
+                    console.warn('⚠️ No PMs found in Firebase');
+                    return;
+                }
+
                 const pms = [];
-                snap.forEach(c => pms.push({ id: c.key, naam: c.val().naam }));
-                pms.sort((a,b) => a.naam.localeCompare(b.naam));
-                pms.forEach(pm => {
-                    const opt = document.createElement('option');
-                    opt.value = pm.id;
-                    opt.textContent = pm.naam;
-                    pmSelect.appendChild(opt);
+                snapshot.forEach(child => {
+                    const data = child.val();
+                    pms.push({
+                        id: child.key,
+                        naam: data.naam || 'Onbekend'
+                    });
                 });
+
+                console.log(`✅ Loaded ${pms.length} PMs:`, pms.map(p => p.naam));
+
+                // Sort alphabetically
+                pms.sort((a, b) => a.naam.localeCompare(b.naam));
+
+                // Add to dropdown
+                pms.forEach(pm => {
+                    const option = document.createElement('option');
+                    option.value = pm.id;
+                    option.textContent = pm.naam;
+                    pmSelect.appendChild(option);
+                });
+
+                console.log('✅ PMs added to dropdown');
+            } catch (error) {
+                console.error('❌ Error loading PMs:', error);
             }
-        })();
+        }
 
-        pmSelect.addEventListener('change', () => loginBtn.disabled = !pmSelect.value || !datumInput.value);
-        datumInput.addEventListener('change', () => loginBtn.disabled = !pmSelect.value || !datumInput.value);
+        // Enable login button when both fields filled
+        pmSelect.addEventListener('change', () => {
+            loginBtn.disabled = !pmSelect.value || !datumInput.value;
+        });
 
+        datumInput.addEventListener('change', () => {
+            loginBtn.disabled = !pmSelect.value || !datumInput.value;
+        });
+
+        // Login button click
         loginBtn.addEventListener('click', async () => {
-            currentPM = { id: pmSelect.value, naam: pmSelect.options[pmSelect.selectedIndex].text };
+            currentPM = {
+                id: pmSelect.value,
+                naam: pmSelect.options[pmSelect.selectedIndex].text
+            };
             currentDatum = datumInput.value;
+            
+            console.log('🔐 Login:', currentPM.naam, currentDatum);
+            
             await findAlleRitten();
         });
 
+        // Terug naar login
+        terugNaarLogin.addEventListener('click', () => {
+            window.location.reload();
+        });
+
+        // Logout button
+        logoutBtn.addEventListener('click', () => {
+            window.location.reload();
+        });
+
+        // Find all ritten for PM
         async function findAlleRitten() {
+            console.log('🔍 Finding ritten for PM:', currentPM.naam);
+            
             const datumKey = currentDatum.replace(/-/g, '_');
-            const snap = await get(ref(db, `vervoer_verdeling/${datumKey}`));
-            if (!snap.exists()) {
+            const snapshot = await get(ref(db, `vervoer_verdeling/${datumKey}`));
+            
+            if (!snapshot.exists()) {
                 alert('Geen ophaallijst gevonden voor deze datum');
                 return;
             }
 
             alleRitten = [];
-            snap.forEach(child => {
+            snapshot.forEach(child => {
                 const data = child.val();
                 if (data.pmId === currentPM.id) {
-                    alleRitten.push({ key: child.key, ...data });
+                    alleRitten.push({
+                        key: child.key,
+                        ...data
+                    });
                 }
             });
+
+            console.log(`✅ Found ${alleRitten.length} rit(ten)`);
 
             if (alleRitten.length === 0) {
                 alert('Geen vervoer toegewezen');
@@ -247,58 +328,76 @@
             }
 
             if (alleRitten.length === 1) {
+                // Direct laden
                 currentVervoer = alleRitten[0];
                 await loadOphaallijst();
             } else {
+                // Toon rit-selectie
                 toonRitSelectie();
             }
         }
 
+        // Toon rit-selectie scherm
         function toonRitSelectie() {
+            console.log('🚲 Showing rit selection screen');
+            
             loginScreen.classList.add('hidden');
             ritSelectieScreen.style.display = 'block';
 
             let html = '';
-            alleRitten.forEach((rit, i) => {
+            alleRitten.forEach((rit, index) => {
                 const aantal = (rit.kindIds || []).length;
+                const icon = rit.vervoerIcon || '🚲';
+                
                 html += `
-                    <div class="rit-card" onclick="selectRit(${i})">
-                        <h3><span>🚲</span>${rit.vervoerNaam || 'Rit ' + (i+1)}</h3>
+                    <div class="rit-card" onclick="selectRit(${index})">
+                        <h3><span>${icon}</span> ${rit.vervoerNaam || 'Rit ' + (index + 1)}</h3>
                         <div class="info">${aantal} ${aantal === 1 ? 'kind' : 'kinderen'}</div>
                     </div>
                 `;
             });
+            
             rittenLijst.innerHTML = html;
         }
 
+        // Selecteer een rit
         window.selectRit = async (index) => {
+            console.log('✅ Selected rit:', index);
             currentVervoer = alleRitten[index];
             await loadOphaallijst();
         };
 
+        // Load ophaallijst
         async function loadOphaallijst() {
+            console.log('📦 Loading ophaallijst...');
+            
             loginScreen.classList.add('hidden');
             ritSelectieScreen.style.display = 'none';
             lijstScreen.style.display = 'block';
 
-            pmNaam.textContent = `Ophaallijst - ${currentPM.naam}`;
-            datumText.textContent = formatDatum(currentDatum);
+            pmNaamEl.textContent = `Ophaallijst - ${currentPM.naam}`;
+            datumTextEl.textContent = formatDatum(currentDatum);
 
-            console.log('📦 Vervoer:', currentVervoer);
+            console.log('📊 Vervoer data:', currentVervoer);
             console.log('📊 ophaal_volgorde:', currentVervoer.ophaal_volgorde);
 
             await loadKinderen();
             renderLijst();
         }
 
+        // Load kinderen
         async function loadKinderen() {
+            console.log('👶 Loading kinderen...');
+            
             const datumKey = currentDatum.replace(/-/g, '_');
             kinderenData = [];
 
             if (currentVervoer.ophaal_volgorde && Array.isArray(currentVervoer.ophaal_volgorde)) {
-                console.log('✅ ophaal_volgorde GEVONDEN!');
+                console.log('✅ ophaal_volgorde FOUND!');
+                
                 for (const item of currentVervoer.ophaal_volgorde) {
                     let kindData = null;
+                    
                     if (item.is_piratenskip) {
                         const snap = await get(ref(db, `piratenskip_kinderen/${item.kindId}`));
                         if (snap.exists()) kindData = snap.val();
@@ -306,21 +405,30 @@
                         const snap = await get(ref(db, `kinderen_per_dag/${datumKey}/${item.kindId}`));
                         if (snap.exists()) kindData = snap.val();
                     }
+                    
                     if (kindData) {
                         kinderenData.push({
                             id: item.kindId,
-                            naam: kindData.naam || item.naam,
+                            naam: kindData.naam || item.naam || 'Onbekend',
                             leeftijd: kindData.leeftijd || 0,
-                            afgevinkt: item.is_piratenskip ? (kindData.afgeleverd || false) : (kindData.afgevinkt || false),
+                            afgevinkt: item.is_piratenskip 
+                                ? (kindData.afgeleverd || false) 
+                                : (kindData.afgevinkt || false),
                             ophaal_volgorde: item.ophaal_volgorde || 999,
                             is_piratenskip: item.is_piratenskip || false
                         });
                     }
                 }
-                console.log('📋 Kinderen:', kinderenData.length);
-                kinderenData.forEach(k => console.log(`   ${k.naam}: ${k.ophaal_volgorde}`));
+                
+                console.log(`📋 Loaded ${kinderenData.length} kinderen with ophaal_volgorde`);
+                kinderenData.forEach(k => {
+                    console.log(`   ${k.naam}: volgorde ${k.ophaal_volgorde}`);
+                });
+                
             } else {
-                console.warn('⚠️ GEEN ophaal_volgorde!');
+                console.warn('⚠️ NO ophaal_volgorde array!');
+                
+                // Fallback: load via kindIds
                 const kindIds = currentVervoer.kindIds || [];
                 for (const kindId of kindIds) {
                     const snap = await get(ref(db, `kinderen_per_dag/${datumKey}/${kindId}`));
@@ -328,7 +436,7 @@
                         const data = snap.val();
                         kinderenData.push({
                             id: kindId,
-                            naam: data.naam,
+                            naam: data.naam || 'Onbekend',
                             leeftijd: data.leeftijd || 0,
                             afgevinkt: data.afgevinkt || false,
                             ophaal_volgorde: 999,
@@ -336,23 +444,35 @@
                         });
                     }
                 }
+                
+                console.log(`📋 Loaded ${kinderenData.length} kinderen (fallback via kindIds)`);
             }
-            kinderenData.sort((a,b) => a.ophaal_volgorde - b.ophaal_volgorde);
+
+            // Sort by ophaal_volgorde
+            kinderenData.sort((a, b) => a.ophaal_volgorde - b.ophaal_volgorde);
         }
 
+        // Render lijst
         function renderLijst() {
+            console.log('🎨 Rendering lijst...');
+            
             const totaal = kinderenData.length;
             const afgevinkt = kinderenData.filter(k => k.afgevinkt).length;
+
             let html = `
                 <div class="lijst-content">
                     <div class="vervoer-badge">
                         ${currentVervoer.vervoerIcon || '🚲'} ${currentVervoer.vervoerNaam || 'Vervoer'} - ${afgevinkt}/${totaal}
                     </div>
             `;
+
             kinderenData.forEach(kind => {
                 const klass = kind.afgevinkt ? 'afgevinkt' : '';
-                const status = kind.afgevinkt ? (kind.is_piratenskip ? 'Afgeleverd' : 'Opgehaald') : '';
+                const status = kind.afgevinkt 
+                    ? (kind.is_piratenskip ? 'Afgeleverd' : 'Opgehaald') 
+                    : '';
                 const emoji = kind.is_piratenskip ? ' 🏴‍☠️' : '';
+
                 html += `
                     <div class="kind-card ${klass}" data-id="${kind.id}">
                         <div class="checkbox"></div>
@@ -365,38 +485,58 @@
                     </div>
                 `;
             });
+
             html += `</div>`;
             lijstContent.innerHTML = html;
 
+            // Add click handlers
             document.querySelectorAll('.kind-card').forEach(card => {
-                card.addEventListener('click', () => toggleAfgevinkt(card.dataset.id));
+                card.addEventListener('click', () => {
+                    toggleAfgevinkt(card.dataset.id);
+                });
             });
+            
+            console.log('✅ Lijst rendered!');
         }
 
+        // Toggle afgevinkt
         async function toggleAfgevinkt(kindId) {
             const kind = kinderenData.find(k => k.id === kindId);
             if (!kind) return;
+
             kind.afgevinkt = !kind.afgevinkt;
             renderLijst();
+
             try {
                 if (kind.is_piratenskip) {
-                    await update(ref(db, `piratenskip_kinderen/${kindId}`), { afgeleverd: kind.afgevinkt });
+                    await update(ref(db, `piratenskip_kinderen/${kindId}`), {
+                        afgeleverd: kind.afgevinkt
+                    });
                 } else {
                     const datumKey = currentDatum.replace(/-/g, '_');
-                    await update(ref(db, `kinderen_per_dag/${datumKey}/${kindId}`), { afgevinkt: kind.afgevinkt });
+                    await update(ref(db, `kinderen_per_dag/${datumKey}/${kindId}`), {
+                        afgevinkt: kind.afgevinkt
+                    });
                 }
+                console.log('✅ Updated Firebase:', kindId, kind.afgevinkt);
             } catch (error) {
+                console.error('❌ Error updating Firebase:', error);
                 kind.afgevinkt = !kind.afgevinkt;
                 renderLijst();
             }
         }
 
+        // Format datum
         function formatDatum(datum) {
             const date = new Date(datum);
             const dagen = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
             const maanden = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'];
             return `${dagen[date.getDay()]} ${date.getDate()} ${maanden[date.getMonth()]} ${date.getFullYear()}`;
         }
+
+        // Initialize
+        console.log('🚀 Webapp starting...');
+        loadPMs();
     </script>
 </body>
 </html>
