@@ -821,12 +821,12 @@
 
         function getVervoerIcon(vervoer) {
             const icon = vervoer.vervoerIcon || '🚲';
-            const naam = vervoer.vervoerNaam || '';
             
-            // Als het een PNG icon is, gebruik echte icons voor Stint, anders emoji
             if (icon.includes('assets/') || icon.includes('.png')) {
+                const naam = vervoer.vervoerNaam || '';
                 if (naam.includes('Stint')) {
-                    return '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAIAAABvFaqvAAABCGlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGA8wQAELAYMDLl5JUVB7k4KEZFRCuwPGBiBEAwSk4sLGHADoKpv1yBqL+viUYcLcKakFicD6Q9ArFIEtBxopAiQLZIOYWuA2EkQtg2IXV5SUAJkB4DYRSFBzkB2CpCtkY7ETkJiJxcUgdT3ANk2uTmlyQh3M/Ck5oUGA2kOIJZhKGYIYnBncAL5H6IkfxEDg8VXBgbmCQixpJkMDNtbGRgkbiHEVBYwMPC3MDBsO48QQ4RJQWJRIliIBYiZ0tIYGD4tZ2DgjWRgEL7AwMAVDQsIHG5TALvNnSEfCNMZchhSgSKeDHkMyQx6QJYRgwGDIYMZAKbWPz9HbOBQAAAD8UlEQVR42o2Vy48UVRTGv3NvVXd199DzAmaUYGZwMCoMKiQ+QzTRRBKJIcI/4totOxL/BzUu1ZUJCxdGE5z4iGaIjkGMMIwy8pBpYGZ6eqq6HvfxuShouk0bvYuq1Knc3z3nq1PfEe89ekuEgMJ/L0cIKH2RoP+1AAJ0Cp9aEiDpCU94wBNlxBGjFZmqB4CQHA6y3p+7nv2ybmLDrkVsmFgfF4wtM8vMMjW0RCg4Phudfq5ZUVIej14dJERk4UZ2vlU4QkREiVailQq0hEoCJZZCEa3EUz74tfvuYkeJ9HJSAAgoJeup/fmuiQJxFAchQQCgkArMLD0h5ZngdF1/upJd3TJaiWcPRAD4K3GxgaEYwnnvSChNFSCsJgyNqioVKACeAJQgNby4bso8BjTKHHIHrcQ4Z8IRe2clba/nE7Nx6ybDpo0TU2macERXatrm5f7MDRPbE5mjUt5KGLeuB3dW90myy+aq0Rmf8qu/r5y/cGlk5sBSPp49ckTD8r7M/wRZMi0zordhY3tj/Vp7M6kf6Xx/lgfmjgaTzz/95MvHjn/x1TcfpnG10YCY/i/+oPucR2aZOWaFkfHdrdWVy4tfZ7VJq8Ki+dBKx3vvgx0jBx/bt9O1DZT0NdEAyBKJReaQeWltJElzb/PQK1Lb4bKu1upqFm5uJ7R+LNLzE5IXVtTALxD0ZLceSeHCWmNt4ZPb357lnoN0RfHRGbRv6c/f215vrT2xe/mnxdbVK0FSUY0mggaHa+S5bVh0bdyYqr5wSj9+lJ71IqMo5nHdFD8qvXyx2+DUH2lQqdsUAg4DGc927saDgnmc75iui+iogahBAmO7lQqKogjrQWTaXL0pQQgQ/5IRrIO1Tpa/q1bHODMvYeiLHCpw25t5vKFGpysBNu/eLqBrYZWFh8gQEEkLnW219Y3LTe02fpu3u2ak2oDI1sLHeu0SDp+IXj9pb115+NpSPPmWSLW/tj4QYJ1zlbrSYVrk8dKX+vAbamKPy7Na+9q0Wbu58P6f13+Y29lMm48yjCR3w0sj4OhRraXH3hFvo/0viUnhrI6a4fI5ub0Uzb26NfvihZmnZGSiQsNBkR6AIi0Cgcmw9xAFiO9SFACkneKZE2tBxMNv1nfNoNuGzaFEAZEe1Kh8OjgZ1ANxgLIpCahABASEVsam/Gtvqzxh5w6UFhGSjUDmJ8MBY1MC57lvtHJqLmol3otAqV6XUMTTotuGd1S6FGGty5P7azOjofNUAgBSmn+5p3A8s9j5bDU3pKBMRwiK4P4FQoQKx2erp58dDVUZ6wOVI6QMrXVtp+DwWSJCsnnP/O9ZaHkbAJWupOX/jSPp+RFB/A0ZkEoCxDczCwAAAABJRU5ErkJggg==" style="width:20px;height:20px;vertical-align:middle;margin-right:4px;"/>';
+                    // Direct inline SVG (geen img tag!)
+                    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" style="vertical-align:middle;margin-right:4px;"><rect x="2" y="10" width="20" height="8" rx="2" fill="#4A90E2"/><circle cx="7" cy="18" r="2" fill="#333"/><circle cx="17" cy="18" r="2" fill="#333"/><rect x="8" y="6" width="8" height="4" rx="1" fill="#4A90E2"/><path d="M10 6 L10 10 M14 6 L14 10" stroke="#fff" stroke-width="1.5"/></svg>';
                 }
                 if (naam.includes('Busje')) return '🚐';
                 if (naam.includes('Taxi')) return '🚕';
