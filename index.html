@@ -59,6 +59,9 @@
             margin-top: 10px;
         }
         .btn:disabled { background: #ccc; cursor: not-allowed; }
+        .btn-secondary {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+        }
         .rit-card {
             background: white;
             border: 2px solid #e0e0e0;
@@ -72,7 +75,7 @@
         .rit-card h3 { font-size: 20px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
         .rit-card .info { color: #666; font-size: 15px; }
         .lijst-screen { display: none; }
-        .lijst-content { padding: 20px; }
+        .lijst-content { padding: 20px; padding-bottom: 120px; }
         .vervoer-badge { background: #f0f0f0; padding: 15px; border-radius: 12px; margin-bottom: 20px; font-weight: 600; }
         .wacht-waarschuwing {
             background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
@@ -85,18 +88,15 @@
             box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
             border: 3px solid #F57C00;
         }
-        .wacht-waarschuwing .icon {
-            font-size: 32px;
-            margin-bottom: 10px;
+        .wacht-waarschuwing.klaar {
+            background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
+            border-color: #388E3C;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
         }
-        .wacht-waarschuwing .title {
-            font-size: 20px;
-            margin-bottom: 8px;
-        }
-        .wacht-waarschuwing .message {
-            font-size: 16px;
-            opacity: 0.95;
-        }
+        .wacht-waarschuwing .icon { font-size: 32px; margin-bottom: 10px; }
+        .wacht-waarschuwing .title { font-size: 20px; margin-bottom: 8px; }
+        .wacht-waarschuwing .message { font-size: 16px; opacity: 0.95; }
+        .wacht-waarschuwing .progress { font-size: 14px; opacity: 0.9; margin-top: 5px; }
         .kind-card {
             background: white;
             border: 2px solid #e0e0e0;
@@ -150,6 +150,18 @@
             border-radius: 12px;
             font-size: 12px;
             font-weight: bold;
+        }
+        .bottom-actions {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 16px;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+            z-index: 10;
         }
         .loading { text-align: center; padding: 60px 20px; }
         .spinner {
@@ -208,6 +220,9 @@
                     <div>Ophaallijst laden...</div>
                 </div>
             </div>
+            <div class="bottom-actions hidden" id="bottomActions">
+                <button class="btn btn-secondary" id="vinkAllesAfBtn">✓ Vink alle kinderen af</button>
+            </div>
         </div>
     </div>
 
@@ -235,6 +250,7 @@
         let currentVervoer = null;
         let kinderenData = [];
         let alleRitten = [];
+        let busjeRit2Status = null;
 
         // Elements
         const loginScreen = document.getElementById('loginScreen');
@@ -249,6 +265,8 @@
         const lijstContent = document.getElementById('lijstContent');
         const pmNaamEl = document.getElementById('pmNaam');
         const datumTextEl = document.getElementById('datumText');
+        const bottomActions = document.getElementById('bottomActions');
+        const vinkAllesAfBtn = document.getElementById('vinkAllesAfBtn');
 
         // Set datum to today
         datumInput.valueAsDate = new Date();
@@ -274,10 +292,8 @@
 
                 console.log(`✅ Loaded ${pms.length} PMs:`, pms.map(p => p.naam));
 
-                // Sort alphabetically
                 pms.sort((a, b) => a.naam.localeCompare(b.naam));
 
-                // Add to dropdown
                 pms.forEach(pm => {
                     const option = document.createElement('option');
                     option.value = pm.id;
@@ -291,7 +307,6 @@
             }
         }
 
-        // Enable login button when both fields filled
         pmSelect.addEventListener('change', () => {
             loginBtn.disabled = !pmSelect.value || !datumInput.value;
         });
@@ -300,7 +315,6 @@
             loginBtn.disabled = !pmSelect.value || !datumInput.value;
         });
 
-        // Login button click
         loginBtn.addEventListener('click', async () => {
             currentPM = {
                 id: pmSelect.value,
@@ -313,17 +327,14 @@
             await findAlleRitten();
         });
 
-        // Terug naar login
         terugNaarLogin.addEventListener('click', () => {
             window.location.reload();
         });
 
-        // Logout button
         logoutBtn.addEventListener('click', () => {
             window.location.reload();
         });
 
-        // Find all ritten for PM
         async function findAlleRitten() {
             console.log('🔍 Finding ritten for PM:', currentPM.naam);
             
@@ -354,16 +365,13 @@
             }
 
             if (alleRitten.length === 1) {
-                // Direct laden
                 currentVervoer = alleRitten[0];
                 await loadOphaallijst();
             } else {
-                // Toon rit-selectie
                 toonRitSelectie();
             }
         }
 
-        // Toon rit-selectie scherm
         function toonRitSelectie() {
             console.log('🚲 Showing rit selection screen');
             
@@ -386,14 +394,12 @@
             rittenLijst.innerHTML = html;
         }
 
-        // Selecteer een rit
         window.selectRit = async (index) => {
             console.log('✅ Selected rit:', index);
             currentVervoer = alleRitten[index];
             await loadOphaallijst();
         };
 
-        // Load ophaallijst
         async function loadOphaallijst() {
             console.log('📦 Loading ophaallijst...');
             
@@ -409,10 +415,14 @@
             console.log('🚏 wachtVoorBusjeRit2:', currentVervoer.wachtVoorBusjeRit2);
 
             await loadKinderen();
+            
+            if (currentVervoer.wachtVoorBusjeRit2) {
+                await checkBusjeRit2Status();
+            }
+            
             renderLijst();
         }
 
-        // Load kinderen
         async function loadKinderen() {
             console.log('👶 Loading kinderen...');
             
@@ -448,14 +458,9 @@
                 }
                 
                 console.log(`📋 Loaded ${kinderenData.length} kinderen with ophaal_volgorde`);
-                kinderenData.forEach(k => {
-                    console.log(`   ${k.naam}: volgorde ${k.ophaal_volgorde}`);
-                });
                 
             } else {
                 console.warn('⚠️ NO ophaal_volgorde array!');
-                
-                // Fallback: load via kindIds
                 const kindIds = currentVervoer.kindIds || [];
                 for (const kindId of kindIds) {
                     const snap = await get(ref(db, `kinderen_per_dag/${datumKey}/${kindId}`));
@@ -475,11 +480,52 @@
                 console.log(`📋 Loaded ${kinderenData.length} kinderen (fallback via kindIds)`);
             }
 
-            // Sort by ophaal_volgorde
             kinderenData.sort((a, b) => a.ophaal_volgorde - b.ophaal_volgorde);
         }
 
-        // Render lijst
+        async function checkBusjeRit2Status() {
+            console.log('🚐 Checking Busje Rit 2 status...');
+            
+            busjeRit2Status = null;
+
+            try {
+                const datumKey = currentDatum.replace(/-/g, '_');
+                const snapshot = await get(ref(db, `vervoer_verdeling/${datumKey}`));
+                
+                if (!snapshot.exists()) return;
+
+                snapshot.forEach(child => {
+                    const data = child.val();
+                    if (data.vervoerNaam && data.vervoerNaam.includes('Busje - Rit 2')) {
+                        console.log('🚐 Found Busje Rit 2:', data);
+                        
+                        let afgevinkt = 0;
+                        let totaal = 0;
+                        
+                        if (data.ophaal_volgorde && Array.isArray(data.ophaal_volgorde)) {
+                            totaal = data.ophaal_volgorde.length;
+                            
+                            data.ophaal_volgorde.forEach(item => {
+                                if (item.afgevinkt) afgevinkt++;
+                            });
+                        } else {
+                            totaal = (data.kindIds || []).length;
+                        }
+                        
+                        busjeRit2Status = {
+                            totaal: totaal,
+                            afgevinkt: afgevinkt,
+                            klaar: afgevinkt === totaal && totaal > 0
+                        };
+                        
+                        console.log('🚐 Busje Rit 2 status:', busjeRit2Status);
+                    }
+                });
+            } catch (error) {
+                console.error('❌ Error checking Busje Rit 2:', error);
+            }
+        }
+
         function renderLijst() {
             console.log('🎨 Rendering lijst...');
             
@@ -494,9 +540,29 @@
                     </div>
             `;
 
-            // Toon waarschuwing als stint moet wachten
-            if (moetWachten) {
-                console.log('🚏 WAARSCHUWING: Stint moet wachten op schoolplein!');
+            if (moetWachten && busjeRit2Status) {
+                if (busjeRit2Status.klaar) {
+                    console.log('✅ Busje Rit 2 KLAAR! Stint mag gaan!');
+                    html += `
+                        <div class="wacht-waarschuwing klaar">
+                            <div class="icon">✅</div>
+                            <div class="title">Busje Rit 2 klaar! Je kunt nu gaan!</div>
+                            <div class="message">Alle kinderen zijn opgehaald, je mag vertrekken</div>
+                        </div>
+                    `;
+                } else {
+                    console.log('🚏 WAARSCHUWING: Stint moet wachten!');
+                    html += `
+                        <div class="wacht-waarschuwing">
+                            <div class="icon">🚏</div>
+                            <div class="title">⚠️ LET OP: Wacht op schoolplein!</div>
+                            <div class="message">Busje Rit 2 is nog kinderen aan het ophalen</div>
+                            <div class="progress">(${busjeRit2Status.afgevinkt}/${busjeRit2Status.totaal} kinderen opgehaald)</div>
+                        </div>
+                    `;
+                }
+            } else if (moetWachten) {
+                console.log('🚏 WAARSCHUWING: Stint moet wachten (geen status)');
                 html += `
                     <div class="wacht-waarschuwing">
                         <div class="icon">🚏</div>
@@ -530,17 +596,18 @@
             html += `</div>`;
             lijstContent.innerHTML = html;
 
-            // Add click handlers
             document.querySelectorAll('.kind-card').forEach(card => {
                 card.addEventListener('click', () => {
                     toggleAfgevinkt(card.dataset.id);
                 });
             });
             
+            // Show bottom actions
+            bottomActions.classList.remove('hidden');
+            
             console.log('✅ Lijst rendered!');
         }
 
-        // Toggle afgevinkt
         async function toggleAfgevinkt(kindId) {
             const kind = kinderenData.find(k => k.id === kindId);
             if (!kind) return;
@@ -567,7 +634,51 @@
             }
         }
 
-        // Format datum
+        // Vink alle kinderen af
+        vinkAllesAfBtn.addEventListener('click', async () => {
+            console.log('✓ Vink alle kinderen af...');
+            
+            vinkAllesAfBtn.disabled = true;
+            vinkAllesAfBtn.textContent = '⏳ Bezig met afvinken...';
+            
+            try {
+                const datumKey = currentDatum.replace(/-/g, '_');
+                
+                for (const kind of kinderenData) {
+                    if (!kind.afgevinkt) {
+                        kind.afgevinkt = true;
+                        
+                        if (kind.is_piratenskip) {
+                            await update(ref(db, `piratenskip_kinderen/${kind.id}`), {
+                                afgeleverd: true
+                            });
+                        } else {
+                            await update(ref(db, `kinderen_per_dag/${datumKey}/${kind.id}`), {
+                                afgevinkt: true
+                            });
+                        }
+                    }
+                }
+                
+                console.log('✅ Alle kinderen afgevinkt!');
+                renderLijst();
+                
+                vinkAllesAfBtn.textContent = '✓ Alle kinderen afgevinkt!';
+                setTimeout(() => {
+                    vinkAllesAfBtn.textContent = '✓ Vink alle kinderen af';
+                    vinkAllesAfBtn.disabled = false;
+                }, 2000);
+                
+            } catch (error) {
+                console.error('❌ Error:', error);
+                vinkAllesAfBtn.textContent = '❌ Fout opgetreden';
+                setTimeout(() => {
+                    vinkAllesAfBtn.textContent = '✓ Vink alle kinderen af';
+                    vinkAllesAfBtn.disabled = false;
+                }, 2000);
+            }
+        });
+
         function formatDatum(datum) {
             const date = new Date(datum);
             const dagen = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
@@ -575,11 +686,9 @@
             return `${dagen[date.getDay()]} ${date.getDate()} ${maanden[date.getMonth()]} ${date.getFullYear()}`;
         }
 
-        // Get vervoer icon - use emoji fallback for asset paths
         function getVervoerIcon(vervoer) {
             const icon = vervoer.vervoerIcon || '🚲';
             
-            // If it's an asset path, use emoji fallback
             if (icon.includes('assets/') || icon.includes('.png')) {
                 const naam = vervoer.vervoerNaam || '';
                 if (naam.includes('Stint')) return '🛴';
@@ -593,7 +702,6 @@
             return icon;
         }
 
-        // Initialize
         console.log('🚀 Webapp starting...');
         loadPMs();
     </script>
