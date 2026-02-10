@@ -86,6 +86,8 @@
             cursor: pointer;
         }
         .kind-card.afgevinkt { background: #E8F5E9; border-color: #4CAF50; }
+        .kind-card.piratenskip { background: #FFF3E0; border: 3px solid #FF9800; }
+        .kind-card.piratenskip.afgevinkt { background: #E8F5E9; border-color: #FF9800; }
         .checkbox {
             width: 28px;
             height: 28px;
@@ -112,6 +114,7 @@
             font-size: 18px;
             flex-shrink: 0;
         }
+        .kind-card.piratenskip .nummer-badge { background: #FF9800; }
         .kind-card.afgevinkt .nummer-badge { background: #999; }
         .kind-info { flex: 1; }
         .kind-naam { font-weight: bold; font-size: 16px; margin-bottom: 3px; }
@@ -347,7 +350,7 @@
             let html = '';
             alleRitten.forEach((rit, index) => {
                 const aantal = (rit.kindIds || []).length;
-                const icon = rit.vervoerIcon || '🚲';
+                const icon = getVervoerIcon(rit);
                 
                 html += `
                     <div class="rit-card" onclick="selectRit(${index})">
@@ -462,19 +465,20 @@
             let html = `
                 <div class="lijst-content">
                     <div class="vervoer-badge">
-                        ${currentVervoer.vervoerIcon || '🚲'} ${currentVervoer.vervoerNaam || 'Vervoer'} - ${afgevinkt}/${totaal}
+                        ${getVervoerIcon(currentVervoer)} ${currentVervoer.vervoerNaam || 'Vervoer'} - ${afgevinkt}/${totaal}
                     </div>
             `;
 
             kinderenData.forEach(kind => {
                 const klass = kind.afgevinkt ? 'afgevinkt' : '';
+                const piratenskipKlass = kind.is_piratenskip ? 'piratenskip' : '';
                 const status = kind.afgevinkt 
                     ? (kind.is_piratenskip ? 'Afgeleverd' : 'Opgehaald') 
                     : '';
                 const emoji = kind.is_piratenskip ? ' 🏴‍☠️' : '';
 
                 html += `
-                    <div class="kind-card ${klass}" data-id="${kind.id}">
+                    <div class="kind-card ${klass} ${piratenskipKlass}" data-id="${kind.id}">
                         <div class="checkbox"></div>
                         <div class="nummer-badge">${kind.ophaal_volgorde}</div>
                         <div class="kind-info">
@@ -532,6 +536,24 @@
             const dagen = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
             const maanden = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'];
             return `${dagen[date.getDay()]} ${date.getDate()} ${maanden[date.getMonth()]} ${date.getFullYear()}`;
+        }
+
+        // Get vervoer icon - use emoji fallback for asset paths
+        function getVervoerIcon(vervoer) {
+            const icon = vervoer.vervoerIcon || '🚲';
+            
+            // If it's an asset path, use emoji fallback
+            if (icon.includes('assets/') || icon.includes('.png')) {
+                const naam = vervoer.vervoerNaam || '';
+                if (naam.includes('Stint')) return '🛴';
+                if (naam.includes('Busje')) return '🚐';
+                if (naam.includes('Taxi')) return '🚕';
+                if (naam.includes('Fiets')) return '🚲';
+                if (naam.includes('Lopen')) return '🚶';
+                return '🚲';
+            }
+            
+            return icon;
         }
 
         // Initialize
