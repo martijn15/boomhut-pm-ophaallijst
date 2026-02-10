@@ -6,29 +6,19 @@
     <title>PM Ophaallijst</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
             min-height: 100vh;
         }
-        
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            min-height: 100vh;
-        }
-        
+        .container { max-width: 600px; margin: 0 auto; background: white; min-height: 100vh; }
         .header {
             background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
             color: white;
             padding: 20px;
         }
-        
         .header h1 { font-size: 24px; margin-bottom: 5px; }
         .header .date { font-size: 14px; opacity: 0.9; }
-        
         .terug-btn {
             background: rgba(255,255,255,0.2);
             border: 2px solid white;
@@ -40,38 +30,22 @@
             font-size: 16px;
             font-weight: bold;
         }
-        
-        .login-screen {
-            padding: 40px 20px;
-        }
-        
-        .login-screen h2 {
+        .login-screen, .rit-selectie-screen { padding: 40px 20px; }
+        .login-screen h2, .rit-selectie-screen h2 {
             text-align: center;
             color: #4CAF50;
             margin-bottom: 30px;
             font-size: 28px;
         }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-        }
-        
-        .form-group select,
-        .form-group input {
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; }
+        .form-group select, .form-group input {
             width: 100%;
             padding: 12px;
             border: 2px solid #ddd;
             border-radius: 8px;
             font-size: 16px;
         }
-        
         .btn {
             width: 100%;
             padding: 15px;
@@ -84,26 +58,22 @@
             cursor: pointer;
             margin-top: 10px;
         }
-        
-        .btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-        
-        .lijst-screen { display: none; }
-        
-        .lijst-content {
-            padding: 20px;
-        }
-        
-        .vervoer-badge {
-            background: #f0f0f0;
-            padding: 15px;
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
+        .rit-card {
+            background: white;
+            border: 2px solid #e0e0e0;
             border-radius: 12px;
-            margin-bottom: 20px;
-            font-weight: 600;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
         }
-        
+        .rit-card:hover { border-color: #4CAF50; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(76,175,80,0.3); }
+        .rit-card h3 { font-size: 20px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+        .rit-card .info { color: #666; font-size: 15px; }
+        .lijst-screen { display: none; }
+        .lijst-content { padding: 20px; }
+        .vervoer-badge { background: #f0f0f0; padding: 15px; border-radius: 12px; margin-bottom: 20px; font-weight: 600; }
         .kind-card {
             background: white;
             border: 2px solid #e0e0e0;
@@ -115,12 +85,7 @@
             gap: 15px;
             cursor: pointer;
         }
-        
-        .kind-card.afgevinkt {
-            background: #E8F5E9;
-            border-color: #4CAF50;
-        }
-        
+        .kind-card.afgevinkt { background: #E8F5E9; border-color: #4CAF50; }
         .checkbox {
             width: 28px;
             height: 28px;
@@ -131,24 +96,9 @@
             justify-content: center;
             flex-shrink: 0;
         }
-        
-        .kind-card.afgevinkt .checkbox {
-            background: #4CAF50;
-            border-color: #4CAF50;
-        }
-        
-        .checkbox::after {
-            content: '✓';
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            display: none;
-        }
-        
-        .kind-card.afgevinkt .checkbox::after {
-            display: block;
-        }
-        
+        .kind-card.afgevinkt .checkbox { background: #4CAF50; border-color: #4CAF50; }
+        .checkbox::after { content: '✓'; color: white; font-size: 18px; font-weight: bold; display: none; }
+        .kind-card.afgevinkt .checkbox::after { display: block; }
         .nummer-badge {
             width: 40px;
             height: 40px;
@@ -162,31 +112,11 @@
             font-size: 18px;
             flex-shrink: 0;
         }
-        
-        .kind-card.afgevinkt .nummer-badge {
-            background: #999;
-        }
-        
-        .kind-info {
-            flex: 1;
-        }
-        
-        .kind-naam {
-            font-weight: bold;
-            font-size: 16px;
-            margin-bottom: 3px;
-        }
-        
-        .kind-card.afgevinkt .kind-naam {
-            text-decoration: line-through;
-            color: #888;
-        }
-        
-        .kind-details {
-            font-size: 14px;
-            color: #666;
-        }
-        
+        .kind-card.afgevinkt .nummer-badge { background: #999; }
+        .kind-info { flex: 1; }
+        .kind-naam { font-weight: bold; font-size: 16px; margin-bottom: 3px; }
+        .kind-card.afgevinkt .kind-naam { text-decoration: line-through; color: #888; }
+        .kind-details { font-size: 14px; color: #666; }
         .status-badge {
             background: #4CAF50;
             color: white;
@@ -195,12 +125,7 @@
             font-size: 12px;
             font-weight: bold;
         }
-        
-        .loading {
-            text-align: center;
-            padding: 60px 20px;
-        }
-        
+        .loading { text-align: center; padding: 60px 20px; }
         .spinner {
             border: 4px solid #f3f3f3;
             border-top: 4px solid #4CAF50;
@@ -210,49 +135,44 @@
             animation: spin 0.8s linear infinite;
             margin: 0 auto 20px;
         }
-        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
         .hidden { display: none !important; }
+        .rit-selectie-screen { display: none; }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Login Screen -->
         <div id="loginScreen" class="login-screen">
             <h2>🌳 PM Ophaallijst</h2>
-            
             <div class="form-group">
                 <label>Selecteer je naam:</label>
-                <select id="pmSelect">
-                    <option value="">-- Kies PM --</option>
-                </select>
+                <select id="pmSelect"><option value="">-- Kies PM --</option></select>
             </div>
-
             <div class="form-group">
                 <label>Datum:</label>
                 <input type="date" id="datumInput">
             </div>
-
             <button class="btn" id="loginBtn" disabled>Ophaallijst Laden</button>
         </div>
 
-        <!-- Lijst Screen -->
+        <div id="ritSelectieScreen" class="rit-selectie-screen">
+            <h2>Selecteer een rit</h2>
+            <p style="text-align:center;color:#666;margin-bottom:20px;">Je hebt meerdere ritten vandaag</p>
+            <div id="rittenLijst"></div>
+            <button class="btn" onclick="window.location.reload()" style="margin-top:20px;">← Terug naar login</button>
+        </div>
+
         <div id="lijstScreen" class="lijst-screen">
             <div class="header">
                 <h1 id="pmNaam">PM Naam</h1>
                 <div class="date" id="datumText">Datum</div>
-                <button class="terug-btn" id="logoutBtn">← Terug</button>
+                <button class="terug-btn" onclick="window.location.reload()">← Terug</button>
             </div>
-
             <div id="lijstContent">
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <div>Ophaallijst laden...</div>
-                </div>
+                <div class="loading"><div class="spinner"></div><div>Ophaallijst laden...</div></div>
             </div>
         </div>
     </div>
@@ -261,7 +181,7 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getDatabase, ref, get, update } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
-        const firebaseConfig = {
+        const app = initializeApp({
             apiKey: "AIzaSyAo65QoOD-Lj-UEJJlBjSIX1-BWZEIhw1o",
             authDomain: "boomhut-vervoer.firebaseapp.com",
             databaseURL: "https://boomhut-vervoer-default-rtdb.europe-west1.firebasedatabase.app",
@@ -269,182 +189,146 @@
             storageBucket: "boomhut-vervoer.firebasestorage.app",
             messagingSenderId: "350002772602",
             appId: "1:350002772602:web:f252856892a9547c3bd9c3"
-        };
-
-        const app = initializeApp(firebaseConfig);
+        });
         const db = getDatabase(app);
 
-        let currentPM = null;
-        let currentDatum = null;
-        let currentVervoer = null;
-        let kinderenData = [];
+        let currentPM, currentDatum, currentVervoer, kinderenData = [], alleRitten = [];
 
         const loginScreen = document.getElementById('loginScreen');
+        const ritSelectieScreen = document.getElementById('ritSelectieScreen');
         const lijstScreen = document.getElementById('lijstScreen');
-        const pmSelect = document.getElementById('pmSelect');
-        const datumInput = document.getElementById('datumInput');
-        const loginBtn = document.getElementById('loginBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const lijstContent = document.getElementById('lijstContent');
-        const pmNaamEl = document.getElementById('pmNaam');
-        const datumTextEl = document.getElementById('datumText');
 
-        datumInput.valueAsDate = new Date();
+        document.getElementById('datumInput').valueAsDate = new Date();
 
         // Load PMs
-        async function loadPMs() {
-            try {
-                const snapshot = await get(ref(db, 'pedagogisch_medewerkers'));
-                if (snapshot.exists()) {
-                    const pms = [];
-                    snapshot.forEach(child => {
-                        pms.push({
-                            id: child.key,
-                            naam: child.val().naam || 'Onbekend'
-                        });
-                    });
-                    pms.sort((a, b) => a.naam.localeCompare(b.naam));
-                    pms.forEach(pm => {
-                        const option = document.createElement('option');
-                        option.value = pm.id;
-                        option.textContent = pm.naam;
-                        pmSelect.appendChild(option);
-                    });
-                }
-            } catch (error) {
-                console.error('Error loading PMs:', error);
-            }
-        }
-
-        pmSelect.addEventListener('change', () => {
-            loginBtn.disabled = !pmSelect.value || !datumInput.value;
-        });
-        
-        datumInput.addEventListener('change', () => {
-            loginBtn.disabled = !pmSelect.value || !datumInput.value;
-        });
-
-        // Login
-        loginBtn.addEventListener('click', async () => {
-            currentPM = {
-                id: pmSelect.value,
-                naam: pmSelect.options[pmSelect.selectedIndex].text
-            };
-            currentDatum = datumInput.value;
-            await loadOphaallijst();
-        });
-
-        // Logout - SUPER SIMPEL!
-        logoutBtn.addEventListener('click', () => {
-            window.location.reload();
-        });
-
-        // Load Ophaallijst
-        async function loadOphaallijst() {
-            try {
-                loginScreen.classList.add('hidden');
-                lijstScreen.style.display = 'block';
-
-                pmNaamEl.textContent = `Ophaallijst - ${currentPM.naam}`;
-                datumTextEl.textContent = formatDatum(currentDatum);
-
-                const datumKey = currentDatum.replace(/-/g, '_');
-                const vervoerSnapshot = await get(ref(db, `vervoer_verdeling/${datumKey}`));
-
-                if (!vervoerSnapshot.exists()) {
-                    lijstContent.innerHTML = '<div style="padding:40px;text-align:center;">Geen ophaallijst gevonden</div>';
-                    return;
-                }
-
-                // Find vervoer for this PM
-                let found = null;
-                vervoerSnapshot.forEach(child => {
-                    const data = child.val();
-                    if (data.pmId === currentPM.id) {
-                        found = {
-                            key: child.key,
-                            ...data
-                        };
-                    }
+        (async () => {
+            const snap = await get(ref(db, 'pedagogisch_medewerkers'));
+            if (snap.exists()) {
+                const pms = [];
+                snap.forEach(c => pms.push({ id: c.key, naam: c.val().naam }));
+                pms.sort((a,b) => a.naam.localeCompare(b.naam));
+                pms.forEach(pm => {
+                    const opt = document.createElement('option');
+                    opt.value = pm.id;
+                    opt.textContent = pm.naam;
+                    pmSelect.appendChild(opt);
                 });
+            }
+        })();
 
-                if (!found) {
-                    lijstContent.innerHTML = '<div style="padding:40px;text-align:center;">Geen vervoer toegewezen</div>';
-                    return;
+        pmSelect.addEventListener('change', () => loginBtn.disabled = !pmSelect.value || !datumInput.value);
+        datumInput.addEventListener('change', () => loginBtn.disabled = !pmSelect.value || !datumInput.value);
+
+        loginBtn.addEventListener('click', async () => {
+            currentPM = { id: pmSelect.value, naam: pmSelect.options[pmSelect.selectedIndex].text };
+            currentDatum = datumInput.value;
+            await findAlleRitten();
+        });
+
+        async function findAlleRitten() {
+            const datumKey = currentDatum.replace(/-/g, '_');
+            const snap = await get(ref(db, `vervoer_verdeling/${datumKey}`));
+            if (!snap.exists()) {
+                alert('Geen ophaallijst gevonden voor deze datum');
+                return;
+            }
+
+            alleRitten = [];
+            snap.forEach(child => {
+                const data = child.val();
+                if (data.pmId === currentPM.id) {
+                    alleRitten.push({ key: child.key, ...data });
                 }
+            });
 
-                currentVervoer = found;
-                console.log('📦 Vervoer data:', currentVervoer);
-                console.log('📊 ophaal_volgorde:', currentVervoer.ophaal_volgorde);
+            if (alleRitten.length === 0) {
+                alert('Geen vervoer toegewezen');
+                return;
+            }
 
-                await loadKinderen();
-                renderLijst();
-
-            } catch (error) {
-                console.error('Error:', error);
-                lijstContent.innerHTML = `<div style="padding:40px;text-align:center;color:red;">Fout: ${error.message}</div>`;
+            if (alleRitten.length === 1) {
+                currentVervoer = alleRitten[0];
+                await loadOphaallijst();
+            } else {
+                toonRitSelectie();
             }
         }
 
-        // Load Kinderen
+        function toonRitSelectie() {
+            loginScreen.classList.add('hidden');
+            ritSelectieScreen.style.display = 'block';
+
+            let html = '';
+            alleRitten.forEach((rit, i) => {
+                const aantal = (rit.kindIds || []).length;
+                html += `
+                    <div class="rit-card" onclick="selectRit(${i})">
+                        <h3><span>🚲</span>${rit.vervoerNaam || 'Rit ' + (i+1)}</h3>
+                        <div class="info">${aantal} ${aantal === 1 ? 'kind' : 'kinderen'}</div>
+                    </div>
+                `;
+            });
+            rittenLijst.innerHTML = html;
+        }
+
+        window.selectRit = async (index) => {
+            currentVervoer = alleRitten[index];
+            await loadOphaallijst();
+        };
+
+        async function loadOphaallijst() {
+            loginScreen.classList.add('hidden');
+            ritSelectieScreen.style.display = 'none';
+            lijstScreen.style.display = 'block';
+
+            pmNaam.textContent = `Ophaallijst - ${currentPM.naam}`;
+            datumText.textContent = formatDatum(currentDatum);
+
+            console.log('📦 Vervoer:', currentVervoer);
+            console.log('📊 ophaal_volgorde:', currentVervoer.ophaal_volgorde);
+
+            await loadKinderen();
+            renderLijst();
+        }
+
         async function loadKinderen() {
             const datumKey = currentDatum.replace(/-/g, '_');
             kinderenData = [];
 
-            // Check of er ophaal_volgorde is
             if (currentVervoer.ophaal_volgorde && Array.isArray(currentVervoer.ophaal_volgorde)) {
                 console.log('✅ ophaal_volgorde GEVONDEN!');
-                
-                // Laad kinderen op basis van ophaal_volgorde
                 for (const item of currentVervoer.ophaal_volgorde) {
-                    const kindId = item.kindId;
-                    const volgorde = item.ophaal_volgorde || 999;
-                    
                     let kindData = null;
-                    
-                    // Check of het Piratenskip kind is
                     if (item.is_piratenskip) {
-                        const piratenskipSnap = await get(ref(db, `piratenskip_kinderen/${kindId}`));
-                        if (piratenskipSnap.exists()) {
-                            kindData = piratenskipSnap.val();
-                        }
+                        const snap = await get(ref(db, `piratenskip_kinderen/${item.kindId}`));
+                        if (snap.exists()) kindData = snap.val();
                     } else {
-                        // Regulier kind
-                        const kindSnap = await get(ref(db, `kinderen_per_dag/${datumKey}/${kindId}`));
-                        if (kindSnap.exists()) {
-                            kindData = kindSnap.val();
-                        }
+                        const snap = await get(ref(db, `kinderen_per_dag/${datumKey}/${item.kindId}`));
+                        if (snap.exists()) kindData = snap.val();
                     }
-                    
                     if (kindData) {
                         kinderenData.push({
-                            id: kindId,
-                            naam: kindData.naam || item.naam || 'Onbekend',
+                            id: item.kindId,
+                            naam: kindData.naam || item.naam,
                             leeftijd: kindData.leeftijd || 0,
                             afgevinkt: item.is_piratenskip ? (kindData.afgeleverd || false) : (kindData.afgevinkt || false),
-                            ophaal_volgorde: volgorde,
+                            ophaal_volgorde: item.ophaal_volgorde || 999,
                             is_piratenskip: item.is_piratenskip || false
                         });
                     }
                 }
-                
-                console.log('📋 Kinderen geladen:', kinderenData.length);
-                kinderenData.forEach(k => {
-                    console.log(`   ${k.naam}: volgorde ${k.ophaal_volgorde}`);
-                });
-                
+                console.log('📋 Kinderen:', kinderenData.length);
+                kinderenData.forEach(k => console.log(`   ${k.naam}: ${k.ophaal_volgorde}`));
             } else {
-                console.warn('⚠️ GEEN ophaal_volgorde array!');
-                
-                // Fallback: laad via kindIds
+                console.warn('⚠️ GEEN ophaal_volgorde!');
                 const kindIds = currentVervoer.kindIds || [];
                 for (const kindId of kindIds) {
-                    const kindSnap = await get(ref(db, `kinderen_per_dag/${datumKey}/${kindId}`));
-                    if (kindSnap.exists()) {
-                        const data = kindSnap.val();
+                    const snap = await get(ref(db, `kinderen_per_dag/${datumKey}/${kindId}`));
+                    if (snap.exists()) {
+                        const data = snap.val();
                         kinderenData.push({
                             id: kindId,
-                            naam: data.naam || 'Onbekend',
+                            naam: data.naam,
                             leeftijd: data.leeftijd || 0,
                             afgevinkt: data.afgevinkt || false,
                             ophaal_volgorde: 999,
@@ -453,75 +337,55 @@
                     }
                 }
             }
-
-            // Sorteer op ophaal_volgorde
-            kinderenData.sort((a, b) => a.ophaal_volgorde - b.ophaal_volgorde);
+            kinderenData.sort((a,b) => a.ophaal_volgorde - b.ophaal_volgorde);
         }
 
-        // Render Lijst
         function renderLijst() {
             const totaal = kinderenData.length;
             const afgevinkt = kinderenData.filter(k => k.afgevinkt).length;
-
             let html = `
                 <div class="lijst-content">
                     <div class="vervoer-badge">
-                        🚲 ${currentVervoer.vervoerNaam || 'Vervoer'} - ${afgevinkt}/${totaal} opgehaald
+                        ${currentVervoer.vervoerIcon || '🚲'} ${currentVervoer.vervoerNaam || 'Vervoer'} - ${afgevinkt}/${totaal}
                     </div>
             `;
-
             kinderenData.forEach(kind => {
-                const afgevinktClass = kind.afgevinkt ? 'afgevinkt' : '';
-                const statusText = kind.afgevinkt ? (kind.is_piratenskip ? 'Afgeleverd' : 'Opgehaald') : '';
+                const klass = kind.afgevinkt ? 'afgevinkt' : '';
+                const status = kind.afgevinkt ? (kind.is_piratenskip ? 'Afgeleverd' : 'Opgehaald') : '';
                 const emoji = kind.is_piratenskip ? ' 🏴‍☠️' : '';
-
                 html += `
-                    <div class="kind-card ${afgevinktClass}" data-id="${kind.id}">
+                    <div class="kind-card ${klass}" data-id="${kind.id}">
                         <div class="checkbox"></div>
                         <div class="nummer-badge">${kind.ophaal_volgorde}</div>
                         <div class="kind-info">
                             <div class="kind-naam">${kind.naam}${emoji}</div>
                             <div class="kind-details">${kind.leeftijd} jaar${kind.is_piratenskip ? ' • Pirateskip' : ''}</div>
                         </div>
-                        ${statusText ? `<div class="status-badge">${statusText}</div>` : ''}
+                        ${status ? `<div class="status-badge">${status}</div>` : ''}
                     </div>
                 `;
             });
-
             html += `</div>`;
-
             lijstContent.innerHTML = html;
 
-            // Add click handlers
             document.querySelectorAll('.kind-card').forEach(card => {
-                card.addEventListener('click', () => {
-                    const kindId = card.dataset.id;
-                    toggleAfgevinkt(kindId);
-                });
+                card.addEventListener('click', () => toggleAfgevinkt(card.dataset.id));
             });
         }
 
-        // Toggle Afgevinkt
         async function toggleAfgevinkt(kindId) {
             const kind = kinderenData.find(k => k.id === kindId);
             if (!kind) return;
-
             kind.afgevinkt = !kind.afgevinkt;
             renderLijst();
-
             try {
                 if (kind.is_piratenskip) {
-                    await update(ref(db, `piratenskip_kinderen/${kindId}`), {
-                        afgeleverd: kind.afgevinkt
-                    });
+                    await update(ref(db, `piratenskip_kinderen/${kindId}`), { afgeleverd: kind.afgevinkt });
                 } else {
                     const datumKey = currentDatum.replace(/-/g, '_');
-                    await update(ref(db, `kinderen_per_dag/${datumKey}/${kindId}`), {
-                        afgevinkt: kind.afgevinkt
-                    });
+                    await update(ref(db, `kinderen_per_dag/${datumKey}/${kindId}`), { afgevinkt: kind.afgevinkt });
                 }
             } catch (error) {
-                console.error('Error updating:', error);
                 kind.afgevinkt = !kind.afgevinkt;
                 renderLijst();
             }
@@ -533,8 +397,6 @@
             const maanden = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'];
             return `${dagen[date.getDay()]} ${date.getDate()} ${maanden[date.getMonth()]} ${date.getFullYear()}`;
         }
-
-        loadPMs();
     </script>
 </body>
 </html>
