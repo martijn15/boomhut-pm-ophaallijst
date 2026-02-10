@@ -75,7 +75,7 @@
         .rit-card h3 { font-size: 20px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
         .rit-card .info { color: #666; font-size: 15px; }
         .lijst-screen { display: none; }
-        .lijst-content { padding: 20px; padding-bottom: 120px; }
+        .lijst-content { padding: 20px; padding-bottom: 180px; }
         .vervoer-badge { background: #f0f0f0; padding: 15px; border-radius: 12px; margin-bottom: 20px; font-weight: 600; }
         .wacht-waarschuwing {
             background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
@@ -228,6 +228,7 @@
             </div>
             <div class="bottom-actions hidden" id="bottomActions">
                 <button class="btn btn-secondary" id="vinkAllesAfBtn">✓ Vink alle kinderen af</button>
+                <button class="btn" id="volgendeRitBtn" style="margin-top:12px; display:none;">→ Volgende rit</button>
             </div>
         </div>
     </div>
@@ -274,6 +275,7 @@
         const datumTextEl = document.getElementById('datumText');
         const bottomActions = document.getElementById('bottomActions');
         const vinkAllesAfBtn = document.getElementById('vinkAllesAfBtn');
+        const volgendeRitBtn = document.getElementById('volgendeRitBtn');
 
         // Set datum to today
         datumInput.valueAsDate = new Date();
@@ -693,8 +695,51 @@
             // Show bottom actions
             bottomActions.classList.remove('hidden');
             
+            // Check of er volgende rit is
+            checkVolgendeRit();
+            
             console.log('✅ Lijst rendered!');
         }
+
+        // Check of er een volgende rit is
+        function checkVolgendeRit() {
+            if (alleRitten.length <= 1) {
+                // Geen meerdere ritten
+                volgendeRitBtn.style.display = 'none';
+                return;
+            }
+
+            // Find current rit index
+            const currentIndex = alleRitten.findIndex(r => r.key === currentVervoer.key);
+            
+            if (currentIndex === -1 || currentIndex === alleRitten.length - 1) {
+                // Laatste rit of niet gevonden
+                volgendeRitBtn.style.display = 'none';
+                return;
+            }
+
+            // Er is een volgende rit!
+            const volgendeRit = alleRitten[currentIndex + 1];
+            volgendeRitBtn.textContent = `→ Volgende rit (${volgendeRit.vervoerNaam || 'Rit ' + (currentIndex + 2)})`;
+            volgendeRitBtn.style.display = 'block';
+            
+            console.log('✅ Volgende rit knop getoond:', volgendeRit.vervoerNaam);
+        }
+
+        // Volgende rit knop
+        volgendeRitBtn.addEventListener('click', async () => {
+            console.log('→ Ga naar volgende rit...');
+            
+            const currentIndex = alleRitten.findIndex(r => r.key === currentVervoer.key);
+            if (currentIndex === -1 || currentIndex === alleRitten.length - 1) {
+                return;
+            }
+
+            stopAutoRefresh();
+            
+            currentVervoer = alleRitten[currentIndex + 1];
+            await loadOphaallijst();
+        });
 
         async function toggleAfgevinkt(kindId) {
             const kind = kinderenData.find(k => k.id === kindId);
