@@ -466,6 +466,7 @@
         let busjeRit2Status = null;
         let autoRefreshInterval = null;
         let overstappersVandaag = [];
+        let reinbogeKindIds = [];  // ⭐ NIEUW!
 
         const loginScreen = document.getElementById('loginScreen');
         const ritSelectieScreen = document.getElementById('ritSelectieScreen');
@@ -608,6 +609,7 @@
 
             await loadKinderen();
             await loadOverstappers();
+            await loadReinbogeKinderen();  // ⭐ NIEUW!
             
             if (currentVervoer.wachtVoorBusjeRit2) {
                 await checkBusjeRit2Status();
@@ -634,6 +636,15 @@
                     }
                     
                     if (kindData) {
+                        // ⭐ Auto-detect Reinboge - check 3 sources:
+                        // 1. School field contains "reinboge"
+                        // 2. is_reinboge flag is true
+                        // 3. Kind ID is in reinboge_kinderen database for today
+                        const isReinbogeAuto = (kindData.school && kindData.school.toLowerCase().includes('reinboge')) || 
+                                               kindData.is_reinboge || 
+                                               reinbogeKindIds.includes(item.kindId) ||
+                                               false;
+                        
                         kinderenData.push({
                             id: item.kindId,
                             naam: kindData.naam || item.naam || 'Onbekend',
@@ -641,7 +652,7 @@
                             afgevinkt: item.is_piratenskip ? (kindData.afgeleverd || false) : (kindData.afgevinkt || false),
                             ophaal_volgorde: item.ophaal_volgorde || 999,
                             is_piratenskip: item.is_piratenskip || false,
-                            is_reinboge: kindData.is_reinboge || false
+                            is_reinboge: isReinbogeAuto
                         });
                     }
                 }
@@ -651,6 +662,16 @@
                     const snap = await get(ref(db, `kinderen_per_dag/${datumKey}/${kindId}`));
                     if (snap.exists()) {
                         const data = snap.val();
+                        
+                        // ⭐ Auto-detect Reinboge - check 3 sources:
+                        // 1. School field contains "reinboge"
+                        // 2. is_reinboge flag is true
+                        // 3. Kind ID is in reinboge_kinderen database for today
+                        const isReinbogeAuto = (data.school && data.school.toLowerCase().includes('reinboge')) || 
+                                               data.is_reinboge || 
+                                               reinbogeKindIds.includes(kindId) ||
+                                               false;
+                        
                         kinderenData.push({
                             id: kindId,
                             naam: data.naam || 'Onbekend',
@@ -658,7 +679,7 @@
                             afgevinkt: data.afgevinkt || false,
                             ophaal_volgorde: 999,
                             is_piratenskip: false,
-                            is_reinboge: data.is_reinboge || false
+                            is_reinboge: isReinbogeAuto
                         });
                     }
                 }
@@ -687,6 +708,30 @@
                 }
             } catch (error) {
                 console.error('Error loading overstappers:', error);
+            }
+        }
+
+        async function loadReinbogeKinderen() {
+            try {
+                const weekdag = getDagNaam();
+                const snapshot = await get(ref(db, `reinboge_kinderen/${weekdag}`));
+                
+                reinbogeKindIds = [];
+                if (snapshot.exists() && snapshot.val() != null) {
+                    const val = snapshot.val();
+                    if (Array.isArray(val)) {
+                        val.forEach(item => {
+                            if (item != null) reinbogeKindIds.push(item.toString());
+                        });
+                    } else {
+                        snapshot.forEach(child => {
+                            if (child.val() != null) reinbogeKindIds.push(child.val().toString());
+                        });
+                    }
+                }
+                console.log('📚 Reinboge kinderen vandaag:', reinbogeKindIds);
+            } catch (error) {
+                console.error('Error loading reinboge kinderen:', error);
             }
         }
 
