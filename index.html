@@ -12,7 +12,6 @@
             min-height: 100vh;
         }
         
-        /* CONTAINER */
         .container { 
             max-width: 600px; 
             margin: 0 auto; 
@@ -20,7 +19,7 @@
             min-height: 100vh; 
         }
         
-        /* ⭐ BLAUWE APPBAR - zoals Flutter app */
+        /* ⭐ BLAUWE APPBAR */
         .app-bar {
             background: #2196F3;
             color: white;
@@ -33,12 +32,11 @@
             margin: 0;
         }
         
-        /* ⭐ LOGIN SCREEN */
         .login-screen { 
             padding: 16px; 
         }
         
-        /* ⭐ WELKOM HEADER - zoals Flutter app */
+        /* ⭐ WELKOM HEADER */
         .welkom-header {
             padding: 20px;
             background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
@@ -67,7 +65,6 @@
             color: #616161;
         }
         
-        /* ⭐ SECTIE HEADER */
         .section-header {
             font-size: 16px;
             font-weight: bold;
@@ -76,59 +73,7 @@
             margin-bottom: 12px;
         }
         
-        /* ⭐ FORM GROUPS */
-        .form-group { 
-            margin-bottom: 20px; 
-        }
-        .form-group label { 
-            display: block; 
-            margin-bottom: 8px; 
-            font-weight: 600; 
-            color: #424242;
-            font-size: 14px;
-        }
-        .form-group select, .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #E0E0E0;
-            border-radius: 12px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-        .form-group select:focus, .form-group input:focus {
-            outline: none;
-            border-color: #2196F3;
-        }
-        
-        /* ⭐ BUTTONS - blauw */
-        .btn {
-            width: 100%;
-            padding: 15px;
-            background: #2196F3;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: background 0.3s;
-        }
-        .btn:hover { 
-            background: #1976D2; 
-        }
-        .btn:disabled { 
-            background: #BDBDBD; 
-            cursor: not-allowed; 
-        }
-        .btn-secondary {
-            background: #4CAF50;
-        }
-        .btn-secondary:hover {
-            background: #388E3C;
-        }
-        
-        /* ⭐ PM CARDS - zoals Flutter app menu cards */
+        /* ⭐ PM CARDS */
         .pm-card {
             background: white;
             border: 1px solid rgba(33, 150, 243, 0.2);
@@ -370,6 +315,26 @@
             z-index: 10;
         }
         
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn:hover { background: #1976D2; }
+        .btn-secondary {
+            background: #4CAF50;
+        }
+        .btn-secondary:hover {
+            background: #388E3C;
+        }
+        
         .loading { text-align: center; padding: 60px 20px; }
         .spinner {
             border: 4px solid #E3F2FD;
@@ -390,14 +355,14 @@
 </head>
 <body>
     <div class="container">
-        <!-- ⭐ BLAUWE APPBAR -->
+        <!-- BLAUWE APPBAR -->
         <div class="app-bar">
             <h1>PM Ophaallijst</h1>
         </div>
         
         <!-- LOGIN SCREEN -->
         <div id="loginScreen" class="login-screen">
-            <!-- ⭐ WELKOM HEADER zoals Flutter app -->
+            <!-- WELKOM HEADER -->
             <div class="welkom-header">
                 <div class="welkom-icon">📋</div>
                 <div class="welkom-text">
@@ -406,10 +371,10 @@
                 </div>
             </div>
             
-            <!-- ⭐ SECTIE HEADER -->
+            <!-- SECTIE HEADER -->
             <div class="section-header">Pedagogisch Medewerkers</div>
             
-            <!-- ⭐ PM CARDS - direct geladen uit Firebase! -->
+            <!-- PM CARDS -->
             <div id="pmCardsContainer">
                 <div class="loading">
                     <div class="spinner"></div>
@@ -417,16 +382,7 @@
                 </div>
             </div>
             
-            <!-- ⭐ DATUM SELECTIE (verborgen tot PM gekozen) -->
-            <div id="datumSelectie" class="hidden" style="margin-top: 24px;">
-                <div class="section-header">Selecteer Datum</div>
-                <div class="form-group">
-                    <input type="date" id="datumInput" style="width: 100%;">
-                </div>
-                <button class="btn" id="loginBtn">Ophaallijst Laden</button>
-            </div>
-            
-            <!-- ⭐ INFO FOOTER zoals Flutter app -->
+            <!-- INFO FOOTER -->
             <div class="info-footer">
                 <div class="info-icon">ℹ️</div>
                 <div class="info-text">Tip: Selecteer je naam om je ophaallijsten te bekijken</div>
@@ -490,9 +446,6 @@
         const ritSelectieScreen = document.getElementById('ritSelectieScreen');
         const lijstScreen = document.getElementById('lijstScreen');
         const pmCardsContainer = document.getElementById('pmCardsContainer');
-        const datumSelectie = document.getElementById('datumSelectie');
-        const datumInput = document.getElementById('datumInput');
-        const loginBtn = document.getElementById('loginBtn');
         const terugNaarLogin = document.getElementById('terugNaarLogin');
         const logoutBtn = document.getElementById('logoutBtn');
         const rittenLijst = document.getElementById('rittenLijst');
@@ -502,8 +455,6 @@
         const bottomActions = document.getElementById('bottomActions');
         const vinkAllesAfBtn = document.getElementById('vinkAllesAfBtn');
         const volgendeRitBtn = document.getElementById('volgendeRitBtn');
-
-        datumInput.valueAsDate = new Date();
 
         async function loadPMs() {
             try {
@@ -521,7 +472,6 @@
 
                 pms.sort((a, b) => a.naam.localeCompare(b.naam));
                 
-                // ⭐ RENDER PM CARDS!
                 let html = '';
                 pms.forEach(pm => {
                     const initial = pm.naam[0].toUpperCase();
@@ -546,31 +496,21 @@
             }
         }
 
-        // ⭐ PM SELECTIE
-        window.selectPM = function(pmId, pmNaam) {
+        // ⭐ PM SELECTIE - DIRECT naar vandaag!
+        window.selectPM = async function(pmId, pmNaam) {
             currentPM = { id: pmId, naam: pmNaam };
             
-            // Toon datum selectie
-            datumSelectie.classList.remove('hidden');
+            // ⭐ Gebruik VANDAAG als datum!
+            const vandaag = new Date();
+            const jaar = vandaag.getFullYear();
+            const maand = String(vandaag.getMonth() + 1).padStart(2, '0');
+            const dag = String(vandaag.getDate()).padStart(2, '0');
+            currentDatum = `${jaar}-${maand}-${dag}`;
             
-            // Scroll naar datum
-            datumSelectie.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        };
-
-        loginBtn.addEventListener('click', async () => {
-            if (!currentPM) {
-                alert('Selecteer eerst een PM');
-                return;
-            }
-            
-            currentDatum = datumInput.value;
-            if (!currentDatum) {
-                alert('Selecteer een datum');
-                return;
-            }
+            console.log(`🔐 PM geselecteerd: ${pmNaam}, datum: ${currentDatum}`);
             
             await findAlleRitten();
-        });
+        };
 
         terugNaarLogin.addEventListener('click', () => {
             stopAutoRefresh();
@@ -587,7 +527,7 @@
             const snapshot = await get(ref(db, `vervoer_verdeling/${datumKey}`));
             
             if (!snapshot.exists()) {
-                alert('Geen ophaallijst gevonden voor deze datum');
+                alert('Geen ophaallijst gevonden voor vandaag');
                 return;
             }
 
