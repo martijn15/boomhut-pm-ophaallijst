@@ -8,16 +8,252 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+            background: white;
             min-height: 100vh;
         }
-        .container { max-width: 600px; margin: 0 auto; background: white; min-height: 100vh; }
+        
+        /* CONTAINER */
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background: white; 
+            min-height: 100vh; 
+        }
+        
+        /* ⭐ BLAUWE APPBAR - zoals Flutter app */
+        .app-bar {
+            background: #2196F3;
+            color: white;
+            padding: 16px 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .app-bar h1 { 
+            font-size: 20px; 
+            font-weight: bold; 
+            margin: 0;
+        }
+        
+        /* ⭐ LOGIN SCREEN */
+        .login-screen { 
+            padding: 16px; 
+        }
+        
+        /* ⭐ WELKOM HEADER - zoals Flutter app */
+        .welkom-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            border-radius: 16px;
+            border: 1px solid #90CAF9;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .welkom-icon {
+            padding: 12px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(33, 150, 243, 0.2);
+            font-size: 32px;
+        }
+        .welkom-text h2 {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1976D2;
+            margin-bottom: 4px;
+        }
+        .welkom-text p {
+            font-size: 14px;
+            color: #616161;
+        }
+        
+        /* ⭐ SECTIE HEADER */
+        .section-header {
+            font-size: 16px;
+            font-weight: bold;
+            color: #424242;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+        
+        /* ⭐ FORM GROUPS */
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        .form-group label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: 600; 
+            color: #424242;
+            font-size: 14px;
+        }
+        .form-group select, .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #E0E0E0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        .form-group select:focus, .form-group input:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+        
+        /* ⭐ BUTTONS - blauw */
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        .btn:hover { 
+            background: #1976D2; 
+        }
+        .btn:disabled { 
+            background: #BDBDBD; 
+            cursor: not-allowed; 
+        }
+        .btn-secondary {
+            background: #4CAF50;
+        }
+        .btn-secondary:hover {
+            background: #388E3C;
+        }
+        
+        /* ⭐ PM CARDS - zoals Flutter app menu cards */
+        .pm-card {
+            background: white;
+            border: 1px solid rgba(33, 150, 243, 0.2);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .pm-card:hover { 
+            border-color: #2196F3; 
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2); 
+        }
+        .pm-icon-container {
+            padding: 12px;
+            background: rgba(33, 150, 243, 0.1);
+            border-radius: 12px;
+        }
+        .pm-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #2196F3;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .pm-content {
+            flex: 1;
+        }
+        .pm-content h3 { 
+            font-size: 16px; 
+            margin-bottom: 4px; 
+            font-weight: bold;
+        }
+        .pm-content p { 
+            color: #757575; 
+            font-size: 13px; 
+        }
+        .pm-chevron {
+            color: #BDBDBD;
+            font-size: 20px;
+        }
+        
+        /* ⭐ INFO FOOTER */
+        .info-footer {
+            padding: 16px;
+            background: #F5F5F5;
+            border-radius: 12px;
+            border: 1px solid #E0E0E0;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-top: 24px;
+            margin-bottom: 16px;
+        }
+        .info-icon {
+            color: #1976D2;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .info-text {
+            font-size: 12px;
+            color: #616161;
+            line-height: 1.5;
+        }
+        
+        /* RIT SELECTIE */
+        .rit-selectie-screen { display: none; padding: 16px; }
+        .rit-selectie-screen h2 {
+            text-align: center;
+            color: #1976D2;
+            margin-bottom: 12px;
+            font-size: 24px;
+        }
+        .rit-selectie-screen p {
+            text-align: center;
+            color: #757575;
+            margin-bottom: 24px;
+        }
+        
+        .rit-card {
+            background: white;
+            border: 1px solid rgba(33, 150, 243, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+        }
+        .rit-card:hover { 
+            border-color: #2196F3; 
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2); 
+        }
+        .rit-card h3 { 
+            font-size: 18px; 
+            margin-bottom: 8px; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+            font-weight: bold;
+        }
+        .rit-card .info { 
+            color: #757575; 
+            font-size: 15px; 
+        }
+        
+        /* OPHAALLIJST SCREEN */
+        .lijst-screen { display: none; }
         .header {
-            background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
+            background: #4CAF50;
             color: white;
             padding: 20px;
         }
-        .header h1 { font-size: 24px; margin-bottom: 5px; }
+        .header h1 { font-size: 20px; margin-bottom: 5px; font-weight: bold; }
         .header .date { font-size: 14px; opacity: 0.9; }
         .terug-btn {
             background: rgba(255,255,255,0.2);
@@ -27,56 +263,20 @@
             border-radius: 8px;
             margin-top: 15px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
         }
-        .login-screen, .rit-selectie-screen { padding: 40px 20px; }
-        .login-screen h2, .rit-selectie-screen h2 {
-            text-align: center;
-            color: #4CAF50;
-            margin-bottom: 30px;
-            font-size: 28px;
-        }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; }
-        .form-group select, .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-        .btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .btn:disabled { background: #ccc; cursor: not-allowed; }
-        .btn-secondary {
-            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
-        }
-        .rit-card {
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .rit-card:hover { border-color: #4CAF50; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(76,175,80,0.3); }
-        .rit-card h3 { font-size: 20px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
-        .rit-card .info { color: #666; font-size: 15px; }
-        .lijst-screen { display: none; }
+        
         .lijst-content { padding: 20px; padding-bottom: 180px; }
-        .vervoer-badge { background: #f0f0f0; padding: 15px; border-radius: 12px; margin-bottom: 20px; font-weight: 600; }
+        .vervoer-badge { 
+            background: #E3F2FD; 
+            padding: 15px; 
+            border-radius: 12px; 
+            margin-bottom: 20px; 
+            font-weight: 600;
+            border: 1px solid #90CAF9;
+        }
+        
         .wacht-waarschuwing {
             background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
             color: white;
@@ -97,15 +297,10 @@
         .wacht-waarschuwing .title { font-size: 20px; margin-bottom: 8px; }
         .wacht-waarschuwing .message { font-size: 16px; opacity: 0.95; }
         .wacht-waarschuwing .progress { font-size: 14px; opacity: 0.9; margin-top: 5px; }
-        .wacht-waarschuwing .auto-refresh {
-            font-size: 12px;
-            opacity: 0.8;
-            margin-top: 10px;
-            font-style: italic;
-        }
+        
         .kind-card {
             background: white;
-            border: 2px solid #e0e0e0;
+            border: 2px solid #E0E0E0;
             border-radius: 12px;
             padding: 15px;
             margin-bottom: 12px;
@@ -113,14 +308,16 @@
             align-items: center;
             gap: 15px;
             cursor: pointer;
+            transition: all 0.2s;
         }
+        .kind-card:hover { border-color: #2196F3; }
         .kind-card.afgevinkt { background: #E8F5E9; border-color: #4CAF50; }
         .kind-card.piratenskip { background: #FFF3E0; border: 3px solid #FF9800; }
         .kind-card.piratenskip.afgevinkt { background: #E8F5E9; border-color: #FF9800; }
+        
         .checkbox {
-            width: 28px;
-            height: 28px;
-            border: 3px solid #ddd;
+            width: 28px; height: 28px;
+            border: 3px solid #BDBDBD;
             border-radius: 6px;
             display: flex;
             align-items: center;
@@ -130,9 +327,9 @@
         .kind-card.afgevinkt .checkbox { background: #4CAF50; border-color: #4CAF50; }
         .checkbox::after { content: '✓'; color: white; font-size: 18px; font-weight: bold; display: none; }
         .kind-card.afgevinkt .checkbox::after { display: block; }
+        
         .nummer-badge {
-            width: 40px;
-            height: 40px;
+            width: 40px; height: 40px;
             border-radius: 50%;
             background: #4CAF50;
             color: white;
@@ -144,11 +341,13 @@
             flex-shrink: 0;
         }
         .kind-card.piratenskip .nummer-badge { background: #FF9800; }
-        .kind-card.afgevinkt .nummer-badge { background: #999; }
+        .kind-card.afgevinkt .nummer-badge { background: #9E9E9E; }
+        
         .kind-info { flex: 1; }
         .kind-naam { font-weight: bold; font-size: 16px; margin-bottom: 3px; }
-        .kind-card.afgevinkt .kind-naam { text-decoration: line-through; color: #888; }
-        .kind-details { font-size: 14px; color: #666; }
+        .kind-card.afgevinkt .kind-naam { text-decoration: line-through; color: #757575; }
+        .kind-details { font-size: 14px; color: #757575; }
+        
         .status-badge {
             background: #4CAF50;
             color: white;
@@ -157,6 +356,7 @@
             font-size: 12px;
             font-weight: bold;
         }
+        
         .bottom-actions {
             position: fixed;
             bottom: 0;
@@ -169,10 +369,11 @@
             box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
             z-index: 10;
         }
+        
         .loading { text-align: center; padding: 60px 20px; }
         .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #4CAF50;
+            border: 4px solid #E3F2FD;
+            border-top: 4px solid #2196F3;
             border-radius: 50%;
             width: 50px;
             height: 50px;
@@ -183,37 +384,64 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
         .hidden { display: none !important; }
-        .rit-selectie-screen { display: none; }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Login Screen -->
+        <!-- ⭐ BLAUWE APPBAR -->
+        <div class="app-bar">
+            <h1>PM Ophaallijst</h1>
+        </div>
+        
+        <!-- LOGIN SCREEN -->
         <div id="loginScreen" class="login-screen">
-            <h2>🌳 PM Ophaallijst</h2>
-            <div class="form-group">
-                <label for="pmSelect">Selecteer je naam:</label>
-                <select id="pmSelect">
-                    <option value="">-- Kies PM --</option>
-                </select>
+            <!-- ⭐ WELKOM HEADER zoals Flutter app -->
+            <div class="welkom-header">
+                <div class="welkom-icon">📋</div>
+                <div class="welkom-text">
+                    <h2>Ophaallijsten voor vandaag:</h2>
+                    <p>Selecteer je naam om door te gaan</p>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="datumInput">Datum:</label>
-                <input type="date" id="datumInput">
+            
+            <!-- ⭐ SECTIE HEADER -->
+            <div class="section-header">Pedagogisch Medewerkers</div>
+            
+            <!-- ⭐ PM CARDS - direct geladen uit Firebase! -->
+            <div id="pmCardsContainer">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <div>PM's laden...</div>
+                </div>
             </div>
-            <button class="btn" id="loginBtn" disabled>Ophaallijst Laden</button>
+            
+            <!-- ⭐ DATUM SELECTIE (verborgen tot PM gekozen) -->
+            <div id="datumSelectie" class="hidden" style="margin-top: 24px;">
+                <div class="section-header">Selecteer Datum</div>
+                <div class="form-group">
+                    <input type="date" id="datumInput" style="width: 100%;">
+                </div>
+                <button class="btn" id="loginBtn">Ophaallijst Laden</button>
+            </div>
+            
+            <!-- ⭐ INFO FOOTER zoals Flutter app -->
+            <div class="info-footer">
+                <div class="info-icon">ℹ️</div>
+                <div class="info-text">Tip: Selecteer je naam om je ophaallijsten te bekijken</div>
+            </div>
         </div>
 
-        <!-- Rit Selectie Screen -->
+        <!-- RIT SELECTIE SCREEN -->
         <div id="ritSelectieScreen" class="rit-selectie-screen">
             <h2>Selecteer een rit</h2>
-            <p style="text-align:center;color:#666;margin-bottom:20px;">Je hebt meerdere ritten vandaag</p>
+            <p>Je hebt meerdere ritten vandaag</p>
             <div id="rittenLijst"></div>
             <button class="btn" id="terugNaarLogin" style="margin-top:20px;">← Terug naar login</button>
         </div>
 
-        <!-- Lijst Screen -->
+        <!-- LIJST SCREEN -->
         <div id="lijstScreen" class="lijst-screen">
             <div class="header">
                 <h1 id="pmNaam">PM Naam</h1>
@@ -237,7 +465,6 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getDatabase, ref, get, update } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
-        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyAo65QoOD-Lj-UEJJlBjSIX1-BWZEIhw1o",
             authDomain: "boomhut-vervoer.firebaseapp.com",
@@ -251,7 +478,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // State
         let currentPM = null;
         let currentDatum = null;
         let currentVervoer = null;
@@ -260,11 +486,11 @@
         let busjeRit2Status = null;
         let autoRefreshInterval = null;
 
-        // Elements
         const loginScreen = document.getElementById('loginScreen');
         const ritSelectieScreen = document.getElementById('ritSelectieScreen');
         const lijstScreen = document.getElementById('lijstScreen');
-        const pmSelect = document.getElementById('pmSelect');
+        const pmCardsContainer = document.getElementById('pmCardsContainer');
+        const datumSelectie = document.getElementById('datumSelectie');
         const datumInput = document.getElementById('datumInput');
         const loginBtn = document.getElementById('loginBtn');
         const terugNaarLogin = document.getElementById('terugNaarLogin');
@@ -277,61 +503,71 @@
         const vinkAllesAfBtn = document.getElementById('vinkAllesAfBtn');
         const volgendeRitBtn = document.getElementById('volgendeRitBtn');
 
-        // Set datum to today
         datumInput.valueAsDate = new Date();
 
-        // Load PMs from Firebase
         async function loadPMs() {
-            console.log('📋 Loading PMs from Firebase...');
             try {
                 const snapshot = await get(ref(db, 'pedagogisch_medewerkers'));
                 if (!snapshot.exists()) {
-                    console.warn('⚠️ No PMs found in Firebase');
+                    pmCardsContainer.innerHTML = '<p style="text-align:center;color:#757575;padding:40px 20px;">Geen PM\'s gevonden</p>';
                     return;
                 }
 
                 const pms = [];
                 snapshot.forEach(child => {
                     const data = child.val();
-                    pms.push({
-                        id: child.key,
-                        naam: data.naam || 'Onbekend'
-                    });
+                    pms.push({ id: child.key, naam: data.naam || 'Onbekend' });
                 });
-
-                console.log(`✅ Loaded ${pms.length} PMs:`, pms.map(p => p.naam));
 
                 pms.sort((a, b) => a.naam.localeCompare(b.naam));
-
+                
+                // ⭐ RENDER PM CARDS!
+                let html = '';
                 pms.forEach(pm => {
-                    const option = document.createElement('option');
-                    option.value = pm.id;
-                    option.textContent = pm.naam;
-                    pmSelect.appendChild(option);
+                    const initial = pm.naam[0].toUpperCase();
+                    html += `
+                        <div class="pm-card" onclick="selectPM('${pm.id}', '${pm.naam.replace(/'/g, "\\'")}')">
+                            <div class="pm-icon-container">
+                                <div class="pm-avatar">${initial}</div>
+                            </div>
+                            <div class="pm-content">
+                                <h3>${pm.naam}</h3>
+                                <p>Bekijk ophaallijsten</p>
+                            </div>
+                            <div class="pm-chevron">›</div>
+                        </div>
+                    `;
                 });
-
-                console.log('✅ PMs added to dropdown');
+                
+                pmCardsContainer.innerHTML = html;
             } catch (error) {
-                console.error('❌ Error loading PMs:', error);
+                console.error('Error loading PMs:', error);
+                pmCardsContainer.innerHTML = '<p style="text-align:center;color:#f44336;padding:40px 20px;">Fout bij laden PM\'s</p>';
             }
         }
 
-        pmSelect.addEventListener('change', () => {
-            loginBtn.disabled = !pmSelect.value || !datumInput.value;
-        });
-
-        datumInput.addEventListener('change', () => {
-            loginBtn.disabled = !pmSelect.value || !datumInput.value;
-        });
+        // ⭐ PM SELECTIE
+        window.selectPM = function(pmId, pmNaam) {
+            currentPM = { id: pmId, naam: pmNaam };
+            
+            // Toon datum selectie
+            datumSelectie.classList.remove('hidden');
+            
+            // Scroll naar datum
+            datumSelectie.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        };
 
         loginBtn.addEventListener('click', async () => {
-            currentPM = {
-                id: pmSelect.value,
-                naam: pmSelect.options[pmSelect.selectedIndex].text
-            };
-            currentDatum = datumInput.value;
+            if (!currentPM) {
+                alert('Selecteer eerst een PM');
+                return;
+            }
             
-            console.log('🔐 Login:', currentPM.naam, currentDatum);
+            currentDatum = datumInput.value;
+            if (!currentDatum) {
+                alert('Selecteer een datum');
+                return;
+            }
             
             await findAlleRitten();
         });
@@ -347,8 +583,6 @@
         });
 
         async function findAlleRitten() {
-            console.log('🔍 Finding ritten for PM:', currentPM.naam);
-            
             const datumKey = currentDatum.replace(/-/g, '_');
             const snapshot = await get(ref(db, `vervoer_verdeling/${datumKey}`));
             
@@ -361,14 +595,9 @@
             snapshot.forEach(child => {
                 const data = child.val();
                 if (data.pmId === currentPM.id) {
-                    alleRitten.push({
-                        key: child.key,
-                        ...data
-                    });
+                    alleRitten.push({ key: child.key, ...data });
                 }
             });
-
-            console.log(`✅ Found ${alleRitten.length} rit(ten)`);
 
             if (alleRitten.length === 0) {
                 alert('Geen vervoer toegewezen');
@@ -384,8 +613,6 @@
         }
 
         function toonRitSelectie() {
-            console.log('🚲 Showing rit selection screen');
-            
             loginScreen.classList.add('hidden');
             ritSelectieScreen.style.display = 'block';
 
@@ -406,24 +633,17 @@
         }
 
         window.selectRit = async (index) => {
-            console.log('✅ Selected rit:', index);
             currentVervoer = alleRitten[index];
             await loadOphaallijst();
         };
 
         async function loadOphaallijst() {
-            console.log('📦 Loading ophaallijst...');
-            
             loginScreen.classList.add('hidden');
             ritSelectieScreen.style.display = 'none';
             lijstScreen.style.display = 'block';
 
             pmNaamEl.textContent = `Ophaallijst - ${currentPM.naam}`;
             datumTextEl.textContent = formatDatum(currentDatum);
-
-            console.log('📊 Vervoer data:', currentVervoer);
-            console.log('📊 ophaal_volgorde:', currentVervoer.ophaal_volgorde);
-            console.log('🚏 wachtVoorBusjeRit2:', currentVervoer.wachtVoorBusjeRit2);
 
             await loadKinderen();
             
@@ -436,14 +656,10 @@
         }
 
         async function loadKinderen() {
-            console.log('👶 Loading kinderen...');
-            
             const datumKey = currentDatum.replace(/-/g, '_');
             kinderenData = [];
 
             if (currentVervoer.ophaal_volgorde && Array.isArray(currentVervoer.ophaal_volgorde)) {
-                console.log('✅ ophaal_volgorde FOUND!');
-                
                 for (const item of currentVervoer.ophaal_volgorde) {
                     let kindData = null;
                     
@@ -460,19 +676,13 @@
                             id: item.kindId,
                             naam: kindData.naam || item.naam || 'Onbekend',
                             leeftijd: kindData.leeftijd || 0,
-                            afgevinkt: item.is_piratenskip 
-                                ? (kindData.afgeleverd || false) 
-                                : (kindData.afgevinkt || false),
+                            afgevinkt: item.is_piratenskip ? (kindData.afgeleverd || false) : (kindData.afgevinkt || false),
                             ophaal_volgorde: item.ophaal_volgorde || 999,
                             is_piratenskip: item.is_piratenskip || false
                         });
                     }
                 }
-                
-                console.log(`📋 Loaded ${kinderenData.length} kinderen with ophaal_volgorde`);
-                
             } else {
-                console.warn('⚠️ NO ophaal_volgorde array!');
                 const kindIds = currentVervoer.kindIds || [];
                 for (const kindId of kindIds) {
                     const snap = await get(ref(db, `kinderen_per_dag/${datumKey}/${kindId}`));
@@ -488,16 +698,12 @@
                         });
                     }
                 }
-                
-                console.log(`📋 Loaded ${kinderenData.length} kinderen (fallback via kindIds)`);
             }
 
             kinderenData.sort((a, b) => a.ophaal_volgorde - b.ophaal_volgorde);
         }
 
         async function checkBusjeRit2Status() {
-            console.log('🚐 Checking Busje Rit 2 status...');
-            
             busjeRit2Status = null;
 
             try {
@@ -506,7 +712,6 @@
                 
                 if (!snapshot.exists()) return;
 
-                // Find Busje Rit 2
                 let busjeRit2Data = null;
                 snapshot.forEach(child => {
                     const data = child.val();
@@ -515,21 +720,14 @@
                     }
                 });
 
-                if (!busjeRit2Data) {
-                    console.log('⚠️ Busje Rit 2 niet gevonden');
-                    return;
-                }
+                if (!busjeRit2Data) return;
 
-                console.log('🚐 Found Busje Rit 2:', busjeRit2Data);
-
-                // Load afgevinkte status for each kind
                 let afgevinkt = 0;
                 let totaal = 0;
 
                 if (busjeRit2Data.ophaal_volgorde && Array.isArray(busjeRit2Data.ophaal_volgorde)) {
                     totaal = busjeRit2Data.ophaal_volgorde.length;
                     
-                    // Check ECHTE afgevinkte status in Firebase
                     for (const item of busjeRit2Data.ophaal_volgorde) {
                         let isAfgevinkt = false;
                         
@@ -547,17 +745,11 @@
                             }
                         }
                         
-                        if (isAfgevinkt) {
-                            afgevinkt++;
-                            console.log(`  ✓ ${item.naam} afgevinkt`);
-                        } else {
-                            console.log(`  ☐ ${item.naam} nog niet afgevinkt`);
-                        }
+                        if (isAfgevinkt) afgevinkt++;
                     }
                 } else {
                     totaal = (busjeRit2Data.kindIds || []).length;
                     
-                    // Fallback: check via kindIds
                     for (const kindId of (busjeRit2Data.kindIds || [])) {
                         const snap = await get(ref(db, `kinderen_per_dag/${datumKey}/${kindId}`));
                         if (snap.exists()) {
@@ -572,53 +764,35 @@
                     afgevinkt: afgevinkt,
                     klaar: afgevinkt === totaal && totaal > 0
                 };
-                
-                console.log('🚐 Busje Rit 2 status:', busjeRit2Status);
-                
             } catch (error) {
-                console.error('❌ Error checking Busje Rit 2:', error);
+                console.error('Error checking Busje Rit 2:', error);
             }
         }
 
-        // Auto-refresh systeem
         function startAutoRefresh() {
-            if (autoRefreshInterval) return; // Al actief
-            
-            console.log('🔄 Auto-refresh gestart (elke 30 seconden)');
+            if (autoRefreshInterval) return;
             
             autoRefreshInterval = setInterval(async () => {
-                console.log('🔄 Auto-refresh Busje Rit 2 status...');
                 const oudeStatus = busjeRit2Status ? {...busjeRit2Status} : null;
-                
                 await checkBusjeRit2Status();
                 
-                // Check of status is veranderd
                 if (oudeStatus && busjeRit2Status) {
                     if (oudeStatus.afgevinkt !== busjeRit2Status.afgevinkt || 
                         oudeStatus.klaar !== busjeRit2Status.klaar) {
-                        console.log('⚡ Status veranderd! Re-rendering...');
                         renderLijst();
-                    } else {
-                        console.log('✓ Status onveranderd');
                     }
-                } else if (!oudeStatus && busjeRit2Status) {
-                    console.log('✓ Eerste status geladen');
-                    renderLijst();
                 }
-            }, 30000); // 30 seconden
+            }, 30000);
         }
 
         function stopAutoRefresh() {
             if (autoRefreshInterval) {
                 clearInterval(autoRefreshInterval);
                 autoRefreshInterval = null;
-                console.log('🛑 Auto-refresh gestopt');
             }
         }
 
         function renderLijst() {
-            console.log('🎨 Rendering lijst...');
-            
             const totaal = kinderenData.length;
             const afgevinkt = kinderenData.filter(k => k.afgevinkt).length;
             const moetWachten = currentVervoer.wachtVoorBusjeRit2 === true;
@@ -632,7 +806,6 @@
 
             if (moetWachten && busjeRit2Status) {
                 if (busjeRit2Status.klaar) {
-                    console.log('✅ Busje Rit 2 KLAAR! Stint mag gaan!');
                     html += `
                         <div class="wacht-waarschuwing klaar">
                             <div class="icon">✅</div>
@@ -641,7 +814,6 @@
                         </div>
                     `;
                 } else {
-                    console.log('🚏 WAARSCHUWING: Stint moet wachten!');
                     html += `
                         <div class="wacht-waarschuwing">
                             <div class="icon">🚏</div>
@@ -651,15 +823,6 @@
                         </div>
                     `;
                 }
-            } else if (moetWachten) {
-                console.log('🚏 WAARSCHUWING: Stint moet wachten (geen status)');
-                html += `
-                    <div class="wacht-waarschuwing">
-                        <div class="icon">🚏</div>
-                        <div class="title">⚠️ LET OP: Wacht op schoolplein!</div>
-                        <div class="message">Blijf wachten tot Busje Rit 2 klaar is met ophalen</div>
-                    </div>
-                `;
             }
 
             kinderenData.forEach(kind => {
@@ -692,51 +855,33 @@
                 });
             });
             
-            // Show bottom actions
             bottomActions.classList.remove('hidden');
-            
-            // Check of er volgende rit is
             checkVolgendeRit();
-            
-            console.log('✅ Lijst rendered!');
         }
 
-        // Check of er een volgende rit is
         function checkVolgendeRit() {
             if (alleRitten.length <= 1) {
-                // Geen meerdere ritten
                 volgendeRitBtn.style.display = 'none';
                 return;
             }
 
-            // Find current rit index
             const currentIndex = alleRitten.findIndex(r => r.key === currentVervoer.key);
             
             if (currentIndex === -1 || currentIndex === alleRitten.length - 1) {
-                // Laatste rit of niet gevonden
                 volgendeRitBtn.style.display = 'none';
                 return;
             }
 
-            // Er is een volgende rit!
             const volgendeRit = alleRitten[currentIndex + 1];
             volgendeRitBtn.textContent = `→ Volgende rit (${volgendeRit.vervoerNaam || 'Rit ' + (currentIndex + 2)})`;
             volgendeRitBtn.style.display = 'block';
-            
-            console.log('✅ Volgende rit knop getoond:', volgendeRit.vervoerNaam);
         }
 
-        // Volgende rit knop
         volgendeRitBtn.addEventListener('click', async () => {
-            console.log('→ Ga naar volgende rit...');
-            
             const currentIndex = alleRitten.findIndex(r => r.key === currentVervoer.key);
-            if (currentIndex === -1 || currentIndex === alleRitten.length - 1) {
-                return;
-            }
+            if (currentIndex === -1 || currentIndex === alleRitten.length - 1) return;
 
             stopAutoRefresh();
-            
             currentVervoer = alleRitten[currentIndex + 1];
             await loadOphaallijst();
         });
@@ -759,18 +904,14 @@
                         afgevinkt: kind.afgevinkt
                     });
                 }
-                console.log('✅ Updated Firebase:', kindId, kind.afgevinkt);
             } catch (error) {
-                console.error('❌ Error updating Firebase:', error);
+                console.error('Error updating Firebase:', error);
                 kind.afgevinkt = !kind.afgevinkt;
                 renderLijst();
             }
         }
 
-        // Vink alle kinderen af
         vinkAllesAfBtn.addEventListener('click', async () => {
-            console.log('✓ Vink alle kinderen af...');
-            
             vinkAllesAfBtn.disabled = true;
             vinkAllesAfBtn.textContent = '⏳ Bezig met afvinken...';
             
@@ -793,17 +934,14 @@
                     }
                 }
                 
-                console.log('✅ Alle kinderen afgevinkt!');
                 renderLijst();
-                
                 vinkAllesAfBtn.textContent = '✓ Alle kinderen afgevinkt!';
                 setTimeout(() => {
                     vinkAllesAfBtn.textContent = '✓ Vink alle kinderen af';
                     vinkAllesAfBtn.disabled = false;
                 }, 2000);
-                
             } catch (error) {
-                console.error('❌ Error:', error);
+                console.error('Error:', error);
                 vinkAllesAfBtn.textContent = '❌ Fout opgetreden';
                 setTimeout(() => {
                     vinkAllesAfBtn.textContent = '✓ Vink alle kinderen af';
@@ -824,10 +962,7 @@
             
             if (icon.includes('assets/') || icon.includes('.png')) {
                 const naam = vervoer.vervoerNaam || '';
-                if (naam.includes('Stint')) {
-                    // Direct inline SVG (geen img tag!)
-                    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" style="vertical-align:middle;margin-right:4px;"><rect x="2" y="10" width="20" height="8" rx="2" fill="#4A90E2"/><circle cx="7" cy="18" r="2" fill="#333"/><circle cx="17" cy="18" r="2" fill="#333"/><rect x="8" y="6" width="8" height="4" rx="1" fill="#4A90E2"/><path d="M10 6 L10 10 M14 6 L14 10" stroke="#fff" stroke-width="1.5"/></svg>';
-                }
+                if (naam.includes('Stint')) return '🚲';
                 if (naam.includes('Busje')) return '🚐';
                 if (naam.includes('Taxi')) return '🚕';
                 if (naam.includes('Fiets')) return '🚲';
@@ -838,7 +973,6 @@
             return icon;
         }
 
-        console.log('🚀 Webapp starting...');
         loadPMs();
     </script>
 </body>
