@@ -19,7 +19,7 @@
             min-height: 100vh; 
         }
         
-        /* ⭐ BLAUWE APPBAR */
+        /* BLAUWE APPBAR */
         .app-bar {
             background: #2196F3;
             color: white;
@@ -36,7 +36,7 @@
             padding: 16px; 
         }
         
-        /* ⭐ WELKOM HEADER */
+        /* WELKOM HEADER */
         .welkom-header {
             padding: 20px;
             background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
@@ -73,7 +73,7 @@
             margin-bottom: 12px;
         }
         
-        /* ⭐ PM CARDS */
+        /* PM CARDS */
         .pm-card {
             background: white;
             border: 1px solid rgba(33, 150, 243, 0.2);
@@ -126,7 +126,7 @@
             font-size: 20px;
         }
         
-        /* ⭐ INFO FOOTER */
+        /* INFO FOOTER */
         .info-footer {
             padding: 16px;
             background: #F5F5F5;
@@ -243,6 +243,23 @@
         .wacht-waarschuwing .message { font-size: 16px; opacity: 0.95; }
         .wacht-waarschuwing .progress { font-size: 14px; opacity: 0.9; margin-top: 5px; }
         
+        /* SECTIE HEADERS */
+        .sectie-header {
+            background: #1976D2;
+            color: white;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 16px;
+        }
+        .sectie-header.regulier {
+            background: #4CAF50;
+        }
+        
         .kind-card {
             background: white;
             border: 2px solid #E0E0E0;
@@ -259,6 +276,10 @@
         .kind-card.afgevinkt { background: #E8F5E9; border-color: #4CAF50; }
         .kind-card.piratenskip { background: #FFF3E0; border: 3px solid #FF9800; }
         .kind-card.piratenskip.afgevinkt { background: #E8F5E9; border-color: #FF9800; }
+        .kind-card.reinboge-card:not(.afgevinkt) {
+            background: #E3F2FD;
+            border: 2px solid #1976D2;
+        }
         
         .checkbox {
             width: 28px; height: 28px;
@@ -287,6 +308,7 @@
         }
         .kind-card.piratenskip .nummer-badge { background: #FF9800; }
         .kind-card.afgevinkt .nummer-badge { background: #9E9E9E; }
+        .kind-card.reinboge-card:not(.afgevinkt) .nummer-badge { background: #1976D2; }
         
         .kind-info { flex: 1; }
         .kind-naam { font-weight: bold; font-size: 16px; margin-bottom: 3px; }
@@ -334,6 +356,12 @@
         .btn-secondary:hover {
             background: #388E3C;
         }
+        .btn-danger {
+            background: #4CAF50;
+        }
+        .btn-danger:hover {
+            background: #388E3C;
+        }
         
         .loading { text-align: center; padding: 60px 20px; }
         .spinner {
@@ -362,7 +390,6 @@
         
         <!-- LOGIN SCREEN -->
         <div id="loginScreen" class="login-screen">
-            <!-- WELKOM HEADER -->
             <div class="welkom-header">
                 <div class="welkom-icon">📋</div>
                 <div class="welkom-text">
@@ -371,10 +398,8 @@
                 </div>
             </div>
             
-            <!-- SECTIE HEADER -->
             <div class="section-header">Pedagogisch Medewerkers</div>
             
-            <!-- PM CARDS -->
             <div id="pmCardsContainer">
                 <div class="loading">
                     <div class="spinner"></div>
@@ -382,7 +407,6 @@
                 </div>
             </div>
             
-            <!-- INFO FOOTER -->
             <div class="info-footer">
                 <div class="info-icon">ℹ️</div>
                 <div class="info-text">Tip: Selecteer je naam om je ophaallijsten te bekijken</div>
@@ -419,7 +443,7 @@
 
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getDatabase, ref, get, update } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+        import { getDatabase, ref, get, update, remove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyAo65QoOD-Lj-UEJJlBjSIX1-BWZEIhw1o",
@@ -441,6 +465,7 @@
         let alleRitten = [];
         let busjeRit2Status = null;
         let autoRefreshInterval = null;
+        let overstappersVandaag = [];
 
         const loginScreen = document.getElementById('loginScreen');
         const ritSelectieScreen = document.getElementById('ritSelectieScreen');
@@ -496,18 +521,14 @@
             }
         }
 
-        // ⭐ PM SELECTIE - DIRECT naar vandaag!
         window.selectPM = async function(pmId, pmNaam) {
             currentPM = { id: pmId, naam: pmNaam };
             
-            // ⭐ Gebruik VANDAAG als datum!
             const vandaag = new Date();
             const jaar = vandaag.getFullYear();
             const maand = String(vandaag.getMonth() + 1).padStart(2, '0');
             const dag = String(vandaag.getDate()).padStart(2, '0');
             currentDatum = `${jaar}-${maand}-${dag}`;
-            
-            console.log(`🔐 PM geselecteerd: ${pmNaam}, datum: ${currentDatum}`);
             
             await findAlleRitten();
         };
@@ -586,6 +607,7 @@
             datumTextEl.textContent = formatDatum(currentDatum);
 
             await loadKinderen();
+            await loadOverstappers();
             
             if (currentVervoer.wachtVoorBusjeRit2) {
                 await checkBusjeRit2Status();
@@ -618,7 +640,8 @@
                             leeftijd: kindData.leeftijd || 0,
                             afgevinkt: item.is_piratenskip ? (kindData.afgeleverd || false) : (kindData.afgevinkt || false),
                             ophaal_volgorde: item.ophaal_volgorde || 999,
-                            is_piratenskip: item.is_piratenskip || false
+                            is_piratenskip: item.is_piratenskip || false,
+                            is_reinboge: kindData.is_reinboge || false
                         });
                     }
                 }
@@ -634,13 +657,43 @@
                             leeftijd: data.leeftijd || 0,
                             afgevinkt: data.afgevinkt || false,
                             ophaal_volgorde: 999,
-                            is_piratenskip: false
+                            is_piratenskip: false,
+                            is_reinboge: data.is_reinboge || false
                         });
                     }
                 }
             }
 
             kinderenData.sort((a, b) => a.ophaal_volgorde - b.ophaal_volgorde);
+        }
+
+        async function loadOverstappers() {
+            try {
+                const weekdag = getDagNaam();
+                const snapshot = await get(ref(db, `overstappers/${weekdag}`));
+                
+                overstappersVandaag = [];
+                if (snapshot.exists() && snapshot.val() != null) {
+                    const val = snapshot.val();
+                    if (Array.isArray(val)) {
+                        val.forEach(item => {
+                            if (item != null) overstappersVandaag.push(item.toString());
+                        });
+                    } else {
+                        snapshot.forEach(child => {
+                            if (child.val() != null) overstappersVandaag.push(child.val().toString());
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading overstappers:', error);
+            }
+        }
+
+        function getDagNaam() {
+            const date = new Date(currentDatum);
+            const dagen = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
+            return dagen[date.getDay()];
         }
 
         async function checkBusjeRit2Status() {
@@ -736,6 +789,10 @@
             const totaal = kinderenData.length;
             const afgevinkt = kinderenData.filter(k => k.afgevinkt).length;
             const moetWachten = currentVervoer.wachtVoorBusjeRit2 === true;
+            const alleAfgevinkt = totaal > 0 && afgevinkt === totaal;
+
+            const reinbogeKinderen = kinderenData.filter(k => k.is_reinboge);
+            const reguliereKinderen = kinderenData.filter(k => !k.is_reinboge);
 
             let html = `
                 <div class="lijst-content">
@@ -765,26 +822,48 @@
                 }
             }
 
-            kinderenData.forEach(kind => {
-                const klass = kind.afgevinkt ? 'afgevinkt' : '';
-                const piratenskipKlass = kind.is_piratenskip ? 'piratenskip' : '';
-                const status = kind.afgevinkt 
-                    ? (kind.is_piratenskip ? 'Afgeleverd' : 'Opgehaald') 
-                    : '';
-                const emoji = kind.is_piratenskip ? ' 🏴‍☠️' : '';
-
+            if (reinbogeKinderen.length > 0) {
                 html += `
-                    <div class="kind-card ${klass} ${piratenskipKlass}" data-id="${kind.id}">
-                        <div class="checkbox"></div>
-                        <div class="nummer-badge">${kind.ophaal_volgorde}</div>
-                        <div class="kind-info">
-                            <div class="kind-naam">${kind.naam}${emoji}</div>
-                            <div class="kind-details">${kind.leeftijd} jaar${kind.is_piratenskip ? ' • Pirateskip' : ''}</div>
-                        </div>
-                        ${status ? `<div class="status-badge">${status}</div>` : ''}
+                    <div class="sectie-header">
+                        <span style="font-size:24px;">🏫</span>
+                        <span>REINBOGE SCHOOL</span>
                     </div>
                 `;
-            });
+                
+                reinbogeKinderen.forEach((kind, idx) => {
+                    html += buildKindCard(kind, idx);
+                });
+                
+                html += `<div style="height:24px;"></div>`;
+            }
+
+            if (reguliereKinderen.length > 0) {
+                html += `
+                    <div class="sectie-header regulier">
+                        <span style="font-size:24px;">📍</span>
+                        <span>REGULIERE SCHOLEN</span>
+                    </div>
+                `;
+                
+                reguliereKinderen.forEach((kind, idx) => {
+                    const globalIndex = reinbogeKinderen.length + idx;
+                    html += buildKindCard(kind, globalIndex);
+                });
+            }
+
+            if (alleAfgevinkt) {
+                html += `
+                    <div style="margin-top:32px;">
+                        <button id="verwijderLijstBtn" style="width:100%;padding:18px;background:#4CAF50;color:white;border:none;border-radius:16px;font-size:18px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;box-shadow:0 4px 12px rgba(76,175,80,0.4);">
+                            <span style="font-size:28px;">✅</span>
+                            <span>Klaar! Verwijder Ophaallijst</span>
+                        </button>
+                        <div style="text-align:center;margin-top:12px;font-size:13px;color:#757575;">
+                            Verwijder deze ophaallijst om je lijst overzichtelijk te houden
+                        </div>
+                    </div>
+                `;
+            }
 
             html += `</div>`;
             lijstContent.innerHTML = html;
@@ -795,8 +874,43 @@
                 });
             });
             
+            const verwijderBtn = document.getElementById('verwijderLijstBtn');
+            if (verwijderBtn) {
+                verwijderBtn.addEventListener('click', verwijderOphaallijst);
+            }
+            
             bottomActions.classList.remove('hidden');
             checkVolgendeRit();
+        }
+
+        function buildKindCard(kind, globalIndex) {
+            const isAfgevinkt = kind.afgevinkt;
+            const isReinboge = kind.is_reinboge;
+            const isPiratenskip = kind.is_piratenskip;
+            
+            const isOverstapper = overstappersVandaag.some(ov => {
+                const ovNaam = ov.includes('(') ? ov.split('(')[0].trim().toLowerCase() : ov.toLowerCase();
+                return ovNaam === kind.naam.toLowerCase();
+            });
+            
+            const klass = isAfgevinkt ? 'afgevinkt' : '';
+            const piratenskipKlass = isPiratenskip ? 'piratenskip' : '';
+            const reinbogeKlass = isReinboge ? 'reinboge-card' : '';
+            const status = isAfgevinkt ? (isPiratenskip ? 'Afgeleverd' : 'Opgehaald') : '';
+            const emoji = isPiratenskip ? ' 🏴‍☠️' : (isReinboge ? ' 🏫' : '');
+            const overstapperIcon = isOverstapper ? '<span style="font-size:20px;margin-left:8px;">🔄</span>' : '';
+            
+            return `
+                <div class="kind-card ${klass} ${piratenskipKlass} ${reinbogeKlass}" data-id="${kind.id}">
+                    <div class="checkbox"></div>
+                    <div class="nummer-badge">${kind.ophaal_volgorde}</div>
+                    <div class="kind-info">
+                        <div class="kind-naam">${kind.naam}${emoji}${overstapperIcon}</div>
+                        <div class="kind-details">${kind.leeftijd} jaar${isPiratenskip ? ' • Pirateskip' : ''}${isReinboge ? ' • Reinboge' : ''}${isOverstapper ? ' • Overstapper' : ''}</div>
+                    </div>
+                    ${status ? `<div class="status-badge">${status}</div>` : ''}
+                </div>
+            `;
         }
 
         function checkVolgendeRit() {
@@ -848,6 +962,22 @@
                 console.error('Error updating Firebase:', error);
                 kind.afgevinkt = !kind.afgevinkt;
                 renderLijst();
+            }
+        }
+
+        async function verwijderOphaallijst() {
+            const bevestig = confirm('Wil je deze ophaallijst verwijderen?');
+            if (!bevestig) return;
+
+            try {
+                const datumKey = currentDatum.replace(/-/g, '_');
+                await remove(ref(db, `vervoer_verdeling/${datumKey}/${currentVervoer.key}`));
+                
+                alert('✅ Ophaallijst verwijderd!');
+                window.location.reload();
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Fout bij verwijderen: ' + error);
             }
         }
 
