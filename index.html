@@ -639,10 +639,11 @@
                         // ⭐ Auto-detect Reinboge - check 3 sources:
                         // 1. School field contains "reinboge"
                         // 2. is_reinboge flag is true
-                        // 3. Kind ID is in reinboge_kinderen database for today
+                        // 3. Kind NAAM is in reinboge_kinderen database for today
+                        const kindNaam = (kindData.naam || item.naam || '').toLowerCase();
                         const isReinbogeAuto = (kindData.school && kindData.school.toLowerCase().includes('reinboge')) || 
                                                kindData.is_reinboge || 
-                                               reinbogeKindIds.includes(item.kindId) ||
+                                               reinbogeKindIds.includes(kindNaam) ||
                                                false;
                         
                         kinderenData.push({
@@ -666,10 +667,11 @@
                         // ⭐ Auto-detect Reinboge - check 3 sources:
                         // 1. School field contains "reinboge"
                         // 2. is_reinboge flag is true
-                        // 3. Kind ID is in reinboge_kinderen database for today
+                        // 3. Kind NAAM is in reinboge_kinderen database for today
+                        const kindNaam = (data.naam || '').toLowerCase();
                         const isReinbogeAuto = (data.school && data.school.toLowerCase().includes('reinboge')) || 
                                                data.is_reinboge || 
-                                               reinbogeKindIds.includes(kindId) ||
+                                               reinbogeKindIds.includes(kindNaam) ||
                                                false;
                         
                         kinderenData.push({
@@ -714,22 +716,37 @@
         async function loadReinbogeKinderen() {
             try {
                 const weekdag = getDagNaam();
-                const snapshot = await get(ref(db, `reinboge_kinderen/${weekdag}`));
                 
-                reinbogeKindIds = [];
-                if (snapshot.exists() && snapshot.val() != null) {
-                    const val = snapshot.val();
+                // ⭐ Laad eerst de ID's voor vandaag
+                const dagenSnapshot = await get(ref(db, `reinboge_kinderen/${weekdag}`));
+                const reinbogeIds = [];
+                
+                if (dagenSnapshot.exists() && dagenSnapshot.val() != null) {
+                    const val = dagenSnapshot.val();
                     if (Array.isArray(val)) {
                         val.forEach(item => {
-                            if (item != null) reinbogeKindIds.push(item.toString());
+                            if (item != null) reinbogeIds.push(item.toString());
                         });
                     } else {
-                        snapshot.forEach(child => {
-                            if (child.val() != null) reinbogeKindIds.push(child.val().toString());
+                        dagenSnapshot.forEach(child => {
+                            if (child.val() != null) reinbogeIds.push(child.val().toString());
                         });
                     }
                 }
-                console.log('📚 Reinboge kinderen vandaag:', reinbogeKindIds);
+                
+                // ⭐ Laad nu de namen uit reinboge_alle_kinderen
+                reinbogeKindIds = [];
+                for (const reinbogeId of reinbogeIds) {
+                    const kindSnapshot = await get(ref(db, `reinboge_alle_kinderen/${reinbogeId}`));
+                    if (kindSnapshot.exists()) {
+                        const data = kindSnapshot.val();
+                        if (data.naam) {
+                            reinbogeKindIds.push(data.naam.toLowerCase());
+                        }
+                    }
+                }
+                
+                console.log('📚 Reinboge kinderen vandaag (namen):', reinbogeKindIds);
             } catch (error) {
                 console.error('Error loading reinboge kinderen:', error);
             }
