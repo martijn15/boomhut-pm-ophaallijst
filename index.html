@@ -700,9 +700,9 @@
             pmNaamEl.textContent = `Ophaallijst - ${currentPM.naam}`;
             datumTextEl.textContent = formatDatum(currentDatum);
 
-            await loadKinderen();
+            await loadReinbogeKinderen();  // ⭐ EERST Reinboge laden!
             await loadOverstappers();
-            await loadReinbogeKinderen();  // ⭐ NIEUW!
+            await loadKinderen();  // ⭐ DAN kinderen laden (zodat reinbogeKindIds al bekend is)
             
             if (currentVervoer.wachtVoorBusjeRit2) {
                 await checkBusjeRit2Status();
