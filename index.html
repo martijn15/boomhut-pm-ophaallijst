@@ -425,6 +425,23 @@
                 </div>
             </div>
             
+            <!-- DATUM SELECTIE - ALTIJD ZICHTBAAR BOVENAAN -->
+            <div id="datumSelectie" style="margin-bottom: 24px;">
+                <div style="background:#E3F2FD;padding:16px;border-radius:12px;margin-bottom:20px;border:1px solid #90CAF9;">
+                    <div style="display:flex;align-items:center;gap:12px;">
+                        <div style="font-size:24px;">ℹ️</div>
+                        <div style="font-size:13px;color:#1976D2;">
+                            Selecteer eerst een datum, dan je naam om de ophaallijst te laden.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section-header">Selecteer Datum</div>
+                <div id="weekdagButtons" style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px;">
+                    <!-- Buttons worden hier geladen -->
+                </div>
+            </div>
+            
             <div class="section-header">Pedagogisch Medewerkers</div>
             
             <div id="pmCardsContainer">
@@ -434,26 +451,9 @@
                 </div>
             </div>
             
-            <!-- DATUM SELECTIE MET WEEKDAG KNOPPEN -->
-            <div id="datumSelectie" class="hidden" style="margin-top: 24px;">
-                <div style="background:#E3F2FD;padding:16px;border-radius:12px;margin-bottom:20px;border:1px solid #90CAF9;">
-                    <div style="display:flex;align-items:center;gap:12px;">
-                        <div style="font-size:24px;">ℹ️</div>
-                        <div style="font-size:13px;color:#1976D2;">
-                            Selecteer een werkdag. Kinderen worden automatisch geladen op basis van hun vaste dagen en aanwezigheid.
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="section-header">Deze Week</div>
-                <div id="weekdagButtons" style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px;">
-                    <!-- Buttons worden hier geladen -->
-                </div>
-            </div>
-            
             <div class="info-footer">
                 <div class="info-icon">ℹ️</div>
-                <div class="info-text">Tip: Selecteer je naam en kies de datum van de ophaallijst</div>
+                <div class="info-text">Tip: Selecteer eerst een datum en dan je naam</div>
             </div>
         </div>
 
@@ -559,6 +559,22 @@
 
         async function loadPMs() {
             try {
+                // ⭐ LAAD WEEKDAG KNOPPEN METEEN
+                const weekDagen = getWeekDagen();
+                let weekHtml = '';
+                
+                weekDagen.forEach(dag => {
+                    weekHtml += `
+                        <div class="weekdag-btn" onclick="selectDatum('${dag.datum}')">
+                            <div class="dag-naam">${dag.naam}</div>
+                            <div class="dag-nummer">${dag.nummer}</div>
+                        </div>
+                    `;
+                });
+                
+                weekdagButtons.innerHTML = weekHtml;
+                
+                // ⭐ LAAD PM CARDS
                 const snapshot = await get(ref(db, 'pedagogisch_medewerkers'));
                 if (!snapshot.exists()) {
                     pmCardsContainer.innerHTML = '<p style="text-align:center;color:#757575;padding:40px 20px;">Geen PM\'s gevonden</p>';
@@ -600,31 +616,25 @@
         window.selectPM = function(pmId, pmNaam) {
             currentPM = { id: pmId, naam: pmNaam };
             
-            // Genereer weekdag knoppen
-            const weekDagen = getWeekDagen();
-            let html = '';
+            // Check of datum al geselecteerd is
+            if (!currentDatum) {
+                alert('⚠️ Selecteer eerst een datum!');
+                // Scroll naar datum knoppen
+                datumSelectie.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                return;
+            }
             
-            weekDagen.forEach(dag => {
-                html += `
-                    <div class="weekdag-btn" onclick="selectDatum('${dag.datum}')">
-                        <div class="dag-naam">${dag.naam}</div>
-                        <div class="dag-nummer">${dag.nummer}</div>
-                    </div>
-                `;
-            });
-            
-            weekdagButtons.innerHTML = html;
-            
-            // Toon datum selectie
-            datumSelectie.classList.remove('hidden');
-            
-            // Scroll naar datum
-            datumSelectie.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            // Datum al geselecteerd, direct laden!
+            findAlleRitten();
         };
 
         window.selectDatum = async function(datum) {
             currentDatum = datum;
-            await findAlleRitten();
+            
+            // Als PM al geselecteerd, direct laden
+            if (currentPM) {
+                await findAlleRitten();
+            }
         };
 
         terugNaarLogin.addEventListener('click', () => {
