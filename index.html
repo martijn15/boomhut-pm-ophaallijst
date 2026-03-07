@@ -653,7 +653,8 @@
                             afgevinkt: item.is_piratenskip ? (kindData.afgeleverd || false) : (kindData.afgevinkt || false),
                             ophaal_volgorde: item.ophaal_volgorde || 999,
                             is_piratenskip: item.is_piratenskip || false,
-                            is_reinboge: isReinbogeAuto
+                            is_reinboge: isReinbogeAuto,
+                            opmerking: kindData.opmerking || ''
                         });
                     }
                 }
@@ -681,7 +682,8 @@
                             afgevinkt: data.afgevinkt || false,
                             ophaal_volgorde: 999,
                             is_piratenskip: false,
-                            is_reinboge: isReinbogeAuto
+                            is_reinboge: isReinbogeAuto,
+                            opmerking: data.opmerking || ''
                         });
                     }
                 }
@@ -961,13 +963,14 @@
             const status = isAfgevinkt ? (isPiratenskip ? 'Afgeleverd' : 'Opgehaald') : '';
             const emoji = isPiratenskip ? ' 🏴‍☠️' : (isReinboge ? ' 🏫' : '');
             const overstapperIcon = isOverstapper ? '<span style="font-size:20px;margin-left:8px;">🔄</span>' : '';
+            const opmerkingIcon = kind.opmerking ? '<span style="font-size:18px;margin-left:8px;" title="' + kind.opmerking + '">📝</span>' : '';
             
             return `
                 <div class="kind-card ${klass} ${piratenskipKlass} ${reinbogeKlass}" data-id="${kind.id}">
                     <div class="checkbox"></div>
                     <div class="nummer-badge">${kind.ophaal_volgorde}</div>
                     <div class="kind-info">
-                        <div class="kind-naam">${kind.naam}${emoji}${overstapperIcon}</div>
+                        <div class="kind-naam">${kind.naam}${emoji}${overstapperIcon}${opmerkingIcon}</div>
                         <div class="kind-details">${kind.leeftijd} jaar${isPiratenskip ? ' • Pirateskip' : ''}${isReinboge ? ' • Reinboge' : ''}${isOverstapper ? ' • Overstapper' : ''}</div>
                     </div>
                     ${status ? `<div class="status-badge">${status}</div>` : ''}
