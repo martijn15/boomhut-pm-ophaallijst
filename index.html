@@ -379,6 +379,33 @@
         }
         
         .hidden { display: none !important; }
+        
+        /* WEEKDAG KNOPPEN */
+        .weekdag-btn {
+            background: white;
+            border: 2px solid #2196F3;
+            border-radius: 16px;
+            padding: 20px 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .weekdag-btn:hover {
+            background: #E3F2FD;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(33,150,243,0.3);
+        }
+        .weekdag-btn .dag-naam {
+            font-size: 14px;
+            font-weight: bold;
+            color: #2196F3;
+            margin-bottom: 8px;
+        }
+        .weekdag-btn .dag-nummer {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2196F3;
+        }
     </style>
 </head>
 <body>
@@ -393,8 +420,8 @@
             <div class="welkom-header">
                 <div class="welkom-icon">📋</div>
                 <div class="welkom-text">
-                    <h2>Ophaallijsten voor vandaag:</h2>
-                    <p>Selecteer je naam om door te gaan</p>
+                    <h2>Ophaallijsten:</h2>
+                    <p>Selecteer je naam en datum</p>
                 </div>
             </div>
             
@@ -407,9 +434,26 @@
                 </div>
             </div>
             
+            <!-- DATUM SELECTIE MET WEEKDAG KNOPPEN -->
+            <div id="datumSelectie" class="hidden" style="margin-top: 24px;">
+                <div style="background:#E3F2FD;padding:16px;border-radius:12px;margin-bottom:20px;border:1px solid #90CAF9;">
+                    <div style="display:flex;align-items:center;gap:12px;">
+                        <div style="font-size:24px;">ℹ️</div>
+                        <div style="font-size:13px;color:#1976D2;">
+                            Selecteer een werkdag. Kinderen worden automatisch geladen op basis van hun vaste dagen en aanwezigheid.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section-header">Deze Week</div>
+                <div id="weekdagButtons" style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px;">
+                    <!-- Buttons worden hier geladen -->
+                </div>
+            </div>
+            
             <div class="info-footer">
                 <div class="info-icon">ℹ️</div>
-                <div class="info-text">Tip: Selecteer je naam om je ophaallijsten te bekijken</div>
+                <div class="info-text">Tip: Selecteer je naam en kies de datum van de ophaallijst</div>
             </div>
         </div>
 
@@ -472,6 +516,8 @@
         const ritSelectieScreen = document.getElementById('ritSelectieScreen');
         const lijstScreen = document.getElementById('lijstScreen');
         const pmCardsContainer = document.getElementById('pmCardsContainer');
+        const datumSelectie = document.getElementById('datumSelectie');
+        const weekdagButtons = document.getElementById('weekdagButtons');
         const terugNaarLogin = document.getElementById('terugNaarLogin');
         const logoutBtn = document.getElementById('logoutBtn');
         const rittenLijst = document.getElementById('rittenLijst');
@@ -481,6 +527,35 @@
         const bottomActions = document.getElementById('bottomActions');
         const vinkAllesAfBtn = document.getElementById('vinkAllesAfBtn');
         const volgendeRitBtn = document.getElementById('volgendeRitBtn');
+
+        function getWeekDagen() {
+            const vandaag = new Date();
+            const dag = vandaag.getDay(); // 0=zondag, 1=maandag, etc
+            
+            // Start van deze week (maandag)
+            const maandag = new Date(vandaag);
+            maandag.setDate(vandaag.getDate() - (dag === 0 ? 6 : dag - 1));
+            
+            const weekDagen = [];
+            const dagenNamen = ['MA', 'DI', 'WO', 'DO', 'VR'];
+            
+            for (let i = 0; i < 5; i++) {
+                const datum = new Date(maandag);
+                datum.setDate(maandag.getDate() + i);
+                
+                const jaar = datum.getFullYear();
+                const maand = String(datum.getMonth() + 1).padStart(2, '0');
+                const dagNr = String(datum.getDate()).padStart(2, '0');
+                
+                weekDagen.push({
+                    naam: dagenNamen[i],
+                    nummer: datum.getDate(),
+                    datum: `${jaar}-${maand}-${dagNr}`
+                });
+            }
+            
+            return weekDagen;
+        }
 
         async function loadPMs() {
             try {
@@ -522,15 +597,33 @@
             }
         }
 
-        window.selectPM = async function(pmId, pmNaam) {
+        window.selectPM = function(pmId, pmNaam) {
             currentPM = { id: pmId, naam: pmNaam };
             
-            const vandaag = new Date();
-            const jaar = vandaag.getFullYear();
-            const maand = String(vandaag.getMonth() + 1).padStart(2, '0');
-            const dag = String(vandaag.getDate()).padStart(2, '0');
-            currentDatum = `${jaar}-${maand}-${dag}`;
+            // Genereer weekdag knoppen
+            const weekDagen = getWeekDagen();
+            let html = '';
             
+            weekDagen.forEach(dag => {
+                html += `
+                    <div class="weekdag-btn" onclick="selectDatum('${dag.datum}')">
+                        <div class="dag-naam">${dag.naam}</div>
+                        <div class="dag-nummer">${dag.nummer}</div>
+                    </div>
+                `;
+            });
+            
+            weekdagButtons.innerHTML = html;
+            
+            // Toon datum selectie
+            datumSelectie.classList.remove('hidden');
+            
+            // Scroll naar datum
+            datumSelectie.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        };
+
+        window.selectDatum = async function(datum) {
+            currentDatum = datum;
             await findAlleRitten();
         };
 
