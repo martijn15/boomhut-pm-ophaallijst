@@ -395,6 +395,15 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(33,150,243,0.3);
         }
+        .weekdag-btn.selected {
+            background: #2196F3;
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(33,150,243,0.5);
+        }
+        .weekdag-btn.selected .dag-naam,
+        .weekdag-btn.selected .dag-nummer {
+            color: white !important;
+        }
         .weekdag-btn .dag-naam {
             font-size: 14px;
             font-weight: bold;
@@ -630,6 +639,12 @@
 
         window.selectDatum = async function(datum) {
             currentDatum = datum;
+            
+            // Update selected state op knoppen
+            document.querySelectorAll('.weekdag-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
             
             // Als PM al geselecteerd, direct laden
             if (currentPM) {
