@@ -740,6 +740,7 @@
         async function loadKinderen() {
             const datumKey = currentDatum.replace(/-/g, '_');
             kinderenData = [];
+            const seenNames = new Set(); // ⭐ Track namen om duplicaten te voorkomen
 
             if (currentVervoer.ophaal_volgorde && Array.isArray(currentVervoer.ophaal_volgorde)) {
                 for (const item of currentVervoer.ophaal_volgorde) {
@@ -754,11 +755,19 @@
                     }
                     
                     if (kindData) {
+                        const kindNaam = (kindData.naam || item.naam || '').toLowerCase().trim();
+                        
+                        // ⭐ SKIP als deze naam al is toegevoegd (voorkomt Liam dubbel!)
+                        if (seenNames.has(kindNaam)) {
+                            console.log(`⚠️ Duplicaat overgeslagen: ${kindNaam}`);
+                            continue;
+                        }
+                        seenNames.add(kindNaam);
+                        
                         // ⭐ Auto-detect Reinboge - check 3 sources:
                         // 1. School field contains "reinboge"
                         // 2. is_reinboge flag is true
                         // 3. Kind NAAM is in reinboge_kinderen database for today
-                        const kindNaam = (kindData.naam || item.naam || '').toLowerCase();
                         const isReinbogeAuto = (kindData.school && kindData.school.toLowerCase().includes('reinboge')) || 
                                                kindData.is_reinboge || 
                                                reinbogeKindIds.includes(kindNaam) ||
@@ -782,12 +791,19 @@
                     const snap = await get(ref(db, `kinderen_per_dag/${datumKey}/${kindId}`));
                     if (snap.exists()) {
                         const data = snap.val();
+                        const kindNaam = (data.naam || '').toLowerCase().trim();
+                        
+                        // ⭐ SKIP als deze naam al is toegevoegd
+                        if (seenNames.has(kindNaam)) {
+                            console.log(`⚠️ Duplicaat overgeslagen: ${kindNaam}`);
+                            continue;
+                        }
+                        seenNames.add(kindNaam);
                         
                         // ⭐ Auto-detect Reinboge - check 3 sources:
                         // 1. School field contains "reinboge"
                         // 2. is_reinboge flag is true
                         // 3. Kind NAAM is in reinboge_kinderen database for today
-                        const kindNaam = (data.naam || '').toLowerCase();
                         const isReinbogeAuto = (data.school && data.school.toLowerCase().includes('reinboge')) || 
                                                data.is_reinboge || 
                                                reinbogeKindIds.includes(kindNaam) ||
