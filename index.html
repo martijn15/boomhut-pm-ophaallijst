@@ -395,15 +395,34 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(33,150,243,0.3);
         }
+        
+        /* ⭐ VANDAAG STYLING (GROEN) - NET ALS ANDROID APP! */
+        .weekdag-btn.today {
+            background: #4CAF50;
+            border: 2px solid #4CAF50;
+            box-shadow: 0 4px 8px rgba(76,175,80,0.3);
+        }
+        .weekdag-btn.today .dag-naam,
+        .weekdag-btn.today .dag-nummer {
+            color: white !important;
+        }
+        .weekdag-btn.today:hover {
+            background: #45A049;
+            box-shadow: 0 6px 12px rgba(76,175,80,0.4);
+        }
+        
+        /* SELECTED heeft hogere prioriteit dan TODAY */
         .weekdag-btn.selected {
-            background: #2196F3;
+            background: #2196F3 !important;
+            border: 2px solid #2196F3 !important;
             transform: scale(1.05);
-            box-shadow: 0 6px 16px rgba(33,150,243,0.5);
+            box-shadow: 0 6px 16px rgba(33,150,243,0.5) !important;
         }
         .weekdag-btn.selected .dag-naam,
         .weekdag-btn.selected .dag-nummer {
             color: white !important;
         }
+        
         .weekdag-btn .dag-naam {
             font-size: 14px;
             font-weight: bold;
@@ -570,11 +589,18 @@
             try {
                 // ⭐ LAAD WEEKDAG KNOPPEN METEEN
                 const weekDagen = getWeekDagen();
+                const vandaag = new Date();
+                const vandaagString = `${vandaag.getFullYear()}-${String(vandaag.getMonth() + 1).padStart(2, '0')}-${String(vandaag.getDate()).padStart(2, '0')}`;
+                
                 let weekHtml = '';
                 
                 weekDagen.forEach(dag => {
+                    // ⭐ Check of deze dag VANDAAG is
+                    const isVandaag = dag.datum === vandaagString;
+                    const todayClass = isVandaag ? ' today' : '';
+                    
                     weekHtml += `
-                        <div class="weekdag-btn" onclick="selectDatum('${dag.datum}')">
+                        <div class="weekdag-btn${todayClass}" onclick="selectDatum('${dag.datum}')">
                             <div class="dag-naam">${dag.naam}</div>
                             <div class="dag-nummer">${dag.nummer}</div>
                         </div>
