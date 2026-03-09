@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PM Ophaallijst - Sticky Versie</title>
+    <title>PM Ophaallijst - Sticky</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -32,372 +32,11 @@
             margin: 0;
         }
         
-        /* ⭐⭐⭐ STICKY DATUM SELECTOR - BLIJFT ALTIJD BOVENAAN! ⭐⭐⭐ */
-        .sticky-datum-section {
-            position: sticky;
-            top: 0;
-            background: white;
-            z-index: 100;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        .login-screen { 
+            padding: 16px; 
         }
         
-        /* WEEKDAG KNOPPEN */
-        .weekdag-container {
-            display: flex;
-            gap: 8px;
-            padding: 16px;
-            overflow-x: auto;
-            background: white;
-        }
-        .weekdag-btn {
-            min-width: 65px;
-            background: white;
-            border: 2px solid #2196F3;
-            border-radius: 12px;
-            padding: 12px 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-            flex-shrink: 0;
-        }
-        .weekdag-btn:hover {
-            background: #E3F2FD;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(33,150,243,0.3);
-        }
-        
-        /* VANDAAG STYLING (GROEN) */
-        .weekdag-btn.today {
-            background: #4CAF50;
-            border: 2px solid #4CAF50;
-            box-shadow: 0 4px 8px rgba(76,175,80,0.3);
-        }
-        .weekdag-btn.today .dag-naam,
-        .weekdag-btn.today .dag-nummer {
-            color: white !important;
-        }
-        .weekdag-btn.today:hover {
-            background: #45A049;
-            box-shadow: 0 6px 12px rgba(76,175,80,0.4);
-        }
-        
-        /* SELECTED heeft hogere prioriteit dan TODAY */
-        .weekdag-btn.selected {
-            background: #2196F3 !important;
-            border: 2px solid #2196F3 !important;
-            transform: scale(1.05);
-            box-shadow: 0 6px 16px rgba(33,150,243,0.5) !important;
-        }
-        .weekdag-btn.selected .dag-naam,
-        .weekdag-btn.selected .dag-nummer {
-            color: white !important;
-        }
-        
-        .weekdag-btn .dag-naam {
-            font-size: 12px;
-            font-weight: bold;
-            color: #2196F3;
-            margin-bottom: 4px;
-        }
-        .weekdag-btn .dag-nummer {
-            font-size: 24px;
-            font-weight: bold;
-            color: #2196F3;
-        }
-        
-        /* PM'S DIE VANDAAG WERKEN - BANNER */
-        .werkende-pms-banner {
-            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
-            padding: 16px 20px;
-            border-top: 2px solid #90CAF9;
-            border-bottom: 2px solid #90CAF9;
-        }
-        .werkende-pms-banner h3 {
-            font-size: 14px;
-            color: #1976D2;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .pm-chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .pm-chip {
-            background: white;
-            border: 2px solid #2196F3;
-            border-radius: 20px;
-            padding: 6px 14px;
-            font-size: 13px;
-            font-weight: bold;
-            color: #2196F3;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .pm-chip:hover {
-            background: #2196F3;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 2px 8px rgba(33,150,243,0.3);
-        }
-        .pm-chip.active {
-            background: #4CAF50;
-            border-color: #4CAF50;
-            color: white;
-        }
-        
-        /* CONTENT AREA - SCROLLABLE */
-        .content-area {
-            padding: 16px;
-            padding-bottom: 100px;
-        }
-        
-        /* ⭐⭐⭐ INKLAPBARE PM SECTIE ⭐⭐⭐ */
-        .pm-section {
-            background: white;
-            border: 2px solid #E0E0E0;
-            border-radius: 16px;
-            margin-bottom: 12px;
-            overflow: hidden;
-            transition: all 0.3s;
-        }
-        .pm-section.expanded {
-            border-color: #4CAF50;
-            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
-        }
-        .pm-section.current-user {
-            border-color: #2196F3;
-        }
-        .pm-section.current-user.expanded {
-            border-color: #4CAF50;
-            box-shadow: 0 4px 16px rgba(33, 150, 243, 0.3);
-        }
-        
-        /* PM HEADER - KLIKBAAR! */
-        .pm-section-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 16px;
-            cursor: pointer;
-            user-select: none;
-            transition: background 0.2s;
-        }
-        .pm-section-header:hover {
-            background: #F5F5F5;
-        }
-        .pm-section.expanded .pm-section-header {
-            background: #E8F5E9;
-            border-bottom: 2px solid #C8E6C9;
-        }
-        .pm-section.current-user .pm-section-header {
-            background: #E3F2FD;
-        }
-        .pm-section.current-user.expanded .pm-section-header {
-            background: #E8F5E9;
-        }
-        
-        /* CHEVRON ICON */
-        .chevron {
-            width: 32px;
-            height: 32px;
-            background: #BDBDBD;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            color: white;
-            transition: all 0.3s;
-            flex-shrink: 0;
-        }
-        .pm-section.expanded .chevron {
-            background: #4CAF50;
-            transform: rotate(90deg);
-        }
-        
-        .pm-avatar {
-            width: 48px;
-            height: 48px;
-            background: #2196F3;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
-            font-weight: bold;
-            flex-shrink: 0;
-        }
-        .pm-section.current-user .pm-avatar {
-            background: #4CAF50;
-        }
-        
-        .pm-info {
-            flex: 1;
-        }
-        .pm-info h3 {
-            font-size: 18px;
-            color: #212121;
-            margin-bottom: 2px;
-        }
-        .pm-info p {
-            font-size: 13px;
-            color: #757575;
-        }
-        
-        /* KINDEREN LIJST - INKLAPBAAR */
-        .kinderen-lijst {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease-out;
-            padding: 0 16px;
-        }
-        .pm-section.expanded .kinderen-lijst {
-            max-height: 3000px;
-            padding: 16px;
-        }
-        
-        /* REINBOGE SCHOOL HEADER */
-        .school-header {
-            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
-            border: 2px solid #90CAF9;
-            border-radius: 12px;
-            padding: 12px 16px;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .school-header h4 {
-            font-size: 16px;
-            color: #1976D2;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        /* REGULIERE SCHOLEN HEADER */
-        .reguliere-header {
-            background: linear-gradient(135deg, #F1F8E9 0%, #DCEDC8 100%);
-            border: 2px solid #AED581;
-            border-radius: 12px;
-            padding: 12px 16px;
-            margin: 16px 0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .reguliere-header h4 {
-            font-size: 16px;
-            color: #689F38;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        /* KIND ITEM */
-        .kind-item {
-            background: #F1F8E9;
-            border: 1px solid #C5E1A5;
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .kind-item:hover {
-            background: #E8F5E9;
-            transform: translateX(4px);
-        }
-        .kind-item.afgevinkt {
-            background: #E8F5E9;
-            border-color: #81C784;
-            opacity: 0.7;
-        }
-        
-        .kind-nummer {
-            width: 36px;
-            height: 36px;
-            background: #4CAF50;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 16px;
-            flex-shrink: 0;
-        }
-        .kind-item.afgevinkt .kind-nummer {
-            background: #81C784;
-        }
-        
-        .kind-info {
-            flex: 1;
-        }
-        .kind-naam {
-            font-size: 16px;
-            font-weight: bold;
-            color: #212121;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .kind-leeftijd {
-            font-size: 13px;
-            color: #757575;
-            margin-top: 2px;
-        }
-        
-        .kind-badge {
-            background: #2196F3;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: bold;
-        }
-        .kind-badge.reinboge {
-            background: #2196F3;
-        }
-        .kind-badge.overstapper {
-            background: #FF9800;
-        }
-        
-        .checkbox {
-            width: 28px;
-            height: 28px;
-            border: 3px solid #BDBDBD;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            transition: all 0.2s;
-            flex-shrink: 0;
-        }
-        .kind-item.afgevinkt .checkbox {
-            background: #4CAF50;
-            border-color: #4CAF50;
-        }
-        
-        /* OPMERKING TOOLTIP */
-        .opmerking-icon {
-            font-size: 16px;
-            cursor: help;
-        }
-        
-        /* LOGIN SCREEN */
-        .login-screen {
-            padding: 16px;
-        }
-        
+        /* WELKOM HEADER */
         .welkom-header {
             padding: 20px;
             background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
@@ -434,7 +73,7 @@
             margin-bottom: 12px;
         }
         
-        /* PM LOGIN CARDS */
+        /* PM CARDS */
         .pm-card {
             background: white;
             border: 1px solid rgba(33, 150, 243, 0.2);
@@ -458,7 +97,218 @@
             background: rgba(33, 150, 243, 0.1);
             border-radius: 12px;
         }
-        .pm-card-avatar {
+        .pm-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #2196F3;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .pm-content {
+            flex: 1;
+        }
+        .pm-content h3 { 
+            font-size: 16px; 
+            margin-bottom: 4px; 
+            font-weight: bold;
+        }
+        .pm-content p { 
+            color: #757575; 
+            font-size: 13px; 
+        }
+        .pm-chevron {
+            color: #BDBDBD;
+            font-size: 20px;
+        }
+        
+        /* INFO FOOTER */
+        .info-footer {
+            padding: 16px;
+            background: #F5F5F5;
+            border-radius: 12px;
+            border: 1px solid #E0E0E0;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-top: 24px;
+            margin-bottom: 16px;
+        }
+        .info-icon {
+            color: #1976D2;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .info-text {
+            font-size: 12px;
+            color: #616161;
+            line-height: 1.5;
+        }
+        
+        /* ⭐⭐⭐ STICKY DATUM SECTION ⭐⭐⭐ */
+        .sticky-datum-section {
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        /* WEEKDAG KNOPPEN */
+        .weekdag-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            padding: 16px;
+            background: white;
+        }
+        .weekdag-btn {
+            background: white;
+            border: 2px solid #2196F3;
+            border-radius: 12px;
+            padding: 12px 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .weekdag-btn:hover {
+            background: #E3F2FD;
+            transform: translateY(-2px);
+        }
+        .weekdag-btn.today {
+            background: #4CAF50;
+            border: 2px solid #4CAF50;
+        }
+        .weekdag-btn.today .dag-naam,
+        .weekdag-btn.today .dag-nummer {
+            color: white !important;
+        }
+        .weekdag-btn.selected {
+            background: #2196F3 !important;
+            border: 2px solid #2196F3 !important;
+            transform: scale(1.05);
+        }
+        .weekdag-btn.selected .dag-naam,
+        .weekdag-btn.selected .dag-nummer {
+            color: white !important;
+        }
+        .weekdag-btn .dag-naam {
+            font-size: 12px;
+            font-weight: bold;
+            color: #2196F3;
+            margin-bottom: 4px;
+        }
+        .weekdag-btn .dag-nummer {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2196F3;
+        }
+        
+        /* PM CHIPS BANNER */
+        .werkende-pms-banner {
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            padding: 16px 20px;
+            border-top: 2px solid #90CAF9;
+            border-bottom: 2px solid #90CAF9;
+        }
+        .werkende-pms-banner h3 {
+            font-size: 14px;
+            color: #1976D2;
+            margin-bottom: 8px;
+        }
+        .pm-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .pm-chip {
+            background: white;
+            border: 2px solid #2196F3;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #2196F3;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .pm-chip:hover {
+            background: #2196F3;
+            color: white;
+            transform: translateY(-1px);
+        }
+        .pm-chip.active {
+            background: #4CAF50;
+            border-color: #4CAF50;
+            color: white;
+        }
+        
+        /* INKLAPBARE PM SECTIE */
+        .pm-sections-container {
+            padding: 16px;
+            padding-bottom: 100px;
+        }
+        .pm-section {
+            background: white;
+            border: 2px solid #E0E0E0;
+            border-radius: 16px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        .pm-section.expanded {
+            border-color: #4CAF50;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+        }
+        .pm-section.current-user {
+            border-color: #2196F3;
+            border-width: 3px;
+        }
+        .pm-section-header-clickable {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            cursor: pointer;
+            user-select: none;
+            background: white;
+            transition: background 0.2s;
+        }
+        .pm-section-header-clickable:hover {
+            background: #F5F5F5;
+        }
+        .pm-section.expanded .pm-section-header-clickable {
+            background: #E8F5E9;
+            border-bottom: 2px solid #C8E6C9;
+        }
+        .pm-section.current-user .pm-section-header-clickable {
+            background: #E3F2FD;
+        }
+        .pm-section.current-user.expanded .pm-section-header-clickable {
+            background: #E8F5E9;
+        }
+        .chevron-icon {
+            width: 32px;
+            height: 32px;
+            background: #BDBDBD;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s;
+            flex-shrink: 0;
+            font-size: 18px;
+        }
+        .pm-section.expanded .chevron-icon {
+            background: #4CAF50;
+            transform: rotate(90deg);
+        }
+        .pm-section-avatar {
             width: 48px;
             height: 48px;
             background: #2196F3;
@@ -469,83 +319,131 @@
             color: white;
             font-size: 20px;
             font-weight: bold;
+            flex-shrink: 0;
         }
-        .pm-card-text h3 {
+        .pm-section.current-user .pm-section-avatar {
+            background: #4CAF50;
+        }
+        .pm-section-info {
+            flex: 1;
+        }
+        .pm-section-info h3 {
             font-size: 18px;
-            font-weight: bold;
             color: #212121;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
-        .pm-card-text p {
+        .pm-section-info p {
             font-size: 13px;
             color: #757575;
         }
-        
-        /* LOADING */
-        .loading {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 60px 20px;
-            color: #757575;
+        .pm-section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
         }
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(33, 150, 243, 0.2);
-            border-top-color: #2196F3;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 16px;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        
-        /* EMPTY STATE */
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #757575;
-        }
-        .empty-state-icon {
-            font-size: 64px;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
-        
-        /* INFO FOOTER */
-        .info-footer {
-            background: #FFF3E0;
-            border: 1px solid #FFE0B2;
-            border-radius: 12px;
+        .pm-section.expanded .pm-section-content {
+            max-height: 5000px;
             padding: 16px;
+        }
+        
+        /* SECTIE HEADERS */
+        .sectie-header {
+            background: #1976D2;
+            color: white;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            font-weight: bold;
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-top: 24px;
+            font-size: 16px;
         }
-        .info-icon {
-            font-size: 24px;
-            flex-shrink: 0;
-        }
-        .info-text {
-            font-size: 13px;
-            color: #E65100;
-            line-height: 1.4;
+        .sectie-header.regulier {
+            background: #4CAF50;
         }
         
-        /* UTILITIES */
+        .kind-card {
+            background: white;
+            border: 2px solid #E0E0E0;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .kind-card:hover { border-color: #2196F3; }
+        .kind-card.afgevinkt { background: #E8F5E9; border-color: #4CAF50; }
+        .kind-card.piratenskip { background: #FFF3E0; border: 3px solid #FF9800; }
+        .kind-card.piratenskip.afgevinkt { background: #E8F5E9; border-color: #FF9800; }
+        .kind-card.reinboge-card:not(.afgevinkt) {
+            background: #E3F2FD;
+            border: 2px solid #1976D2;
+        }
+        
+        .checkbox {
+            width: 28px; height: 28px;
+            border: 3px solid #BDBDBD;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .kind-card.afgevinkt .checkbox { background: #4CAF50; border-color: #4CAF50; }
+        .checkbox::after { content: '✓'; color: white; font-size: 18px; font-weight: bold; display: none; }
+        .kind-card.afgevinkt .checkbox::after { display: block; }
+        
+        .nummer-badge {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: #4CAF50;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .kind-card.piratenskip .nummer-badge { background: #FF9800; }
+        .kind-card.afgevinkt .nummer-badge { background: #9E9E9E; }
+        .kind-card.reinboge-card:not(.afgevinkt) .nummer-badge { background: #1976D2; }
+        
+        .kind-info { flex: 1; }
+        .kind-naam { font-weight: bold; font-size: 16px; margin-bottom: 3px; }
+        .kind-card.afgevinkt .kind-naam { text-decoration: line-through; color: #757575; }
+        .kind-details { font-size: 14px; color: #757575; }
+        
+        .loading { text-align: center; padding: 60px 20px; color: #757575; }
+        .spinner {
+            border: 4px solid #E3F2FD;
+            border-top: 4px solid #2196F3;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
         .hidden { display: none !important; }
+        .empty-state { text-align: center; padding: 40px 20px; color: #757575; }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- BLAUWE APPBAR -->
         <div class="app-bar">
             <h1>📱 PM Ophaallijst</h1>
         </div>
         
-        <!-- LOGIN SCREEN - STAP 1: SELECTEER PM -->
+        <!-- LOGIN SCREEN -->
         <div id="loginScreen" class="login-screen">
             <div class="welkom-header">
                 <div class="welkom-icon">👤</div>
@@ -556,7 +454,6 @@
             </div>
             
             <div class="section-header">Pedagogisch Medewerkers</div>
-            
             <div id="pmCardsContainer">
                 <div class="loading">
                     <div class="spinner"></div>
@@ -565,26 +462,19 @@
             </div>
         </div>
 
-        <!-- LIJST SCREEN MET STICKY DATUM -->
+        <!-- STICKY LIJST SCREEN -->
         <div id="lijstScreen" class="hidden">
-            <!-- ⭐⭐⭐ STICKY DATUM SELECTOR ⭐⭐⭐ -->
+            <!-- STICKY DATUM + PM CHIPS -->
             <div class="sticky-datum-section">
-                <!-- WEEKDAG KNOPPEN -->
-                <div class="weekdag-container" id="weekdagButtons">
-                    <!-- Buttons worden hier geladen -->
-                </div>
-                
-                <!-- WERKENDE PM'S BANNER -->
-                <div class="werkende-pms-banner" id="werkendePmsBanner">
+                <div class="weekdag-container" id="weekdagButtons"></div>
+                <div class="werkende-pms-banner">
                     <h3>👥 Vandaag werken:</h3>
-                    <div class="pm-chips" id="pmChips">
-                        <!-- PM chips worden hier geladen -->
-                    </div>
+                    <div class="pm-chips" id="pmChips"></div>
                 </div>
             </div>
             
-            <!-- SCROLLABLE CONTENT AREA -->
-            <div class="content-area" id="contentArea">
+            <!-- SCROLLABLE PM SECTIONS -->
+            <div class="pm-sections-container" id="pmSectionsContainer">
                 <div class="loading">
                     <div class="spinner"></div>
                     <div>Ophaallijsten laden...</div>
@@ -603,80 +493,70 @@
             databaseURL: "https://boomhut-vervoer-default-rtdb.europe-west1.firebasedatabase.app",
             projectId: "boomhut-vervoer",
             storageBucket: "boomhut-vervoer.firebasestorage.app",
-            messagingSenderId: "537574983199",
-            appId: "1:537574983199:web:0d95e9dfd6ce735e21f6f1"
+            messagingSenderId: "350002772602",
+            appId: "1:350002772602:web:f252856892a9547c3bd9c3"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // STATE
-        let currentPmId = null;
-        let currentPmNaam = null;
+        let currentPM = null;
         let currentDatum = null;
-        let allRitten = {};
-        let reinbogeKinderen = new Set();
-        let overstappers = new Set();
+        let alleRittenPerPM = {}; // {pmId: [ritten]}
+        let overstappersVandaag = [];
+        let reinbogeKindIds = [];
 
-        // SCREENS
         const loginScreen = document.getElementById('loginScreen');
         const lijstScreen = document.getElementById('lijstScreen');
-
-        // ELEMENTS
         const pmCardsContainer = document.getElementById('pmCardsContainer');
         const weekdagButtons = document.getElementById('weekdagButtons');
         const pmChips = document.getElementById('pmChips');
-        const contentArea = document.getElementById('contentArea');
+        const pmSectionsContainer = document.getElementById('pmSectionsContainer');
 
-        // ===================================================================
-        // STAP 1: LAAD PM'S VOOR LOGIN
-        // ===================================================================
+        // STAP 1: LAAD PMs
         async function loadPMs() {
             try {
                 const snapshot = await get(ref(db, 'pedagogisch_medewerkers'));
                 if (!snapshot.exists()) {
-                    pmCardsContainer.innerHTML = '<div class="empty-state"><div class="empty-state-icon">😕</div><p>Geen PM\'s gevonden</p></div>';
+                    pmCardsContainer.innerHTML = '<div class="empty-state">Geen PM\'s gevonden</div>';
                     return;
                 }
 
                 const pms = [];
                 snapshot.forEach(child => {
                     const data = child.val();
-                    pms.push({
-                        id: child.key,
-                        naam: data.naam || 'Onbekend'
-                    });
+                    pms.push({ id: child.key, naam: data.naam || 'Onbekend' });
                 });
 
                 pms.sort((a, b) => a.naam.localeCompare(b.naam));
-
+                
                 let html = '';
                 pms.forEach(pm => {
-                    const initial = pm.naam.charAt(0).toUpperCase();
+                    const initial = pm.naam[0].toUpperCase();
                     html += `
-                        <div class="pm-card" onclick="selectPM('${pm.id}', '${pm.naam}')">
-                            <div class="pm-card-avatar">${initial}</div>
-                            <div class="pm-card-text">
-                                <h3>${pm.naam}</h3>
-                                <p>Pedagogisch Medewerker</p>
+                        <div class="pm-card" onclick="selectPM('${pm.id}', '${pm.naam.replace(/'/g, "\\'")}')">
+                            <div class="pm-icon-container">
+                                <div class="pm-avatar">${initial}</div>
                             </div>
+                            <div class="pm-content">
+                                <h3>${pm.naam}</h3>
+                                <p>Bekijk ophaallijsten</p>
+                            </div>
+                            <div class="pm-chevron">›</div>
                         </div>
                     `;
                 });
-
+                
                 pmCardsContainer.innerHTML = html;
             } catch (error) {
                 console.error('Error loading PMs:', error);
-                pmCardsContainer.innerHTML = '<div class="empty-state"><div class="empty-state-icon">❌</div><p>Fout bij laden</p></div>';
+                pmCardsContainer.innerHTML = '<div class="empty-state">Fout bij laden</div>';
             }
         }
 
-        // ===================================================================
-        // STAP 2: PM SELECTEERT NAAM
-        // ===================================================================
+        // STAP 2: PM SELECTEREN
         window.selectPM = function(pmId, pmNaam) {
-            currentPmId = pmId;
-            currentPmNaam = pmNaam;
+            currentPM = { id: pmId, naam: pmNaam };
             
             // Toon lijst screen
             loginScreen.classList.add('hidden');
@@ -691,9 +571,6 @@
             selectDatum(datumString);
         };
 
-        // ===================================================================
-        // WEEKDAG KNOPPEN LADEN
-        // ===================================================================
         function loadWeekdagKnoppen() {
             const weekDagen = getWeekDagen();
             const vandaag = new Date();
@@ -703,7 +580,6 @@
             weekDagen.forEach(dag => {
                 const isVandaag = dag.datum === vandaagString;
                 const todayClass = isVandaag ? ' today' : '';
-                
                 html += `
                     <div class="weekdag-btn${todayClass}" onclick="selectDatum('${dag.datum}')">
                         <div class="dag-naam">${dag.naam}</div>
@@ -716,165 +592,132 @@
         }
 
         function getWeekDagen() {
-            const nu = new Date();
+            const vandaag = new Date();
+            const dag = vandaag.getDay();
+            const maandag = new Date(vandaag);
+            maandag.setDate(vandaag.getDate() - (dag === 0 ? 6 : dag - 1));
+            
             const weekDagen = [];
             const dagenNamen = ['MA', 'DI', 'WO', 'DO', 'VR'];
-            
-            let maandag = new Date(nu);
-            maandag.setDate(nu.getDate() - (nu.getDay() === 0 ? 6 : nu.getDay() - 1));
             
             for (let i = 0; i < 5; i++) {
                 const datum = new Date(maandag);
                 datum.setDate(maandag.getDate() + i);
-                
-                const jaar = datum.getFullYear();
-                const maand = String(datum.getMonth() + 1).padStart(2, '0');
-                const dagNr = String(datum.getDate()).padStart(2, '0');
-                
                 weekDagen.push({
                     naam: dagenNamen[i],
                     nummer: datum.getDate(),
-                    datum: `${jaar}-${maand}-${dagNr}`
+                    datum: `${datum.getFullYear()}-${String(datum.getMonth() + 1).padStart(2, '0')}-${String(datum.getDate()).padStart(2, '0')}`
                 });
             }
             
             return weekDagen;
         }
 
-        // ===================================================================
         // STAP 3: DATUM SELECTEREN
-        // ===================================================================
-        window.selectDatum = async function(datumString) {
-            currentDatum = datumString;
+        window.selectDatum = async function(datum) {
+            currentDatum = datum;
             
             // Update selected state
             document.querySelectorAll('.weekdag-btn').forEach(btn => {
                 btn.classList.remove('selected');
             });
-            event.currentTarget?.classList.add('selected');
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('selected');
+            }
             
-            // Laad alle PM lijsten voor deze datum
-            await loadAllePMLijsten(datumString);
+            await loadAllePMLijsten();
         };
 
-        // ===================================================================
-        // LAAD ALLE PM LIJSTEN VOOR DATUM
-        // ===================================================================
-        async function loadAllePMLijsten(datumString) {
-            contentArea.innerHTML = '<div class="loading"><div class="spinner"></div><div>Ophaallijsten laden...</div></div>';
+        // STAP 4: LAAD ALLE PM LIJSTEN
+        async function loadAllePMLijsten() {
+            pmSectionsContainer.innerHTML = '<div class="loading"><div class="spinner"></div><div>Laden...</div></div>';
             
             try {
-                console.log('🔍 Loading lists for datum:', datumString);
-                
-                // Probeer beide datum formaten
-                let datumKey = datumString.replace(/-/g, '_'); // 2025_03_09
-                console.log('📅 Trying datum key:', datumKey);
-                
-                // Laad vervoer verdeling
-                let snapshot = await get(ref(db, `vervoer_verdeling/${datumKey}`));
-                
-                // Als niet gevonden, probeer zonder underscores
-                if (!snapshot.exists()) {
-                    console.log('⚠️ Not found with underscores, trying dashes...');
-                    snapshot = await get(ref(db, `vervoer_verdeling/${datumString}`));
-                    datumKey = datumString;
-                }
-                
-                console.log('📊 Snapshot exists:', snapshot.exists());
+                const datumKey = currentDatum.replace(/-/g, '_');
+                const snapshot = await get(ref(db, `vervoer_verdeling/${datumKey}`));
                 
                 if (!snapshot.exists()) {
-                    console.log('❌ No data found for this date');
-                    contentArea.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><p>Geen ophaallijsten voor deze dag</p></div>';
+                    pmSectionsContainer.innerHTML = '<div class="empty-state">Geen ophaallijsten voor deze dag</div>';
                     pmChips.innerHTML = '<p style="color:#757575;font-size:13px;">Geen PM\'s ingepland</p>';
                     return;
                 }
 
                 // Groepeer ritten per PM
-                allRitten = {};
+                alleRittenPerPM = {};
                 snapshot.forEach(child => {
                     const rit = child.val();
                     const pmId = rit.pmId;
-                    
-                    console.log('🚌 Rit gevonden:', child.key, 'PM:', pmId);
-                    
-                    if (!allRitten[pmId]) {
-                        allRitten[pmId] = [];
+                    if (!alleRittenPerPM[pmId]) {
+                        alleRittenPerPM[pmId] = [];
                     }
-                    allRitten[pmId].push({
-                        ritId: child.key,
+                    alleRittenPerPM[pmId].push({
+                        key: child.key,
                         ...rit
                     });
                 });
 
-                console.log('📋 Alle ritten grouped:', Object.keys(allRitten).length, 'PMs');
-
-                // Laad Reinboge kinderen
-                await loadReinbogeKinderen(datumString);
+                // Laad Reinboge + Overstappers
+                await loadReinbogeKinderen();
+                await loadOverstappers();
                 
-                // Laad overstappers
-                await loadOverstappers(datumString);
-                
-                // Toon PM chips
+                // Render PM chips
                 await renderPMChips();
                 
-                // Render PM lijsten
-                await renderAllePMLijsten();
+                // Render PM secties
+                await renderPMSections();
                 
             } catch (error) {
-                console.error('❌ Error loading lists:', error);
-                contentArea.innerHTML = `<div class="empty-state"><div class="empty-state-icon">❌</div><p>Fout bij laden: ${error.message}</p></div>`;
+                console.error('Error:', error);
+                pmSectionsContainer.innerHTML = '<div class="empty-state">Fout bij laden</div>';
             }
         }
 
-        // Laad Reinboge kinderen
-        async function loadReinbogeKinderen(datumString) {
-            reinbogeKinderen = new Set();
-            
+        async function loadReinbogeKinderen() {
             try {
-                const datum = new Date(datumString);
-                const weekdag = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'][datum.getDay()];
-                
+                const weekdag = getDagNaam();
                 const snapshot = await get(ref(db, `reinboge_kinderen/${weekdag}`));
-                if (snapshot.exists()) {
-                    const items = snapshot.val();
-                    if (Array.isArray(items)) {
-                        items.forEach(item => {
-                            if (item) reinbogeKinderen.add(item.toString());
-                        });
+                reinbogeKindIds = [];
+                
+                if (snapshot.exists() && snapshot.val() != null) {
+                    const val = snapshot.val();
+                    const ids = Array.isArray(val) ? val : Object.values(val);
+                    
+                    for (const reinbogeId of ids) {
+                        if (!reinbogeId) continue;
+                        const kindSnap = await get(ref(db, `reinboge_alle_kinderen/${reinbogeId}`));
+                        if (kindSnap.exists() && kindSnap.val().naam) {
+                            reinbogeKindIds.push(kindSnap.val().naam.toLowerCase());
+                        }
                     }
                 }
             } catch (error) {
-                console.error('Error loading Reinboge:', error);
+                console.error('Error loading reinboge:', error);
             }
         }
 
-        // Laad overstappers
-        async function loadOverstappers(datumString) {
-            overstappers = new Set();
-            
+        async function loadOverstappers() {
             try {
-                const datum = new Date(datumString);
-                const weekdag = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'][datum.getDay()];
-                
+                const weekdag = getDagNaam();
                 const snapshot = await get(ref(db, `overstappers/${weekdag}`));
-                if (snapshot.exists()) {
-                    const items = snapshot.val();
-                    if (Array.isArray(items)) {
-                        items.forEach(item => {
-                            if (item) overstappers.add(item.toString());
-                        });
-                    }
+                overstappersVandaag = [];
+                
+                if (snapshot.exists() && snapshot.val() != null) {
+                    const val = snapshot.val();
+                    overstappersVandaag = Array.isArray(val) ? val.filter(Boolean) : Object.values(val).filter(Boolean);
                 }
             } catch (error) {
                 console.error('Error loading overstappers:', error);
             }
         }
 
-        // Render PM chips bovenaan
+        function getDagNaam() {
+            const date = new Date(currentDatum);
+            const dagen = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
+            return dagen[date.getDay()];
+        }
+
         async function renderPMChips() {
-            const pmIds = Object.keys(allRitten);
-            
-            console.log('🎨 Rendering PM chips for:', pmIds);
+            const pmIds = Object.keys(alleRittenPerPM);
             
             if (pmIds.length === 0) {
                 pmChips.innerHTML = '<p style="color:#757575;font-size:13px;">Geen PM\'s ingepland</p>';
@@ -883,114 +726,74 @@
 
             let html = '';
             for (const pmId of pmIds) {
-                try {
-                    const pmSnapshot = await get(ref(db, `pedagogisch_medewerkers/${pmId}`));
-                    const pmNaam = pmSnapshot.exists() ? (pmSnapshot.val().naam || 'Onbekend') : 'Onbekend';
-                    const isCurrentUser = pmId === currentPmId;
-                    
-                    console.log(`👤 PM chip: ${pmNaam} (ID: ${pmId}, Current: ${isCurrentUser})`);
-                    
-                    html += `
-                        <div class="pm-chip ${isCurrentUser ? 'active' : ''}" onclick="togglePMSection('${pmId}')">
-                            ${pmNaam}
-                        </div>
-                    `;
-                } catch (error) {
-                    console.error(`❌ Error loading PM ${pmId}:`, error);
-                    html += `
-                        <div class="pm-chip" onclick="togglePMSection('${pmId}')">
-                            Onbekend
-                        </div>
-                    `;
-                }
+                const pmSnap = await get(ref(db, `pedagogisch_medewerkers/${pmId}`));
+                const pmNaam = pmSnap.exists() ? (pmSnap.val().naam || 'Onbekend') : 'Onbekend';
+                const isCurrentUser = pmId === currentPM.id;
+                
+                html += `
+                    <div class="pm-chip ${isCurrentUser ? 'active' : ''}" onclick="togglePMSection('${pmId}')">
+                        ${pmNaam}
+                    </div>
+                `;
             }
             
             pmChips.innerHTML = html;
         }
 
-        // Render alle PM lijsten
-        async function renderAllePMLijsten() {
+        async function renderPMSections() {
             let html = '';
             
-            console.log('🎨 Rendering all PM sections...');
-            
-            for (const [pmId, ritten] of Object.entries(allRitten)) {
-                try {
-                    const pmSnapshot = await get(ref(db, `pedagogisch_medewerkers/${pmId}`));
-                    const pmNaam = pmSnapshot.exists() ? (pmSnapshot.val().naam || 'Onbekend') : 'Onbekend';
-                    const isCurrentUser = pmId === currentPmId;
-                    const expandedClass = isCurrentUser ? 'expanded' : '';
-                    const currentUserClass = isCurrentUser ? 'current-user' : '';
-                    
-                    // Tel totaal aantal kinderen
-                    let totaalKinderen = 0;
-                    ritten.forEach(rit => {
-                        totaalKinderen += rit.kindIds?.length || 0;
-                    });
-                    
-                    const initial = pmNaam.charAt(0).toUpperCase();
-                    
-                    console.log(`📝 Section: ${pmNaam} (${totaalKinderen} kinderen, ${ritten.length} ritten)`);
-                    
-                    html += `
-                        <div class="pm-section ${expandedClass} ${currentUserClass}" id="pm-${pmId}">
-                            <div class="pm-section-header" onclick="togglePMSection('${pmId}')">
-                                <div class="chevron">▶</div>
-                                <div class="pm-avatar">${initial}</div>
-                                <div class="pm-info">
-                                    <h3>${pmNaam}</h3>
-                                    <p>${totaalKinderen} ${totaalKinderen === 1 ? 'kind' : 'kinderen'} • ${ritten.length} ${ritten.length === 1 ? 'rit' : 'ritten'}</p>
-                                </div>
-                            </div>
-                            <div class="kinderen-lijst">
-                                ${await renderRittenVoorPM(ritten, pmId)}
+            for (const [pmId, ritten] of Object.entries(alleRittenPerPM)) {
+                const pmSnap = await get(ref(db, `pedagogisch_medewerkers/${pmId}`));
+                const pmNaam = pmSnap.exists() ? (pmSnap.val().naam || 'Onbekend') : 'Onbekend';
+                const isCurrentUser = pmId === currentPM.id;
+                const initial = pmNaam.charAt(0).toUpperCase();
+                
+                // Tel kinderen
+                let totaal = 0;
+                ritten.forEach(rit => totaal += (rit.kindIds || []).length);
+                
+                html += `
+                    <div class="pm-section ${isCurrentUser ? 'expanded current-user' : ''}" id="pm-${pmId}">
+                        <div class="pm-section-header-clickable" onclick="togglePMSection('${pmId}')">
+                            <div class="chevron-icon">▶</div>
+                            <div class="pm-section-avatar">${initial}</div>
+                            <div class="pm-section-info">
+                                <h3>${pmNaam}</h3>
+                                <p>${totaal} kinderen • ${ritten.length} ritten</p>
                             </div>
                         </div>
-                    `;
-                } catch (error) {
-                    console.error(`❌ Error rendering PM ${pmId}:`, error);
-                }
+                        <div class="pm-section-content">
+                            ${await renderRittenVoorPM(ritten)}
+                        </div>
+                    </div>
+                `;
             }
             
-            contentArea.innerHTML = html || '<div class="empty-state"><div class="empty-state-icon">📭</div><p>Geen lijsten beschikbaar</p></div>';
+            pmSectionsContainer.innerHTML = html;
         }
 
-        // Render ritten voor PM
-        async function renderRittenVoorPM(ritten, pmId) {
+        async function renderRittenVoorPM(ritten) {
             let html = '';
             
             for (const rit of ritten) {
                 const kinderen = await loadKinderenVoorRit(rit);
+                const reinboge = kinderen.filter(k => k.is_reinboge);
+                const regulier = kinderen.filter(k => !k.is_reinboge);
                 
-                // Verdeel kinderen in Reinboge en Regulier
-                const reinbogeList = kinderen.filter(k => reinbogeKinderen.has(k.id) || reinbogeKinderen.has(k.naam));
-                const reguliereList = kinderen.filter(k => !reinbogeKinderen.has(k.id) && !reinbogeKinderen.has(k.naam));
-                
-                // Reinboge sectie
-                if (reinbogeList.length > 0) {
-                    html += `
-                        <div class="school-header">
-                            <h4>🏫 REINBOGE SCHOOL</h4>
-                        </div>
-                    `;
-                    
-                    reinbogeList.forEach(kind => {
-                        html += renderKindItem(kind, rit.ritId);
+                if (reinboge.length > 0) {
+                    html += '<div class="sectie-header"><span style="font-size:20px;">🏫</span> REINBOGE SCHOOL</div>';
+                    reinboge.forEach(kind => {
+                        html += buildKindCard(kind, rit.key);
                     });
                 }
                 
-                // Reguliere scholen sectie
-                if (reguliereList.length > 0) {
-                    if (reinbogeList.length > 0) {
-                        html += `
-                            <div class="reguliere-header">
-                                <h4>🎈 REGULIERE SCHOLEN</h4>
-                            </div>
-                        `;
+                if (regulier.length > 0) {
+                    if (reinboge.length > 0) {
+                        html += '<div class="sectie-header regulier"><span style="font-size:20px;">📍</span> REGULIERE SCHOLEN</div>';
                     }
-                    
-                    reguliereList.forEach(kind => {
-                        html += renderKindItem(kind, rit.ritId);
+                    regulier.forEach(kind => {
+                        html += buildKindCard(kind, rit.key);
                     });
                 }
             }
@@ -998,145 +801,83 @@
             return html;
         }
 
-        // Laad kinderen voor rit
         async function loadKinderenVoorRit(rit) {
+            const datumKey = currentDatum.replace(/-/g, '_');
             const kinderen = [];
-            const kindIds = rit.kindIds || [];
-            const ophaaalVolgorde = rit.ophaal_volgorde || [];
-            
-            // Maak map van volgorde nummers
-            const volgordeMap = {};
-            ophaaalVolgorde.forEach(item => {
-                volgordeMap[item.kindId] = item.ophaal_volgorde;
-            });
-            
-            for (const kindId of kindIds) {
-                try {
-                    const kindData = await getKindData(kindId);
+            const seenNames = new Set();
+
+            if (rit.ophaal_volgorde && Array.isArray(rit.ophaal_volgorde)) {
+                for (const item of rit.ophaal_volgorde) {
+                    let kindData = null;
+                    
+                    if (item.is_piratenskip) {
+                        const snap = await get(ref(db, `piratenskip_kinderen/${item.kindId}`));
+                        if (snap.exists()) kindData = snap.val();
+                    } else {
+                        const snap = await get(ref(db, `kinderen_per_dag/${datumKey}/${item.kindId}`));
+                        if (snap.exists()) kindData = snap.val();
+                    }
+                    
                     if (kindData) {
+                        const kindNaam = (kindData.naam || '').toLowerCase().trim();
+                        if (seenNames.has(kindNaam)) continue;
+                        seenNames.add(kindNaam);
+                        
+                        const isReinboge = (kindData.school && kindData.school.toLowerCase().includes('reinboge')) || 
+                                          kindData.is_reinboge || 
+                                          reinbogeKindIds.includes(kindNaam);
+                        
                         kinderen.push({
-                            ...kindData,
-                            volgorde: volgordeMap[kindId] || 999
+                            id: item.kindId,
+                            naam: kindData.naam || 'Onbekend',
+                            leeftijd: kindData.leeftijd || 0,
+                            afgevinkt: item.is_piratenskip ? (kindData.afgeleverd || false) : (kindData.afgevinkt || false),
+                            ophaal_volgorde: item.ophaal_volgorde || 999,
+                            is_piratenskip: item.is_piratenskip || false,
+                            is_reinboge: isReinboge,
+                            opmerking: kindData.opmerking || ''
                         });
                     }
-                } catch (error) {
-                    console.error(`Error loading kind ${kindId}:`, error);
                 }
             }
-            
-            // Sorteer op volgorde
-            kinderen.sort((a, b) => a.volgorde - b.volgorde);
-            
-            return kinderen;
+
+            return kinderen.sort((a, b) => a.ophaal_volgorde - b.ophaal_volgorde);
         }
 
-        // Get kind data
-        async function getKindData(kindId) {
-            // Check kinderen_per_dag
-            const dagSnapshot = await get(ref(db, `kinderen_per_dag/${currentDatum.replace(/-/g, '_')}/${kindId}`));
-            if (dagSnapshot.exists()) {
-                const data = dagSnapshot.val();
-                return {
-                    id: kindId,
-                    naam: data.naam || 'Onbekend',
-                    leeftijd: data.leeftijd || 0,
-                    afgevinkt: data.afgevinkt || false,
-                    opmerking: data.opmerking || null
-                };
-            }
+        function buildKindCard(kind, ritKey) {
+            const isOverstapper = overstappersVandaag.some(ov => {
+                const ovNaam = ov.includes('(') ? ov.split('(')[0].trim().toLowerCase() : ov.toLowerCase();
+                return ovNaam === kind.naam.toLowerCase();
+            });
             
-            // Check kinderen database
-            const kindSnapshot = await get(ref(db, `kinderen/${kindId}`));
-            if (kindSnapshot.exists()) {
-                const data = kindSnapshot.val();
-                return {
-                    id: kindId,
-                    naam: data.naam || 'Onbekend',
-                    leeftijd: data.leeftijd || 0,
-                    afgevinkt: false,
-                    opmerking: data.opmerking || null
-                };
-            }
-            
-            // Check Reinboge alle kinderen
-            const reinbogeSnapshot = await get(ref(db, `reinboge_alle_kinderen/${kindId}`));
-            if (reinbogeSnapshot.exists()) {
-                const data = reinbogeSnapshot.val();
-                return {
-                    id: kindId,
-                    naam: data.naam || 'Onbekend',
-                    leeftijd: data.leeftijd || 0,
-                    afgevinkt: false,
-                    opmerking: null
-                };
-            }
-            
-            // Check piratenskip kinderen
-            if (kindId.startsWith('reinboge_pirateskip_')) {
-                const piratenskipSnapshot = await get(ref(db, `piratenskip_kinderen/${kindId}`));
-                if (piratenskipSnapshot.exists()) {
-                    const data = piratenskipSnapshot.val();
-                    return {
-                        id: kindId,
-                        naam: data.naam || 'Onbekend',
-                        leeftijd: data.leeftijd || 0,
-                        afgevinkt: false,
-                        opmerking: null
-                    };
-                }
-            }
-            
-            return null;
-        }
-
-        // Render kind item
-        function renderKindItem(kind, ritId) {
-            const isReinboge = reinbogeKinderen.has(kind.id) || reinbogeKinderen.has(kind.naam);
-            const isOverstapper = overstappers.has(kind.naam) || overstappers.has(kind.id);
-            const afgevinktClass = kind.afgevinkt ? 'afgevinkt' : '';
-            const checkIcon = kind.afgevinkt ? '✓' : '';
-            
-            let badges = '';
-            if (isReinboge) {
-                badges += '<span class="kind-badge reinboge">🏫 Reinboge</span>';
-            }
-            if (isOverstapper) {
-                badges += '<span class="kind-badge overstapper">🔄 Overstapper</span>';
-            }
-            
-            const opmerkingIcon = kind.opmerking ? `<span class="opmerking-icon" title="${kind.opmerking}">📝</span>` : '';
+            const klass = kind.afgevinkt ? 'afgevinkt' : '';
+            const piratenskipKlass = kind.is_piratenskip ? 'piratenskip' : '';
+            const reinbogeKlass = kind.is_reinboge ? 'reinboge-card' : '';
+            const emoji = kind.is_piratenskip ? ' 🏴‍☠️' : (kind.is_reinboge ? ' 🏫' : '');
+            const overstapperIcon = isOverstapper ? '<span style="font-size:18px;">🔄</span>' : '';
+            const opmerkingIcon = kind.opmerking ? `<span style="font-size:16px;" title="${kind.opmerking}">📝</span>` : '';
             
             return `
-                <div class="kind-item ${afgevinktClass}" onclick="toggleKind('${kind.id}', '${ritId}')">
-                    <div class="kind-nummer">${kind.volgorde}</div>
+                <div class="kind-card ${klass} ${piratenskipKlass} ${reinbogeKlass}" onclick="toggleKind('${kind.id}', ${kind.is_piratenskip})">
+                    <div class="checkbox"></div>
+                    <div class="nummer-badge">${kind.ophaal_volgorde}</div>
                     <div class="kind-info">
-                        <div class="kind-naam">
-                            ${kind.naam}
-                            ${opmerkingIcon}
-                            ${badges}
-                        </div>
-                        <div class="kind-leeftijd">${kind.leeftijd} jaar</div>
+                        <div class="kind-naam">${kind.naam}${emoji} ${overstapperIcon} ${opmerkingIcon}</div>
+                        <div class="kind-details">${kind.leeftijd} jaar${isOverstapper ? ' • Overstapper' : ''}</div>
                     </div>
-                    <div class="checkbox">${checkIcon}</div>
                 </div>
             `;
         }
 
-        // ===================================================================
-        // TOGGLE FUNCTIES
-        // ===================================================================
         window.togglePMSection = function(pmId) {
             const section = document.getElementById(`pm-${pmId}`);
             
             // Ingelogde PM blijft altijd open
-            if (pmId === currentPmId) {
-                return; // Kan niet dichtklappen
-            }
+            if (pmId === currentPM.id) return;
             
             // Toggle andere PM's
             section.classList.toggle('expanded');
             
-            // Scroll naar sectie als geopend
             if (section.classList.contains('expanded')) {
                 setTimeout(() => {
                     section.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1144,30 +885,25 @@
             }
         };
 
-        window.toggleKind = async function(kindId, ritId) {
+        window.toggleKind = async function(kindId, isPiratenskip) {
             try {
-                const path = `kinderen_per_dag/${currentDatum.replace(/-/g, '_')}/${kindId}`;
-                const snapshot = await get(ref(db, path));
+                const datumKey = currentDatum.replace(/-/g, '_');
+                const path = isPiratenskip 
+                    ? `piratenskip_kinderen/${kindId}`
+                    : `kinderen_per_dag/${datumKey}/${kindId}`;
+                const field = isPiratenskip ? 'afgeleverd' : 'afgevinkt';
                 
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    const nieuweStatus = !data.afgevinkt;
-                    
-                    await update(ref(db, path), {
-                        afgevinkt: nieuweStatus
-                    });
-                    
-                    // Reload lijsten
-                    await loadAllePMLijsten(currentDatum);
+                const snap = await get(ref(db, path));
+                if (snap.exists()) {
+                    const nieuweStatus = !snap.val()[field];
+                    await update(ref(db, path), { [field]: nieuweStatus });
+                    await renderPMSections();
                 }
             } catch (error) {
-                console.error('Error toggling kind:', error);
+                console.error('Error toggling:', error);
             }
         };
 
-        // ===================================================================
-        // INIT
-        // ===================================================================
         loadPMs();
     </script>
 </body>
