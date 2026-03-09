@@ -982,30 +982,36 @@
             const section = document.getElementById(`pm-${pmId}`);
             if (!section) return;
             
-            // Ingelogde PM blijft altijd open, maar scroll WEL naar naam
+            // Check of al expanded
             const wasExpanded = section.classList.contains('expanded');
             
+            // Toggle (behalve ingelogde PM die blijft altijd open)
             if (pmId !== currentPM.id) {
-                // Toggle andere PM's
                 section.classList.toggle('expanded');
             }
             
-            // ⭐ ALTIJD scrollen naar de PM naam (ook als al open!)
+            // ⭐ SCROLL naar PM header (ALTIJD, ook als al open!)
+            const delay = (!wasExpanded && pmId !== currentPM.id) ? 400 : 50;
+            
             setTimeout(() => {
-                // Scroll naar de PM header
-                const header = section.querySelector('.pm-section-header-clickable');
-                if (header) {
-                    // Bereken positie van header
-                    const headerRect = header.getBoundingClientRect();
-                    const stickyHeight = 170; // Hoogte van sticky datum + chips banner
-                    
-                    // Scroll zodat header net ONDER sticky header komt
-                    window.scrollBy({
-                        top: headerRect.top - stickyHeight - 10, // -10px extra ruimte
-                        behavior: 'smooth'
-                    });
-                }
-            }, pmId === currentPM.id || wasExpanded ? 0 : 200); // Wacht op expand animatie als nodig
+                // Meet de sticky header hoogte
+                const stickySection = document.querySelector('.sticky-datum-section');
+                const stickyHeight = stickySection ? stickySection.offsetHeight : 180;
+                
+                // Meet waar de PM sectie staat (vanaf top van pagina)
+                const sectionRect = section.getBoundingClientRect();
+                const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                const sectionTopFromPage = sectionRect.top + currentScrollTop;
+                
+                // Bereken scroll positie: sectie top MINUS sticky hoogte MINUS 20px ruimte
+                const targetScroll = sectionTopFromPage - stickyHeight - 20;
+                
+                // Scroll!
+                window.scrollTo({
+                    top: targetScroll,
+                    behavior: 'smooth'
+                });
+            }, delay);
         };
 
         window.toggleKind = async function(kindId, isPiratenskip) {
