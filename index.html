@@ -384,6 +384,22 @@
             border: 2px solid #1976D2;
         }
         
+        /* ⭐ READONLY STYLE (andere PM's lijsten) */
+        .kind-card.readonly {
+            cursor: default;
+            opacity: 0.7;
+        }
+        .kind-card.readonly:hover {
+            border-color: #E0E0E0;
+            transform: none;
+        }
+        .kind-card.readonly.piratenskip:hover {
+            border-color: #FF9800;
+        }
+        .kind-card.readonly.reinboge-card:not(.afgevinkt):hover {
+            border-color: #1976D2;
+        }
+        
         .checkbox {
             width: 28px; height: 28px;
             border: 3px solid #BDBDBD;
@@ -810,7 +826,7 @@
                             </div>
                         </div>
                         <div class="pm-section-content">
-                            ${await renderRittenVoorPM(section.ritten)}
+                            ${await renderRittenVoorPM(section.ritten, section.pmId)}
                         </div>
                     </div>
                 `;
@@ -819,7 +835,7 @@
             pmSectionsContainer.innerHTML = html;
         }
 
-        async function renderRittenVoorPM(ritten) {
+        async function renderRittenVoorPM(ritten, pmId) {
             let html = '';
             
             for (const rit of ritten) {
@@ -830,7 +846,7 @@
                 if (reinboge.length > 0) {
                     html += '<div class="sectie-header"><span style="font-size:20px;">🏫</span> REINBOGE SCHOOL</div>';
                     reinboge.forEach(kind => {
-                        html += buildKindCard(kind, rit.key);
+                        html += buildKindCard(kind, rit.key, pmId);
                     });
                 }
                 
@@ -839,7 +855,7 @@
                         html += '<div class="sectie-header regulier"><span style="font-size:20px;">📍</span> REGULIERE SCHOLEN</div>';
                     }
                     regulier.forEach(kind => {
-                        html += buildKindCard(kind, rit.key);
+                        html += buildKindCard(kind, rit.key, pmId);
                     });
                 }
             }
@@ -890,21 +906,28 @@
             return kinderen.sort((a, b) => a.ophaal_volgorde - b.ophaal_volgorde);
         }
 
-        function buildKindCard(kind, ritKey) {
+        function buildKindCard(kind, ritKey, pmId) {
             const isOverstapper = overstappersVandaag.some(ov => {
                 const ovNaam = ov.includes('(') ? ov.split('(')[0].trim().toLowerCase() : ov.toLowerCase();
                 return ovNaam === kind.naam.toLowerCase();
             });
             
+            // ⭐ Check of dit de lijst van de ingelogde PM is
+            const isOwnList = pmId === currentPM.id;
+            
             const klass = kind.afgevinkt ? 'afgevinkt' : '';
             const piratenskipKlass = kind.is_piratenskip ? 'piratenskip' : '';
             const reinbogeKlass = kind.is_reinboge ? 'reinboge-card' : '';
+            const readonlyKlass = !isOwnList ? 'readonly' : '';
             const emoji = kind.is_piratenskip ? ' 🏴‍☠️' : (kind.is_reinboge ? ' 🏫' : '');
             const overstapperIcon = isOverstapper ? '<span style="font-size:18px;">🔄</span>' : '';
             const opmerkingIcon = kind.opmerking ? `<span style="font-size:16px;" title="${kind.opmerking}">📝</span>` : '';
             
+            // ⭐ Alleen onclick als het je eigen lijst is
+            const onclickAttr = isOwnList ? `onclick="toggleKind('${kind.id}', ${kind.is_piratenskip})"` : '';
+            
             return `
-                <div class="kind-card ${klass} ${piratenskipKlass} ${reinbogeKlass}" onclick="toggleKind('${kind.id}', ${kind.is_piratenskip})">
+                <div class="kind-card ${klass} ${piratenskipKlass} ${reinbogeKlass} ${readonlyKlass}" ${onclickAttr}>
                     <div class="checkbox"></div>
                     <div class="nummer-badge">${kind.ophaal_volgorde}</div>
                     <div class="kind-info">
