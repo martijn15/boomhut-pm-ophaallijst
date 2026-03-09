@@ -989,8 +989,10 @@
             
             if (section.classList.contains('expanded')) {
                 setTimeout(() => {
-                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 100);
+                    // ⭐ Scroll naar de PM header (niet content!)
+                    // Block 'center' zorgt dat de naam in het midden komt
+                    section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 150); // Kleine vertraging voor animatie
             }
         };
 
