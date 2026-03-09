@@ -724,28 +724,54 @@
                 return;
             }
 
-            let html = '';
+            // Bouw PM info array
+            const pmChipData = [];
             for (const pmId of pmIds) {
                 const pmSnap = await get(ref(db, `pedagogisch_medewerkers/${pmId}`));
                 const pmNaam = pmSnap.exists() ? (pmSnap.val().naam || 'Onbekend') : 'Onbekend';
+                
+                // ⭐ SKIP "Onbekend"
+                if (pmNaam === 'Onbekend') continue;
+                
                 const isCurrentUser = pmId === currentPM.id;
                 
+                pmChipData.push({ pmId, pmNaam, isCurrentUser });
+            }
+            
+            // ⭐ SORTEER: Ingelogde PM eerst, rest alfabetisch
+            pmChipData.sort((a, b) => {
+                if (a.isCurrentUser) return -1;
+                if (b.isCurrentUser) return 1;
+                return a.pmNaam.localeCompare(b.pmNaam);
+            });
+            
+            // Render chips
+            let html = '';
+            pmChipData.forEach(pm => {
                 html += `
-                    <div class="pm-chip ${isCurrentUser ? 'active' : ''}" onclick="togglePMSection('${pmId}')">
-                        ${pmNaam}
+                    <div class="pm-chip ${pm.isCurrentUser ? 'active' : ''}" onclick="togglePMSection('${pm.pmId}')">
+                        ${pm.pmNaam}
                     </div>
                 `;
-            }
+            });
             
             pmChips.innerHTML = html;
         }
 
         async function renderPMSections() {
-            let html = '';
+            // Bouw array met PM info
+            const pmSections = [];
             
             for (const [pmId, ritten] of Object.entries(alleRittenPerPM)) {
                 const pmSnap = await get(ref(db, `pedagogisch_medewerkers/${pmId}`));
                 const pmNaam = pmSnap.exists() ? (pmSnap.val().naam || 'Onbekend') : 'Onbekend';
+                
+                // ⭐ SKIP "Onbekend" PM's
+                if (pmNaam === 'Onbekend') {
+                    console.log('⚠️ Skipping Onbekend PM:', pmId);
+                    continue;
+                }
+                
                 const isCurrentUser = pmId === currentPM.id;
                 const initial = pmNaam.charAt(0).toUpperCase();
                 
@@ -753,18 +779,38 @@
                 let totaal = 0;
                 ritten.forEach(rit => totaal += (rit.kindIds || []).length);
                 
+                pmSections.push({
+                    pmId,
+                    pmNaam,
+                    isCurrentUser,
+                    initial,
+                    totaal,
+                    ritten
+                });
+            }
+            
+            // ⭐ SORTEER: Ingelogde PM EERST, dan de rest alfabetisch
+            pmSections.sort((a, b) => {
+                if (a.isCurrentUser) return -1; // a komt eerst
+                if (b.isCurrentUser) return 1;  // b komt eerst
+                return a.pmNaam.localeCompare(b.pmNaam); // alfabetisch
+            });
+            
+            // Render gesorteerde secties
+            let html = '';
+            for (const section of pmSections) {
                 html += `
-                    <div class="pm-section ${isCurrentUser ? 'expanded current-user' : ''}" id="pm-${pmId}">
-                        <div class="pm-section-header-clickable" onclick="togglePMSection('${pmId}')">
+                    <div class="pm-section ${section.isCurrentUser ? 'expanded current-user' : ''}" id="pm-${section.pmId}">
+                        <div class="pm-section-header-clickable" onclick="togglePMSection('${section.pmId}')">
                             <div class="chevron-icon">▶</div>
-                            <div class="pm-section-avatar">${initial}</div>
+                            <div class="pm-section-avatar">${section.initial}</div>
                             <div class="pm-section-info">
-                                <h3>${pmNaam}</h3>
-                                <p>${totaal} kinderen • ${ritten.length} ritten</p>
+                                <h3>${section.pmNaam}</h3>
+                                <p>${section.totaal} kinderen • ${section.ritten.length} ritten</p>
                             </div>
                         </div>
                         <div class="pm-section-content">
-                            ${await renderRittenVoorPM(ritten)}
+                            ${await renderRittenVoorPM(section.ritten)}
                         </div>
                     </div>
                 `;
