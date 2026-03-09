@@ -869,6 +869,37 @@
             const alleAfgevinkt = totaalKinderen > 0 && afgevinkt === totaalKinderen;
             const isOwnList = pmId === currentPM.id;
             
+            // ⭐ VINK ALLES AF KNOP (alleen eigen lijst als NIET alles klaar)
+            if (!alleAfgevinkt && isOwnList && totaalKinderen > 0) {
+                html += `
+                    <div style="margin-top:24px;padding-top:20px;border-top:2px solid #E0E0E0;">
+                        <button id="vinkAllesAf_${pmId}" onclick="vinkAlleKinderenAf('${pmId}')" style="
+                            width:100%;
+                            padding:18px;
+                            background:linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+                            color:white;
+                            border:none;
+                            border-radius:16px;
+                            font-size:18px;
+                            font-weight:bold;
+                            cursor:pointer;
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            gap:12px;
+                            box-shadow:0 4px 12px rgba(33,150,243,0.4);
+                            transition: all 0.3s;
+                        " onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 16px rgba(33,150,243,0.5)';" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 12px rgba(33,150,243,0.4)';">
+                            <span style="font-size:28px;">✓</span>
+                            <span>Vink Alle Kinderen Af (${afgevinkt}/${totaalKinderen})</span>
+                        </button>
+                        <div style="text-align:center;margin-top:12px;font-size:13px;color:#757575;">
+                            Vink alle kinderen in één keer af
+                        </div>
+                    </div>
+                `;
+            }
+            
             // ⭐ VERWIJDER KNOP (alleen voor je eigen lijst als alles klaar is)
             if (alleAfgevinkt && isOwnList) {
                 html += `
@@ -1012,6 +1043,49 @@
                     behavior: 'smooth'
                 });
             }, delay);
+        };
+
+        // ⭐ VINK ALLE KINDEREN AF VOOR EEN PM
+        window.vinkAlleKinderenAf = async function(pmId) {
+            const knop = document.getElementById(`vinkAllesAf_${pmId}`);
+            if (!knop) return;
+            
+            // Disable knop
+            knop.disabled = true;
+            knop.innerHTML = '<span style="font-size:28px;">⏳</span><span>Bezig met afvinken...</span>';
+            
+            try {
+                const datumKey = currentDatum.replace(/-/g, '_');
+                const ritten = alleRittenPerPM[pmId] || [];
+                
+                // Verzamel alle kinderen
+                const alleKinderen = [];
+                for (const rit of ritten) {
+                    const kinderen = await loadKinderenVoorRit(rit);
+                    alleKinderen.push(...kinderen);
+                }
+                
+                // Vink alle kinderen af
+                for (const kind of alleKinderen) {
+                    if (!kind.afgevinkt) {
+                        const path = kind.is_piratenskip
+                            ? `piratenskip_kinderen/${kind.id}`
+                            : `kinderen_per_dag/${datumKey}/${kind.id}`;
+                        const field = kind.is_piratenskip ? 'afgeleverd' : 'afgevinkt';
+                        
+                        await update(ref(db, path), { [field]: true });
+                    }
+                }
+                
+                // Reload secties
+                await renderPMSections();
+                
+            } catch (error) {
+                console.error('Error bulk checking:', error);
+                alert('❌ Fout bij afvinken: ' + error.message);
+                knop.disabled = false;
+                knop.innerHTML = '<span style="font-size:28px;">✓</span><span>Vink Alle Kinderen Af</span>';
+            }
         };
 
         window.toggleKind = async function(kindId, isPiratenskip) {
