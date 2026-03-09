@@ -989,10 +989,21 @@
             
             if (section.classList.contains('expanded')) {
                 setTimeout(() => {
-                    // ⭐ Scroll naar de PM header (niet content!)
-                    // Block 'center' zorgt dat de naam in het midden komt
-                    section.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 150); // Kleine vertraging voor animatie
+                    // ⭐ Scroll naar de PM HEADER (niet de hele sectie!)
+                    const header = section.querySelector('.pm-section-header-clickable');
+                    if (header) {
+                        header.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'start',     // Top van header naar top van viewport
+                            inline: 'nearest'
+                        });
+                        
+                        // ⭐ Extra scroll compensatie voor sticky header (150px)
+                        setTimeout(() => {
+                            window.scrollBy({ top: -160, behavior: 'smooth' });
+                        }, 200);
+                    }
+                }, 150);
             }
         };
 
