@@ -980,31 +980,32 @@
 
         window.togglePMSection = function(pmId) {
             const section = document.getElementById(`pm-${pmId}`);
+            if (!section) return;
             
-            // Ingelogde PM blijft altijd open
-            if (pmId === currentPM.id) return;
+            // Ingelogde PM blijft altijd open, maar scroll WEL naar naam
+            const wasExpanded = section.classList.contains('expanded');
             
-            // Toggle andere PM's
-            section.classList.toggle('expanded');
-            
-            if (section.classList.contains('expanded')) {
-                setTimeout(() => {
-                    // ⭐ Scroll naar de PM HEADER (niet de hele sectie!)
-                    const header = section.querySelector('.pm-section-header-clickable');
-                    if (header) {
-                        header.scrollIntoView({ 
-                            behavior: 'smooth', 
-                            block: 'start',     // Top van header naar top van viewport
-                            inline: 'nearest'
-                        });
-                        
-                        // ⭐ Extra scroll compensatie voor sticky header (150px)
-                        setTimeout(() => {
-                            window.scrollBy({ top: -160, behavior: 'smooth' });
-                        }, 200);
-                    }
-                }, 150);
+            if (pmId !== currentPM.id) {
+                // Toggle andere PM's
+                section.classList.toggle('expanded');
             }
+            
+            // ⭐ ALTIJD scrollen naar de PM naam (ook als al open!)
+            setTimeout(() => {
+                // Scroll naar de PM header
+                const header = section.querySelector('.pm-section-header-clickable');
+                if (header) {
+                    // Bereken positie van header
+                    const headerRect = header.getBoundingClientRect();
+                    const stickyHeight = 170; // Hoogte van sticky datum + chips banner
+                    
+                    // Scroll zodat header net ONDER sticky header komt
+                    window.scrollBy({
+                        top: headerRect.top - stickyHeight - 10, // -10px extra ruimte
+                        behavior: 'smooth'
+                    });
+                }
+            }, pmId === currentPM.id || wasExpanded ? 0 : 200); // Wacht op expand animatie als nodig
         };
 
         window.toggleKind = async function(kindId, isPiratenskip) {
