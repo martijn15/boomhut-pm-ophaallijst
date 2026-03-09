@@ -764,10 +764,26 @@
             contentArea.innerHTML = '<div class="loading"><div class="spinner"></div><div>Ophaallijsten laden...</div></div>';
             
             try {
+                console.log('🔍 Loading lists for datum:', datumString);
+                
+                // Probeer beide datum formaten
+                let datumKey = datumString.replace(/-/g, '_'); // 2025_03_09
+                console.log('📅 Trying datum key:', datumKey);
+                
                 // Laad vervoer verdeling
-                const snapshot = await get(ref(db, `vervoer_verdeling/${datumString.replace(/-/g, '_')}`));
+                let snapshot = await get(ref(db, `vervoer_verdeling/${datumKey}`));
+                
+                // Als niet gevonden, probeer zonder underscores
+                if (!snapshot.exists()) {
+                    console.log('⚠️ Not found with underscores, trying dashes...');
+                    snapshot = await get(ref(db, `vervoer_verdeling/${datumString}`));
+                    datumKey = datumString;
+                }
+                
+                console.log('📊 Snapshot exists:', snapshot.exists());
                 
                 if (!snapshot.exists()) {
+                    console.log('❌ No data found for this date');
                     contentArea.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><p>Geen ophaallijsten voor deze dag</p></div>';
                     pmChips.innerHTML = '<p style="color:#757575;font-size:13px;">Geen PM\'s ingepland</p>';
                     return;
@@ -779,6 +795,8 @@
                     const rit = child.val();
                     const pmId = rit.pmId;
                     
+                    console.log('🚌 Rit gevonden:', child.key, 'PM:', pmId);
+                    
                     if (!allRitten[pmId]) {
                         allRitten[pmId] = [];
                     }
@@ -787,6 +805,8 @@
                         ...rit
                     });
                 });
+
+                console.log('📋 Alle ritten grouped:', Object.keys(allRitten).length, 'PMs');
 
                 // Laad Reinboge kinderen
                 await loadReinbogeKinderen(datumString);
@@ -801,8 +821,8 @@
                 await renderAllePMLijsten();
                 
             } catch (error) {
-                console.error('Error loading lists:', error);
-                contentArea.innerHTML = '<div class="empty-state"><div class="empty-state-icon">❌</div><p>Fout bij laden</p></div>';
+                console.error('❌ Error loading lists:', error);
+                contentArea.innerHTML = `<div class="empty-state"><div class="empty-state-icon">❌</div><p>Fout bij laden: ${error.message}</p></div>`;
             }
         }
 
@@ -854,6 +874,8 @@
         async function renderPMChips() {
             const pmIds = Object.keys(allRitten);
             
+            console.log('🎨 Rendering PM chips for:', pmIds);
+            
             if (pmIds.length === 0) {
                 pmChips.innerHTML = '<p style="color:#757575;font-size:13px;">Geen PM\'s ingepland</p>';
                 return;
@@ -861,15 +883,26 @@
 
             let html = '';
             for (const pmId of pmIds) {
-                const pmSnapshot = await get(ref(db, `pedagogisch_medewerkers/${pmId}`));
-                const pmNaam = pmSnapshot.exists() ? pmSnapshot.val().naam : 'Onbekend';
-                const isCurrentUser = pmId === currentPmId;
-                
-                html += `
-                    <div class="pm-chip ${isCurrentUser ? 'active' : ''}" onclick="togglePMSection('${pmId}')">
-                        ${pmNaam}
-                    </div>
-                `;
+                try {
+                    const pmSnapshot = await get(ref(db, `pedagogisch_medewerkers/${pmId}`));
+                    const pmNaam = pmSnapshot.exists() ? (pmSnapshot.val().naam || 'Onbekend') : 'Onbekend';
+                    const isCurrentUser = pmId === currentPmId;
+                    
+                    console.log(`👤 PM chip: ${pmNaam} (ID: ${pmId}, Current: ${isCurrentUser})`);
+                    
+                    html += `
+                        <div class="pm-chip ${isCurrentUser ? 'active' : ''}" onclick="togglePMSection('${pmId}')">
+                            ${pmNaam}
+                        </div>
+                    `;
+                } catch (error) {
+                    console.error(`❌ Error loading PM ${pmId}:`, error);
+                    html += `
+                        <div class="pm-chip" onclick="togglePMSection('${pmId}')">
+                            Onbekend
+                        </div>
+                    `;
+                }
             }
             
             pmChips.innerHTML = html;
@@ -879,39 +912,47 @@
         async function renderAllePMLijsten() {
             let html = '';
             
+            console.log('🎨 Rendering all PM sections...');
+            
             for (const [pmId, ritten] of Object.entries(allRitten)) {
-                const pmSnapshot = await get(ref(db, `pedagogisch_medewerkers/${pmId}`));
-                const pmNaam = pmSnapshot.exists() ? pmSnapshot.val().naam : 'Onbekend';
-                const isCurrentUser = pmId === currentPmId;
-                const expandedClass = isCurrentUser ? 'expanded' : '';
-                const currentUserClass = isCurrentUser ? 'current-user' : '';
-                
-                // Tel totaal aantal kinderen
-                let totaalKinderen = 0;
-                ritten.forEach(rit => {
-                    totaalKinderen += rit.kindIds?.length || 0;
-                });
-                
-                const initial = pmNaam.charAt(0).toUpperCase();
-                
-                html += `
-                    <div class="pm-section ${expandedClass} ${currentUserClass}" id="pm-${pmId}">
-                        <div class="pm-section-header" onclick="togglePMSection('${pmId}')">
-                            <div class="chevron">▶</div>
-                            <div class="pm-avatar">${initial}</div>
-                            <div class="pm-info">
-                                <h3>${pmNaam}</h3>
-                                <p>${totaalKinderen} ${totaalKinderen === 1 ? 'kind' : 'kinderen'} • ${ritten.length} ${ritten.length === 1 ? 'rit' : 'ritten'}</p>
+                try {
+                    const pmSnapshot = await get(ref(db, `pedagogisch_medewerkers/${pmId}`));
+                    const pmNaam = pmSnapshot.exists() ? (pmSnapshot.val().naam || 'Onbekend') : 'Onbekend';
+                    const isCurrentUser = pmId === currentPmId;
+                    const expandedClass = isCurrentUser ? 'expanded' : '';
+                    const currentUserClass = isCurrentUser ? 'current-user' : '';
+                    
+                    // Tel totaal aantal kinderen
+                    let totaalKinderen = 0;
+                    ritten.forEach(rit => {
+                        totaalKinderen += rit.kindIds?.length || 0;
+                    });
+                    
+                    const initial = pmNaam.charAt(0).toUpperCase();
+                    
+                    console.log(`📝 Section: ${pmNaam} (${totaalKinderen} kinderen, ${ritten.length} ritten)`);
+                    
+                    html += `
+                        <div class="pm-section ${expandedClass} ${currentUserClass}" id="pm-${pmId}">
+                            <div class="pm-section-header" onclick="togglePMSection('${pmId}')">
+                                <div class="chevron">▶</div>
+                                <div class="pm-avatar">${initial}</div>
+                                <div class="pm-info">
+                                    <h3>${pmNaam}</h3>
+                                    <p>${totaalKinderen} ${totaalKinderen === 1 ? 'kind' : 'kinderen'} • ${ritten.length} ${ritten.length === 1 ? 'rit' : 'ritten'}</p>
+                                </div>
+                            </div>
+                            <div class="kinderen-lijst">
+                                ${await renderRittenVoorPM(ritten, pmId)}
                             </div>
                         </div>
-                        <div class="kinderen-lijst">
-                            ${await renderRittenVoorPM(ritten, pmId)}
-                        </div>
-                    </div>
-                `;
+                    `;
+                } catch (error) {
+                    console.error(`❌ Error rendering PM ${pmId}:`, error);
+                }
             }
             
-            contentArea.innerHTML = html;
+            contentArea.innerHTML = html || '<div class="empty-state"><div class="empty-state-icon">📭</div><p>Geen lijsten beschikbaar</p></div>';
         }
 
         // Render ritten voor PM
