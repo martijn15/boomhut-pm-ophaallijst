@@ -405,6 +405,55 @@
         
         .hidden { display: none !important; }
         .empty-state { text-align: center; padding: 40px 20px; color: #757575; }
+
+        /* ⭐ WACHT OP BUSJE BANNER (voor stint-PM) */
+        .wacht-banner {
+            margin: 0 16px 16px;
+            padding: 16px;
+            border-radius: 12px;
+            border: 2px solid;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.5s ease;
+        }
+        .wacht-banner.wachten {
+            background: #FFF8E1;
+            border-color: #FFC107;
+        }
+        .wacht-banner.vertrokken {
+            background: #E8F5E9;
+            border-color: #4CAF50;
+            animation: pulseGreen 1s ease-in-out 3;
+        }
+        @keyframes pulseGreen {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(76,175,80,0); }
+            50% { box-shadow: 0 0 0 8px rgba(76,175,80,0.3); }
+        }
+        .wacht-banner .banner-icon { font-size: 32px; flex-shrink: 0; }
+        .wacht-banner h4 { font-size: 15px; font-weight: bold; margin-bottom: 3px; }
+        .wacht-banner.wachten h4 { color: #E65100; }
+        .wacht-banner.vertrokken h4 { color: #1B5E20; }
+        .wacht-banner p { font-size: 13px; }
+        .wacht-banner.wachten p { color: #BF360C; }
+        .wacht-banner.vertrokken p { color: #2E7D32; }
+
+        /* ⭐ BUSJE RIT 2 VERTROKKEN KNOP */
+        .busje-vertrokken-section {
+            margin: 0 16px 16px;
+            padding: 12px;
+            background: #E3F2FD;
+            border-radius: 12px;
+            border: 1px solid #90CAF9;
+        }
+        .busje-vertrokken-info {
+            font-size: 12px;
+            color: #1565C0;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
     </style>
 </head>
 <body>
@@ -446,6 +495,30 @@
                     <p>Wissel tussen Busrit 1 en Busrit 2 via de tabs</p>
                 </div>
             </div>
+
+            <!-- ⭐ BUSJE RIT 2 VERTROKKEN KNOP (voor bus-PM, alleen als alle rit2 kinderen af) -->
+            <div id="busjeVertrokkenSection" class="busje-vertrokken-section hidden">
+                <div class="busje-vertrokken-info">
+                    ℹ️ Automatisch verzonden bij laatste kind. Hieronder alleen als backup.
+                </div>
+                <button onclick="markeerBusjeVertrokken()" style="
+                    width:100%;padding:14px;
+                    background:linear-gradient(135deg,#607D8B,#455A64);
+                    color:white;border:none;border-radius:12px;font-size:15px;font-weight:bold;
+                    cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;
+                ">
+                    <span>📤</span> Manueel Verzenden (backup)
+                </button>
+            </div>
+
+            <!-- ⭐ WACHT OP BUSJE BANNER (voor stint-PM) -->
+            <div id="wachtBanner" class="wacht-banner wachten hidden">
+                <div class="banner-icon" id="wachtBannerIcon">⏳</div>
+                <div>
+                    <h4 id="wachtBannerTitel">⏳ Wacht op Busje Rit 2</h4>
+                    <p id="wachtBannerTekst">Wacht op melding dat busje is vertrokken</p>
+                </div>
+            </div>
             
             <div class="pm-sections-container" id="pmSectionsContainer">
                 <div class="loading"><div class="spinner"></div><div>Ophaallijsten laden...</div></div>
@@ -455,7 +528,7 @@
 
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getDatabase, ref, get, update, remove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+        import { getDatabase, ref, get, update, remove, onValue, off } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyAo65QoOD-Lj-UEJJlBjSIX1-BWZEIhw1o",
@@ -477,6 +550,9 @@
         let reinbogeKindIds = [];
         // ⭐ Track actieve busrit tab per PM
         let activeBusritTab = {};
+        // ⭐ Realtime listener voor busje_vertrokken status
+        let busjeStatusListener = null;
+        let busjeIsVertrokken = false;
 
         const loginScreen = document.getElementById('loginScreen');
         const lijstScreen = document.getElementById('lijstScreen');
@@ -585,6 +661,10 @@
         async function loadAllePMLijsten() {
             pmSectionsContainer.innerHTML = '<div class="loading"><div class="spinner"></div><div>Laden...</div></div>';
             tweeRittenBanner.classList.add('hidden');
+            document.getElementById('wachtBanner').classList.add('hidden');
+            document.getElementById('busjeVertrokkenSection').classList.add('hidden');
+            busjeIsVertrokken = false;
+            stopBusjeStatusListener();
             
             try {
                 const datumKey = currentDatum.replace(/-/g, '_');
@@ -601,7 +681,12 @@
                     const rit = child.val();
                     const pmId = rit.pmId;
                     if (!alleRittenPerPM[pmId]) alleRittenPerPM[pmId] = [];
-                    alleRittenPerPM[pmId].push({ key: child.key, ...rit });
+                    alleRittenPerPM[pmId].push({ 
+                        key: child.key, 
+                        wachtVoorBusjeRit2: rit.wachtVoorBusjeRit2 || false,
+                        busje_vertrokken: rit.busje_vertrokken || false,
+                        ...rit 
+                    });
                 });
 
                 // ⭐ Check of ingelogde PM 2 busritten heeft → toon banner
@@ -611,6 +696,15 @@
                 
                 if (heeftTweeRitten) {
                     tweeRittenBanner.classList.remove('hidden');
+                }
+
+                // ⭐ Check of eigen rit 'wachtVoorBusjeRit2' heeft → toon wachtbanner + start listener
+                const wachtRit = eigenRitten.find(r => r.wachtVoorBusjeRit2 === true);
+                if (wachtRit) {
+                    setupBusjeStatusListener(wachtRit);
+                } else {
+                    document.getElementById('wachtBanner').classList.add('hidden');
+                    stopBusjeStatusListener();
                 }
 
                 await loadReinbogeKinderen();
@@ -738,17 +832,14 @@
                 return await renderRittenVoorPM(ritten, pmId);
             }
 
-            // Sorteer busritten op ritnummer
             busritten.sort((a, b) => {
                 const nrA = getBusritNummer(a.key) || 99;
                 const nrB = getBusritNummer(b.key) || 99;
                 return nrA - nrB;
             });
 
-            // Init tab state
             if (!activeBusritTab[pmId]) activeBusritTab[pmId] = 1;
 
-            // Tel kinderen per rit voor badge
             const telPerRit = {};
             for (const rit of busritten) {
                 const nr = getBusritNummer(rit.key) || 0;
@@ -756,7 +847,6 @@
                 telPerRit[nr] = kinderen.length;
             }
 
-            // Bouw tabs
             let tabsHtml = '<div class="busrit-tabs">';
             for (const rit of busritten) {
                 const nr = getBusritNummer(rit.key);
@@ -770,13 +860,25 @@
             }
             tabsHtml += '</div>';
 
-            // Bouw panels per busrit
             let panelsHtml = '';
             for (const rit of busritten) {
                 const nr = getBusritNummer(rit.key);
                 const isActive = activeBusritTab[pmId] === nr;
-                const ritContent = await renderRittenVoorPM([rit, ...andereRitten.filter(() => false)], pmId, nr);
+                const ritContent = await renderRittenVoorPM([rit], pmId, nr);
                 panelsHtml += `<div class="busrit-panel ${isActive ? 'active' : ''}" id="busrit-panel-${pmId}-${nr}">${ritContent}</div>`;
+            }
+
+            // ⭐ Check rit 2 status voor busje_vertrokken knop
+            const rit2 = busritten.find(r => getBusritNummer(r.key) === 2);
+            if (rit2) {
+                const kinderenRit2 = await loadKinderenVoorRit(rit2);
+                const alleAf = kinderenRit2.length > 0 && kinderenRit2.every(k => k.afgevinkt);
+                const busjeVertrokkenSection = document.getElementById('busjeVertrokkenSection');
+                if (alleAf && !busjeIsVertrokken) {
+                    busjeVertrokkenSection.classList.remove('hidden');
+                } else {
+                    busjeVertrokkenSection.classList.add('hidden');
+                }
             }
 
             return tabsHtml + panelsHtml;
@@ -993,7 +1095,27 @@
                 const field = isPiratenskip ? 'afgeleverd' : 'afgevinkt';
                 const snap = await get(ref(db, path));
                 if (snap.exists()) {
-                    await update(ref(db, path), { [field]: !snap.val()[field] });
+                    const nieuweStatus = !snap.val()[field];
+                    await update(ref(db, path), { [field]: nieuweStatus });
+                    
+                    // ⭐ Check: is dit busje rit 2 PM en is dit het laatste kind?
+                    if (nieuweStatus) {
+                        const eigenRitten = alleRittenPerPM[currentPM.id] || [];
+                        const rit2 = eigenRitten.find(r => isBusrit(r.key) && getBusritNummer(r.key) === 2);
+                        if (rit2 && !busjeIsVertrokken) {
+                            const kinderenRit2 = await loadKinderenVoorRit(rit2);
+                            const alleAf = kinderenRit2.length > 0 && kinderenRit2.every(k => k.afgevinkt);
+                            if (alleAf) {
+                                // Automatisch busje_vertrokken = true zetten!
+                                await update(ref(db, `vervoer_verdeling/${datumKey}/${rit2.key}`), {
+                                    busje_vertrokken: true
+                                });
+                                busjeIsVertrokken = true;
+                                document.getElementById('busjeVertrokkenSection').classList.add('hidden');
+                            }
+                        }
+                    }
+                    
                     await renderPMSections();
                 }
             } catch (error) { console.error('Error toggling:', error); }
@@ -1012,6 +1134,75 @@
                 alert('✅ Ophaallijsten verwijderd!');
             } catch (error) {
                 alert('❌ Fout bij verwijderen: ' + error.message);
+            }
+        };
+
+        // ⭐ SETUP REALTIME LISTENER voor busje_vertrokken (stint-PM wacht)
+        function setupBusjeStatusListener(wachtRit) {
+            stopBusjeStatusListener(); // cleanup oude listener
+            
+            const datumKey = currentDatum.replace(/-/g, '_');
+            const wachtBanner = document.getElementById('wachtBanner');
+            wachtBanner.classList.remove('hidden');
+            
+            // Zoek de busje rit 2 key om te luisteren
+            const allePMRitten = Object.values(alleRittenPerPM).flat();
+            const busjeRit2 = allePMRitten.find(r => 
+                isBusrit(r.key) && getBusritNummer(r.key) === 2
+            );
+            
+            if (!busjeRit2) return;
+            
+            const busjeRef = ref(db, `vervoer_verdeling/${datumKey}/${busjeRit2.key}/busje_vertrokken`);
+            busjeStatusListener = onValue(busjeRef, (snapshot) => {
+                const vertrokken = snapshot.val() === true;
+                busjeIsVertrokken = vertrokken;
+                updateWachtBanner(vertrokken);
+            });
+        }
+
+        function stopBusjeStatusListener() {
+            if (busjeStatusListener) {
+                busjeStatusListener(); // unsubscribe
+                busjeStatusListener = null;
+            }
+        }
+
+        function updateWachtBanner(vertrokken) {
+            const banner = document.getElementById('wachtBanner');
+            const icon = document.getElementById('wachtBannerIcon');
+            const titel = document.getElementById('wachtBannerTitel');
+            const tekst = document.getElementById('wachtBannerTekst');
+            
+            banner.classList.remove('hidden', 'wachten', 'vertrokken');
+            
+            if (vertrokken) {
+                banner.classList.add('vertrokken');
+                icon.textContent = '✅';
+                titel.textContent = '✅ Busje is vertrokken!';
+                tekst.textContent = 'Je kunt nu vertrekken met je groep';
+            } else {
+                banner.classList.add('wachten');
+                icon.textContent = '⏳';
+                titel.textContent = '⏳ Wacht op Busje Rit 2';
+                tekst.textContent = 'Wacht op melding dat busje is vertrokken';
+            }
+        }
+
+        // ⭐ BUS-PM: markeer busje rit 2 als vertrokken
+        window.markeerBusjeVertrokken = async function() {
+            try {
+                const datumKey = currentDatum.replace(/-/g, '_');
+                const eigenRitten = alleRittenPerPM[currentPM.id] || [];
+                const rit2 = eigenRitten.find(r => isBusrit(r.key) && getBusritNummer(r.key) === 2);
+                if (!rit2) return;
+                
+                await update(ref(db, `vervoer_verdeling/${datumKey}/${rit2.key}`), {
+                    busje_vertrokken: true
+                });
+                document.getElementById('busjeVertrokkenSection').classList.add('hidden');
+            } catch (e) {
+                alert('❌ Fout: ' + e.message);
             }
         };
 
