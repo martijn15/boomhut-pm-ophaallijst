@@ -312,6 +312,10 @@
             max-height: 5000px;
             padding: 16px;
         }
+        /* Secties met busrit tabs: geen outer padding, tabs zitten er al in */
+        .pm-section.expanded .pm-section-content:has(.busrit-tabs) {
+            padding: 0;
+        }
         /* Eigen sectie: geen padding, tabs nemen de ruimte */
         .pm-section.current-user.expanded .pm-section-content {
             padding: 0;
@@ -801,7 +805,7 @@
             for (const section of pmSections) {
                 const sectionContent = section.isCurrentUser
                     ? await renderEigenSectie(section.ritten, section.pmId)
-                    : await renderRittenVoorPM(section.ritten, section.pmId);
+                    : await renderAndereRitten(section.ritten, section.pmId);
 
                 html += `
                     <div class="pm-section ${section.isCurrentUser ? 'expanded current-user' : ''}" id="pm-${section.pmId}">
@@ -822,7 +826,51 @@
             pmSectionsContainer.innerHTML = html;
         }
 
-        // ⭐⭐⭐ EIGEN SECTIE: Met busrit tabs als er 2 busritten zijn
+        // ⭐ ANDERE PM's: Toon ook tabs als ze 2 busritten hebben (readonly)
+        async function renderAndereRitten(ritten, pmId) {
+            const busritten = ritten.filter(r => isBusrit(r.key));
+
+            // Geen 2 busritten? Gewone weergave
+            if (busritten.length < 2) {
+                return await renderRittenVoorPM(ritten, pmId);
+            }
+
+            busritten.sort((a, b) => (getBusritNummer(a.key) || 99) - (getBusritNummer(b.key) || 99));
+
+            if (!activeBusritTab[pmId]) activeBusritTab[pmId] = 1;
+
+            const telPerRit = {};
+            for (const rit of busritten) {
+                const nr = getBusritNummer(rit.key) || 0;
+                const kinderen = await loadKinderenVoorRit(rit);
+                telPerRit[nr] = kinderen.length;
+            }
+
+            let tabsHtml = '<div class="busrit-tabs">';
+            for (const rit of busritten) {
+                const nr = getBusritNummer(rit.key);
+                const isActive = activeBusritTab[pmId] === nr;
+                tabsHtml += `
+                    <div class="busrit-tab ${isActive ? 'active' : ''}" onclick="switchBusritTab('${pmId}', ${nr})">
+                        🚌 Busrit ${nr}
+                        <span class="tab-badge">${telPerRit[nr] || 0}</span>
+                    </div>
+                `;
+            }
+            tabsHtml += '</div>';
+
+            let panelsHtml = '';
+            for (const rit of busritten) {
+                const nr = getBusritNummer(rit.key);
+                const isActive = activeBusritTab[pmId] === nr;
+                const ritContent = await renderRittenVoorPM([rit], pmId, nr);
+                panelsHtml += `<div class="busrit-panel ${isActive ? 'active' : ''}" id="busrit-panel-${pmId}-${nr}">${ritContent}</div>`;
+            }
+
+            return tabsHtml + panelsHtml;
+        }
+
+        // ⭐ EIGEN SECTIE: Met busrit tabs als er 2 busritten zijn
         async function renderEigenSectie(ritten, pmId) {
             const busritten = ritten.filter(r => isBusrit(r.key));
             const andereRitten = ritten.filter(r => !isBusrit(r.key));
@@ -1139,26 +1187,45 @@
 
         // ⭐ SETUP REALTIME LISTENER voor busje_vertrokken (stint-PM wacht)
         function setupBusjeStatusListener(wachtRit) {
-            stopBusjeStatusListener(); // cleanup oude listener
+            stopBusjeStatusListener();
             
             const datumKey = currentDatum.replace(/-/g, '_');
             const wachtBanner = document.getElementById('wachtBanner');
             wachtBanner.classList.remove('hidden');
             
-            // Zoek de busje rit 2 key om te luisteren
+            // Zoek de busje rit 2 key van WELKE PM dan ook (niet per se de eigen PM)
             const allePMRitten = Object.values(alleRittenPerPM).flat();
-            const busjeRit2 = allePMRitten.find(r => 
-                isBusrit(r.key) && getBusritNummer(r.key) === 2
-            );
             
-            if (!busjeRit2) return;
+            // Eerst zoeken op key naam (meest betrouwbaar)
+            let busjeRit2 = allePMRitten.find(r => isBusrit(r.key) && getBusritNummer(r.key) === 2);
+            
+            // Fallback: zoek op vervoerNaam als key niet matcht
+            if (!busjeRit2) {
+                busjeRit2 = allePMRitten.find(r => {
+                    const naam = (r.vervoerNaam || '').toLowerCase();
+                    return naam.includes('busje') && naam.includes('rit 2');
+                });
+            }
+            
+            if (!busjeRit2) {
+                console.warn('⚠️ Geen busje rit 2 gevonden om op te luisteren');
+                // Toch banner tonen in wacht-stand
+                updateWachtBanner(false);
+                return;
+            }
+            
+            console.log('👂 Luisteren naar busje_vertrokken op:', busjeRit2.key);
             
             const busjeRef = ref(db, `vervoer_verdeling/${datumKey}/${busjeRit2.key}/busje_vertrokken`);
             busjeStatusListener = onValue(busjeRef, (snapshot) => {
                 const vertrokken = snapshot.val() === true;
+                console.log('📡 busje_vertrokken update:', vertrokken);
                 busjeIsVertrokken = vertrokken;
                 updateWachtBanner(vertrokken);
             });
+            
+            // ⭐ Meteen initiële status tonen (ook als busje al vertrokken was vóór inloggen)
+            updateWachtBanner(busjeRit2.busje_vertrokken === true);
         }
 
         function stopBusjeStatusListener() {
