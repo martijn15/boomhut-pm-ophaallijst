@@ -695,8 +695,34 @@
                     });
                 });
 
-                // ⭐ Check of ingelogde PM 2 busritten heeft → toon banner
+                // ⭐ Check of ingelogde PM überhaupt ritten heeft vandaag
                 const eigenRitten = alleRittenPerPM[currentPM.id] || [];
+                if (eigenRitten.length === 0) {
+                    pmSectionsContainer.innerHTML = `
+                        <div style="
+                            margin: 24px 16px;
+                            padding: 24px;
+                            background: #FFF3E0;
+                            border: 2px solid #FFB74D;
+                            border-radius: 16px;
+                            text-align: center;
+                        ">
+                            <div style="font-size:48px;margin-bottom:12px;">📋</div>
+                            <div style="font-size:18px;font-weight:bold;color:#E65100;margin-bottom:8px;">
+                                Geen ophaallijst beschikbaar
+                            </div>
+                            <div style="font-size:14px;color:#BF360C;">
+                                ${currentPM.naam} heeft vandaag geen vervoer toegewezen gekregen.<br>
+                                Neem contact op met de beheerder als dit niet klopt.
+                            </div>
+                        </div>
+                    `;
+                    pmChips.innerHTML = '';
+                    // Toon wel de andere PM chips zodat je kunt meekijken
+                    await renderPMChips();
+                    return;
+                }
+
                 const eigenBusritten = eigenRitten.filter(r => isBusrit(r.key));
                 const heeftTweeRitten = eigenBusritten.length >= 2;
                 
