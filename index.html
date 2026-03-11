@@ -464,7 +464,10 @@
     <div class="container">
         <div class="app-bar" style="display:flex;align-items:center;gap:12px;">
             <button id="terugKnop" onclick="gaNaarLogin()" style="background:rgba(255,255,255,0.25);border:2px solid rgba(255,255,255,0.6);color:white;padding:8px 14px;border-radius:12px;cursor:pointer;font-size:15px;font-weight:bold;display:none;align-items:center;gap:6px;flex-shrink:0;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.background='rgba(255,255,255,0.4)'" onmouseout="this.style.background='rgba(255,255,255,0.25)'">← Terug</button>
-            <h1>📱 PM Ophaallijst</h1>
+            <h1 style="flex:1;">📱 PM Ophaallijst</h1>
+            <div id="totaalTeller" style="display:none;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.5);border-radius:20px;padding:4px 12px;font-size:13px;font-weight:bold;color:white;white-space:nowrap;">
+                👦 <span id="totaalAantal">0</span> kinderen
+            </div>
         </div>
         
         <!-- LOGIN SCREEN -->
@@ -742,6 +745,18 @@
                 await loadReinbogeKinderen();
                 await loadOverstappers();
                 await renderPMChips();
+
+                // ⭐ Tel totaal unieke kinderen over alle PMs
+                const alleKindIds = new Set();
+                Object.values(alleRittenPerPM).flat().forEach(rit => {
+                    (rit.ophaal_volgorde || []).forEach(item => {
+                        if (item && item.kindId) alleKindIds.add(item.kindId);
+                    });
+                });
+                const totaal = alleKindIds.size;
+                document.getElementById('totaalAantal').textContent = totaal;
+                document.getElementById('totaalTeller').style.display = totaal > 0 ? 'block' : 'none';
+
                 await renderPMSections();
                 
             } catch (error) {
@@ -1308,6 +1323,7 @@
             alleRittenPerPM = {};
             activeBusritTab = {};
             busjeIsVertrokken = false;
+            document.getElementById('totaalTeller').style.display = 'none';
             lijstScreen.classList.add('hidden');
             loginScreen.classList.remove('hidden');
             document.getElementById('terugKnop').style.display = 'none';
