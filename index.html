@@ -407,6 +407,74 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
+        /* ⭐ FIETSEN / ZELFSTANDIG SECTIE */
+        .extra-sectie {
+            background: white;
+            border: 2px solid #E0E0E0;
+            border-radius: 16px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+        .extra-sectie.fietsen { border-color: #81C784; }
+        .extra-sectie.zelfstandig { border-color: #64B5F6; }
+        .extra-sectie-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
+        }
+        .extra-sectie.fietsen .extra-sectie-header { background: #F1F8E9; }
+        .extra-sectie.zelfstandig .extra-sectie-header { background: #E3F2FD; }
+        .extra-sectie-header:hover { filter: brightness(0.97); }
+        .extra-sectie-icon {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        .extra-sectie.fietsen .extra-sectie-icon { background: #C8E6C9; }
+        .extra-sectie.zelfstandig .extra-sectie-icon { background: #BBDEFB; }
+        .extra-sectie-info { flex: 1; }
+        .extra-sectie-info h3 { font-size: 17px; font-weight: bold; color: #212121; margin-bottom: 2px; }
+        .extra-sectie-info p { font-size: 13px; color: #757575; }
+        .extra-sectie-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+        }
+        .extra-sectie.expanded .extra-sectie-content {
+            max-height: 3000px;
+            padding: 16px;
+        }
+        .extra-sectie.expanded .extra-sectie-header {
+            border-bottom: 2px solid #E0E0E0;
+        }
+        .extra-kind-card {
+            background: white;
+            border: 2px solid #E0E0E0;
+            border-radius: 12px;
+            padding: 14px 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .extra-kind-card.afgevinkt { background: #E8F5E9; border-color: #4CAF50; }
+        .extra-kind-card:hover { border-color: #2196F3; }
+        .extra-kind-card .checkbox { width: 28px; height: 28px; border: 3px solid #BDBDBD; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .extra-kind-card.afgevinkt .checkbox { background: #4CAF50; border-color: #4CAF50; }
+        .extra-kind-card .checkbox::after { content: '✓'; color: white; font-size: 18px; font-weight: bold; display: none; }
+        .extra-kind-card.afgevinkt .checkbox::after { display: block; }
+        .extra-kind-naam { font-weight: bold; font-size: 16px; margin-bottom: 2px; }
+        .extra-kind-card.afgevinkt .extra-kind-naam { text-decoration: line-through; color: #757575; }
+        .extra-kind-details { font-size: 13px; color: #757575; }
+
         .hidden { display: none !important; }
         .empty-state { text-align: center; padding: 40px 20px; color: #757575; }
 
@@ -531,6 +599,7 @@
             <div class="pm-sections-container" id="pmSectionsContainer">
                 <div class="loading"><div class="spinner"></div><div>Ophaallijsten laden...</div></div>
             </div>
+            <div class="pm-sections-container" style="padding-top:0;" id="extraSectiesContainer"></div>
         </div>
     </div>
 
@@ -758,8 +827,8 @@
                 document.getElementById('totaalTeller').style.display = totaal > 0 ? 'block' : 'none';
 
                 await renderPMSections();
-                
-            } catch (error) {
+                await renderFietsenZelfstandig();
+                 {
                 console.error('Error:', error);
                 pmSectionsContainer.innerHTML = '<div class="empty-state">Fout bij laden</div>';
             }
@@ -1068,28 +1137,55 @@
             if (rit.ophaal_volgorde && Array.isArray(rit.ophaal_volgorde)) {
                 for (const item of rit.ophaal_volgorde) {
                     let kindData = null;
+                    let isReinbogeKind = false;
+
                     if (item.is_piratenskip) {
                         const snap = await get(ref(db, `piratenskip_kinderen/${item.kindId}`));
                         if (snap.exists()) kindData = snap.val();
                     } else {
+                        // Eerst proberen in kinderen_per_dag
                         const snap = await get(ref(db, `kinderen_per_dag/${datumKey}/${item.kindId}`));
-                        if (snap.exists()) kindData = snap.val();
+                        if (snap.exists()) {
+                            kindData = snap.val();
+                        } else if (item.kindId.startsWith('reinboge_boomhut_')) {
+                            // ⭐ Reinboge boomhut kinderen (Hanna, Hedzer etc.)
+                            const reinbogeSnap = await get(ref(db, `reinboge_alle_kinderen/${item.kindId}`));
+                            if (reinbogeSnap.exists()) {
+                                kindData = reinbogeSnap.val();
+                                isReinbogeKind = true;
+                            }
+                        } else if (item.kindId.startsWith('reinboge_pirateskip_')) {
+                            // ⭐ Reinboge pirateskip kinderen (Amarins, Eise etc.)
+                            const reinbogeSnap = await get(ref(db, `reinboge_pirateskip_kinderen/${item.kindId}`));
+                            if (reinbogeSnap.exists()) {
+                                kindData = reinbogeSnap.val();
+                                isReinbogeKind = true;
+                            }
+                        }
                     }
                     if (kindData) {
                         const kindNaam = (kindData.naam || '').toLowerCase().trim();
                         if (seenNames.has(kindNaam)) continue;
                         seenNames.add(kindNaam);
-                        const isReinboge = (kindData.school && kindData.school.toLowerCase().includes('reinboge')) ||
+                        const isReinboge = isReinbogeKind ||
+                                          (kindData.school && kindData.school.toLowerCase().includes('reinboge')) ||
                                           kindData.is_reinboge ||
                                           reinbogeKindIds.includes(kindNaam);
+                        // ⭐ Reinboge kinderen: afgevinkt staat op reinboge_alle_kinderen node
+                        const afgevinkt = item.is_piratenskip
+                            ? (kindData.afgeleverd || false)
+                            : isReinbogeKind
+                                ? (kindData.afgevinkt || false)
+                                : (kindData.afgevinkt || false);
                         kinderen.push({
                             id: item.kindId,
                             naam: kindData.naam || 'Onbekend',
                             leeftijd: kindData.leeftijd || 0,
-                            afgevinkt: item.is_piratenskip ? (kindData.afgeleverd || false) : (kindData.afgevinkt || false),
+                            afgevinkt,
                             ophaal_volgorde: item.ophaal_volgorde || 999,
                             is_piratenskip: item.is_piratenskip || false,
                             is_reinboge: isReinboge,
+                            is_reinboge_kind: isReinbogeKind,
                             opmerking: kindData.opmerking || ''
                         });
                     }
@@ -1111,7 +1207,7 @@
             const emoji = kind.is_piratenskip ? ' 🏴‍☠️' : (kind.is_reinboge ? ' 🏫' : '');
             const overstapperIcon = isOverstapper ? '<span style="font-size:18px;">🔄</span>' : '';
             const opmerkingIcon = kind.opmerking ? `<span style="font-size:16px;" title="${kind.opmerking}">📝</span>` : '';
-            const onclickAttr = isOwnList ? `onclick="toggleKind('${kind.id}', ${kind.is_piratenskip})"` : '';
+            const onclickAttr = isOwnList ? `onclick="toggleKind('${kind.id}', ${kind.is_piratenskip}, ${kind.is_reinboge_kind || false})"` : '';
             return `
                 <div class="kind-card ${klass} ${piratenskipKlass} ${reinbogeKlass} ${readonlyKlass}" ${onclickAttr}>
                     <div class="checkbox"></div>
@@ -1177,13 +1273,23 @@
             }
         };
 
-        window.toggleKind = async function(kindId, isPiratenskip) {
+        window.toggleKind = async function(kindId, isPiratenskip, isReinbogeKind) {
             try {
                 const datumKey = currentDatum.replace(/-/g, '_');
-                const path = isPiratenskip
-                    ? `piratenskip_kinderen/${kindId}`
-                    : `kinderen_per_dag/${datumKey}/${kindId}`;
-                const field = isPiratenskip ? 'afgeleverd' : 'afgevinkt';
+                let path, field;
+                if (isPiratenskip) {
+                    path = `piratenskip_kinderen/${kindId}`;
+                    field = 'afgeleverd';
+                } else if (kindId.startsWith('reinboge_boomhut_')) {
+                    path = `reinboge_alle_kinderen/${kindId}`;
+                    field = 'afgevinkt';
+                } else if (kindId.startsWith('reinboge_pirateskip_')) {
+                    path = `reinboge_pirateskip_kinderen/${kindId}`;
+                    field = 'afgevinkt';
+                } else {
+                    path = `kinderen_per_dag/${datumKey}/${kindId}`;
+                    field = 'afgevinkt';
+                }
                 const snap = await get(ref(db, path));
                 if (snap.exists()) {
                     const nieuweStatus = !snap.val()[field];
@@ -1316,6 +1422,104 @@
             }
         };
 
+        // ⭐ FIETSEN + ZELFSTANDIG SECTIES
+        async function renderFietsenZelfstandig() {
+            const container = document.getElementById('extraSectiesContainer');
+            container.innerHTML = '';
+            
+            try {
+                const datumKey = currentDatum.replace(/-/g, '_');
+                const snapshot = await get(ref(db, `planningen/${datumKey}/verdeling`));
+                if (!snapshot.exists()) return;
+
+                const categorieen = [
+                    { key: 'Fietsen',      label: 'Meefietsers (Stint)',  icon: '🚲', type: 'fietsen',     statusField: 'aangekomen_fiets' },
+                    { key: 'Zelfstandig',  label: 'Zelfstandig naar BSO', icon: '🚶', type: 'zelfstandig',  statusField: 'aangekomen_zelfstandig' },
+                ];
+
+                for (const cat of categorieen) {
+                    const catSnap = snapshot.child(cat.key);
+                    if (!catSnap.exists()) continue;
+
+                    const kinderen = [];
+                    catSnap.forEach(child => {
+                        const k = child.val();
+                        if (k && k.naam) kinderen.push({ ...k, _index: child.key });
+                    });
+
+                    if (kinderen.length === 0) continue;
+
+                    // Haal afvink-status op
+                    const statusSnap = await get(ref(db, `planningen/${datumKey}/status/${cat.key}`));
+                    const statusData = statusSnap.exists() ? statusSnap.val() : {};
+
+                    const afgevinktCount = kinderen.filter((k, i) => statusData[i] === true || statusData[k.id] === true).length;
+
+                    let kinderenHtml = '';
+                    kinderen.forEach((kind, index) => {
+                        const afgevinkt = statusData[index] === true || statusData[kind.id] === true;
+                        kinderenHtml += `
+                            <div class="extra-kind-card ${afgevinkt ? 'afgevinkt' : ''}" onclick="toggleExtraKind('${datumKey}', '${cat.key}', '${kind.id || index}', ${index})">
+                                <div class="checkbox"></div>
+                                <div style="flex:1;">
+                                    <div class="extra-kind-naam">${kind.naam}</div>
+                                    <div class="extra-kind-details">${kind.leeftijd} jaar${kind.voorkeursVervoer ? ' • ' + kind.voorkeursVervoer : ''}</div>
+                                </div>
+                                ${afgevinkt ? '<span style="background:#4CAF50;color:white;border-radius:10px;padding:3px 10px;font-size:12px;font-weight:bold;">✓ Aangekomen</span>' : ''}
+                            </div>
+                        `;
+                    });
+
+                    const sectieHtml = `
+                        <div class="extra-sectie ${cat.type}" id="extra-${cat.type}">
+                            <div class="extra-sectie-header" onclick="toggleExtraSectie('${cat.type}')">
+                                <div class="chevron-icon">▶</div>
+                                <div class="extra-sectie-icon">${cat.icon}</div>
+                                <div class="extra-sectie-info">
+                                    <h3>${cat.label}</h3>
+                                    <p>${kinderen.length} kinderen • ${afgevinktCount}/${kinderen.length} aangekomen</p>
+                                </div>
+                            </div>
+                            <div class="extra-sectie-content">${kinderenHtml}</div>
+                        </div>
+                    `;
+                    container.innerHTML += sectieHtml;
+                }
+            } catch (e) {
+                console.error('Error loading fietsen/zelfstandig:', e);
+            }
+        }
+
+        window.toggleExtraSectie = function(type) {
+            const sectie = document.getElementById(`extra-${type}`);
+            if (!sectie) return;
+            const wasExpanded = sectie.classList.contains('expanded');
+            sectie.classList.toggle('expanded');
+            
+            if (!wasExpanded) {
+                setTimeout(() => {
+                    const stickyHeight = document.querySelector('.sticky-datum-section')?.offsetHeight || 180;
+                    const rect = sectie.getBoundingClientRect();
+                    const top = rect.top + window.pageYOffset - stickyHeight - 20;
+                    window.scrollTo({ top, behavior: 'smooth' });
+                }, 400);
+            }
+        };
+
+        window.toggleExtraKind = async function(datumKey, categorie, kindId, index) {
+            try {
+                const path = `planningen/${datumKey}/status/${categorie}/${index}`;
+                const snap = await get(ref(db, path));
+                const huidigeStatus = snap.exists() ? snap.val() : false;
+                await update(ref(db, `planningen/${datumKey}/status/${categorie}`), {
+                    [index]: !huidigeStatus
+                });
+                await renderFietsenZelfstandig();
+            } catch (e) {
+                console.error('Error toggling extra kind:', e);
+            }
+        };
+
         window.gaNaarLogin = function() {
             stopBusjeStatusListener();
             currentPM = null;
@@ -1324,6 +1528,7 @@
             activeBusritTab = {};
             busjeIsVertrokken = false;
             document.getElementById('totaalTeller').style.display = 'none';
+            document.getElementById('extraSectiesContainer').innerHTML = '';
             lijstScreen.classList.add('hidden');
             loginScreen.classList.remove('hidden');
             document.getElementById('terugKnop').style.display = 'none';
