@@ -828,7 +828,8 @@
 
                 await renderPMSections();
                 await renderFietsenZelfstandig();
-                 {
+                
+            } catch (error) {
                 console.error('Error:', error);
                 pmSectionsContainer.innerHTML = '<div class="empty-state">Fout bij laden</div>';
             }
