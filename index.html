@@ -678,7 +678,8 @@
                 });
                 pmCardsContainer.innerHTML = html;
             } catch (error) {
-                pmCardsContainer.innerHTML = '<div class="empty-state">Fout bij laden</div>';
+                console.error('loadPMs fout:', error);
+                pmCardsContainer.innerHTML = '<div class="empty-state">Firebase fout: ' + error.message + '</div>';
             }
         }
 
@@ -1157,10 +1158,18 @@
                             }
                         } else if (item.kindId.startsWith('reinboge_pirateskip_')) {
                             // ⭐ Reinboge pirateskip kinderen (Amarins, Eise etc.)
-                            const reinbogeSnap = await get(ref(db, `reinboge_pirateskip_kinderen/${item.kindId}`));
-                            if (reinbogeSnap.exists()) {
-                                kindData = reinbogeSnap.val();
+                            // Eerst proberen in reinboge_alle_kinderen (nieuw, zonder piratenskip_kind_id)
+                            const reinbogeAlleSnap = await get(ref(db, `reinboge_alle_kinderen/${item.kindId}`));
+                            if (reinbogeAlleSnap.exists()) {
+                                kindData = reinbogeAlleSnap.val();
                                 isReinbogeKind = true;
+                            } else {
+                                // Fallback: oude methode via reinboge_pirateskip_kinderen (Liam)
+                                const reinbogeSnap = await get(ref(db, `reinboge_pirateskip_kinderen/${item.kindId}`));
+                                if (reinbogeSnap.exists()) {
+                                    kindData = reinbogeSnap.val();
+                                    isReinbogeKind = true;
+                                }
                             }
                         }
                     }
@@ -1285,7 +1294,7 @@
                     path = `reinboge_alle_kinderen/${kindId}`;
                     field = 'afgevinkt';
                 } else if (kindId.startsWith('reinboge_pirateskip_')) {
-                    path = `reinboge_pirateskip_kinderen/${kindId}`;
+                    path = `reinboge_alle_kinderen/${kindId}`;
                     field = 'afgevinkt';
                 } else {
                     path = `kinderen_per_dag/${datumKey}/${kindId}`;
