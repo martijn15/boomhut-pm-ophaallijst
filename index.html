@@ -1433,47 +1433,103 @@
         };
 
         // ⭐ FIETSEN + ZELFSTANDIG SECTIES
+        // ⭐ Laad kinderen voor een fietsen/zelfstandig rit uit vervoer_verdeling
+        async function loadExtraKinderenVoorRit(rit) {
+            const kinderen = [];
+            const kindIds = rit.kindIds || [];
+            const datumKey = currentDatum.replace(/-/g, '_');
+
+            for (const kindId of kindIds) {
+                if (!kindId) continue;
+                let kindData = null;
+
+                if (kindId.startsWith('reinboge_boomhut_') || kindId.startsWith('reinboge_pirateskip_')) {
+                    const snap = await get(ref(db, `reinboge_alle_kinderen/${kindId}`));
+                    if (snap.exists()) kindData = snap.val();
+                } else {
+                    const snap = await get(ref(db, `kinderen_per_dag/${datumKey}/${kindId}`));
+                    if (snap.exists()) {
+                        kindData = snap.val();
+                    } else {
+                        const snap2 = await get(ref(db, `kinderen/${kindId}`));
+                        if (snap2.exists()) kindData = snap2.val();
+                    }
+                }
+
+                if (kindData) {
+                    kinderen.push({
+                        id: kindId,
+                        naam: kindData.naam || 'Onbekend',
+                        leeftijd: kindData.leeftijd || 0,
+                    });
+                }
+            }
+            return kinderen;
+        }
+
         async function renderFietsenZelfstandig() {
             const container = document.getElementById('extraSectiesContainer');
             container.innerHTML = '';
-            
+
             try {
                 const datumKey = currentDatum.replace(/-/g, '_');
-                const snapshot = await get(ref(db, `planningen/${datumKey}/verdeling`));
+                const snapshot = await get(ref(db, `vervoer_verdeling/${datumKey}`));
                 if (!snapshot.exists()) return;
 
+                const fietsenRitten = [];
+                const zelfstandigRitten = [];
+
+                snapshot.forEach(child => {
+                    const rit = child.val();
+                    const key = child.key || '';
+                    const naam = (rit.vervoerNaam || '').toLowerCase();
+                    if (naam.includes('fiets') || key.includes('fiets')) {
+                        fietsenRitten.push({ ...rit, key: child.key });
+                    } else if (naam.includes('zelfstandig') || key.includes('zelfstandig')) {
+                        zelfstandigRitten.push({ ...rit, key: child.key });
+                    }
+                });
+
                 const categorieen = [
-                    { key: 'Fietsen',      label: 'Meefietsers (Stint)',  icon: '🚲', type: 'fietsen',     statusField: 'aangekomen_fiets' },
-                    { key: 'Zelfstandig',  label: 'Zelfstandig naar BSO', icon: '🚶', type: 'zelfstandig',  statusField: 'aangekomen_zelfstandig' },
+                    { ritten: fietsenRitten,     label: 'Meefietsers (Stint)',  icon: '🚲', type: 'fietsen' },
+                    { ritten: zelfstandigRitten, label: 'Zelfstandig naar BSO', icon: '🚶', type: 'zelfstandig' },
                 ];
 
                 for (const cat of categorieen) {
-                    const catSnap = snapshot.child(cat.key);
-                    if (!catSnap.exists()) continue;
+                    if (cat.ritten.length === 0) continue;
 
-                    const kinderen = [];
-                    catSnap.forEach(child => {
-                        const k = child.val();
-                        if (k && k.naam) kinderen.push({ ...k, _index: child.key });
+                    let alleKinderen = [];
+                    for (const rit of cat.ritten) {
+                        const kinderen = await loadExtraKinderenVoorRit(rit);
+                        alleKinderen = alleKinderen.concat(kinderen);
+                    }
+
+                    // Dedupliceer op id
+                    const seen = new Set();
+                    alleKinderen = alleKinderen.filter(k => {
+                        if (seen.has(k.id)) return false;
+                        seen.add(k.id);
+                        return true;
                     });
 
-                    if (kinderen.length === 0) continue;
+                    if (alleKinderen.length === 0) continue;
 
-                    // Haal afvink-status op
-                    const statusSnap = await get(ref(db, `planningen/${datumKey}/status/${cat.key}`));
+                    // Afvink-status ophalen
+                    const statusSnap = await get(ref(db, `vervoer_verdeling/${datumKey}/status_${cat.type}`));
                     const statusData = statusSnap.exists() ? statusSnap.val() : {};
 
-                    const afgevinktCount = kinderen.filter((k, i) => statusData[i] === true || statusData[k.id] === true).length;
+                    const afgevinktCount = alleKinderen.filter(k => statusData[k.id] === true).length;
 
+                    alleKinderen.sort((a, b) => a.naam.localeCompare(b.naam));
                     let kinderenHtml = '';
-                    kinderen.forEach((kind, index) => {
-                        const afgevinkt = statusData[index] === true || statusData[kind.id] === true;
+                    alleKinderen.forEach(kind => {
+                        const afgevinkt = statusData[kind.id] === true;
                         kinderenHtml += `
-                            <div class="extra-kind-card ${afgevinkt ? 'afgevinkt' : ''}" onclick="toggleExtraKind('${datumKey}', '${cat.key}', '${kind.id || index}', ${index})">
-                                <div class="checkbox"></div>
+                            <div class="extra-kind-card ${afgevinkt ? 'afgevinkt' : ''}" onclick="toggleExtraKind('${datumKey}', '${cat.type}', '${kind.id}')">
+                                <div class="checkbox ${afgevinkt ? 'checked' : ''}"></div>
                                 <div style="flex:1;">
                                     <div class="extra-kind-naam">${kind.naam}</div>
-                                    <div class="extra-kind-details">${kind.leeftijd} jaar${kind.voorkeursVervoer ? ' • ' + kind.voorkeursVervoer : ''}</div>
+                                    <div class="extra-kind-details">${kind.leeftijd} jaar</div>
                                 </div>
                                 ${afgevinkt ? '<span style="background:#4CAF50;color:white;border-radius:10px;padding:3px 10px;font-size:12px;font-weight:bold;">✓ Aangekomen</span>' : ''}
                             </div>
@@ -1487,7 +1543,7 @@
                                 <div class="extra-sectie-icon">${cat.icon}</div>
                                 <div class="extra-sectie-info">
                                     <h3>${cat.label}</h3>
-                                    <p>${kinderen.length} kinderen • ${afgevinktCount}/${kinderen.length} aangekomen</p>
+                                    <p>${alleKinderen.length} kinderen • ${afgevinktCount}/${alleKinderen.length} aangekomen</p>
                                 </div>
                             </div>
                             <div class="extra-sectie-content">${kinderenHtml}</div>
@@ -1516,13 +1572,13 @@
             }
         };
 
-        window.toggleExtraKind = async function(datumKey, categorie, kindId, index) {
+        window.toggleExtraKind = async function(datumKey, categorie, kindId) {
             try {
-                const path = `planningen/${datumKey}/status/${categorie}/${index}`;
+                const path = `vervoer_verdeling/${datumKey}/status_${categorie}/${kindId}`;
                 const snap = await get(ref(db, path));
                 const huidigeStatus = snap.exists() ? snap.val() : false;
-                await update(ref(db, `planningen/${datumKey}/status/${categorie}`), {
-                    [index]: !huidigeStatus
+                await update(ref(db, `vervoer_verdeling/${datumKey}/status_${categorie}`), {
+                    [kindId]: !huidigeStatus
                 });
                 await renderFietsenZelfstandig();
             } catch (e) {
