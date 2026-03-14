@@ -1085,12 +1085,13 @@
                     reinbogeHeader += '<span><span style="font-size:20px;">🏫</span> REINBOGE SCHOOL</span>';
 
                     if (isOwnRit && heeftOverstappers && !overstappersUitgevoerd) {
-                        reinbogeHeader += `<button onclick="overstappersUitgestap('${rit.key}')" style="
+                        reinbogeHeader += `<button onclick="event.stopPropagation(); overstappersUitgestap('${rit.key}')" style="
                             background:linear-gradient(135deg, #FF9800, #F57C00);
                             color:white;border:none;border-radius:12px;
                             padding:8px 14px;font-size:13px;font-weight:bold;
                             cursor:pointer;white-space:nowrap;
                             box-shadow:0 2px 8px rgba(255,152,0,0.4);
+                            position:relative;z-index:10;
                         ">🔄 Overstappers uitgestapt</button>`;
                     } else if (overstappersUitgevoerd) {
                         reinbogeHeader += '<span style="background:#4CAF50;color:white;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:bold;">✓ Uitgestapt</span>';
