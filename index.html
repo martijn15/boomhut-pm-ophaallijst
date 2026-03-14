@@ -1592,9 +1592,22 @@
         window.overstappersUitgestap = async function(ritKey) {
             try {
                 const datumKey = currentDatum.replace(/-/g, '_');
+
+                // Schrijf naar Firebase
                 await update(ref(db, `vervoer_verdeling/${datumKey}/${ritKey}`), {
                     overstappers_uitgevoerd: true
                 });
+
+                // Update lokale cache zodat renderPMSections het direct ziet
+                for (const pmId in alleRittenPerPM) {
+                    const ritten = alleRittenPerPM[pmId];
+                    const rit = ritten.find(r => r.key === ritKey);
+                    if (rit) {
+                        rit.overstappers_uitgevoerd = true;
+                        break;
+                    }
+                }
+
                 await renderPMSections();
             } catch (e) {
                 console.error('Error overstappers uitgestap:', e);
