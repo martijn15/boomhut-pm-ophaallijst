@@ -734,6 +734,8 @@
             currentDatum = datum;
             document.querySelectorAll('.weekdag-btn').forEach(btn => btn.classList.remove('selected'));
             if (event && event.currentTarget) event.currentTarget.classList.add('selected');
+            // ⭐ Direct legen zodat oude fietsen/zelfstandig secties niet blijven hangen
+            document.getElementById('extraSectiesContainer').innerHTML = '';
             await loadAllePMLijsten();
         };
 
@@ -752,6 +754,7 @@
                 if (!snapshot.exists()) {
                     pmSectionsContainer.innerHTML = '<div class="empty-state">Geen ophaallijsten voor deze dag</div>';
                     pmChips.innerHTML = '<p style="color:#757575;font-size:13px;">Geen PM\'s ingepland</p>';
+                    document.getElementById('extraSectiesContainer').innerHTML = '';
                     return;
                 }
 
@@ -771,6 +774,7 @@
                 // ⭐ Check of ingelogde PM überhaupt ritten heeft vandaag
                 const eigenRitten = alleRittenPerPM[currentPM.id] || [];
                 if (eigenRitten.length === 0) {
+                    document.getElementById('extraSectiesContainer').innerHTML = '';
                     pmSectionsContainer.innerHTML = `
                         <div style="
                             margin: 24px 16px;
