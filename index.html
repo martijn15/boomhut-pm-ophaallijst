@@ -1074,8 +1074,40 @@
                 const regulier = kinderen.filter(k => !k.is_reinboge);
                 
                 if (reinboge.length > 0) {
-                    html += '<div class="sectie-header"><span style="font-size:20px;">🏫</span> REINBOGE SCHOOL</div>';
-                    reinboge.forEach(kind => { html += buildKindCard(kind, rit.key, pmId); });
+                    const overstappersUitgevoerd = rit.overstappers_uitgevoerd === true;
+                    const heeftOverstappers = reinboge.some(k => overstappersVandaag.some(ov => {
+                        const ovNaam = ov.includes('(') ? ov.split('(')[0].trim().toLowerCase() : ov.toLowerCase();
+                        return ovNaam === k.naam.toLowerCase();
+                    }));
+                    const isOwnRit = pmId === currentPM.id;
+
+                    let reinbogeHeader = '<div class="sectie-header" style="display:flex;align-items:center;justify-content:space-between;gap:8px;">';
+                    reinbogeHeader += '<span><span style="font-size:20px;">🏫</span> REINBOGE SCHOOL</span>';
+
+                    if (isOwnRit && heeftOverstappers && !overstappersUitgevoerd) {
+                        reinbogeHeader += `<button onclick="overstappersUitgestap('${rit.key}')" style="
+                            background:linear-gradient(135deg, #FF9800, #F57C00);
+                            color:white;border:none;border-radius:12px;
+                            padding:8px 14px;font-size:13px;font-weight:bold;
+                            cursor:pointer;white-space:nowrap;
+                            box-shadow:0 2px 8px rgba(255,152,0,0.4);
+                        ">🔄 Overstappers uitgestap</button>`;
+                    } else if (overstappersUitgevoerd) {
+                        reinbogeHeader += '<span style="background:#4CAF50;color:white;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:bold;">✓ Uitgestap</span>';
+                    }
+
+                    reinbogeHeader += '</div>';
+                    html += reinbogeHeader;
+
+                    // Als overstappers uitgestap: verberg ze uit de lijst
+                    const zichtbareReinboge = overstappersUitgevoerd
+                        ? reinboge.filter(k => !overstappersVandaag.some(ov => {
+                            const ovNaam = ov.includes('(') ? ov.split('(')[0].trim().toLowerCase() : ov.toLowerCase();
+                            return ovNaam === k.naam.toLowerCase();
+                          }))
+                        : reinboge;
+
+                    zichtbareReinboge.forEach(kind => { html += buildKindCard(kind, rit.key, pmId); });
                 }
                 if (regulier.length > 0) {
                     if (reinboge.length > 0) {
@@ -1555,6 +1587,19 @@
                 console.error('Error loading fietsen/zelfstandig:', e);
             }
         }
+
+        window.overstappersUitgestap = async function(ritKey) {
+            try {
+                const datumKey = currentDatum.replace(/-/g, '_');
+                await update(ref(db, `vervoer_verdeling/${datumKey}/${ritKey}`), {
+                    overstappers_uitgevoerd: true
+                });
+                await renderPMSections();
+            } catch (e) {
+                console.error('Error overstappers uitgestap:', e);
+                alert('❌ Fout: ' + e.message);
+            }
+        };
 
         window.toggleExtraSectie = function(type) {
             const sectie = document.getElementById(`extra-${type}`);
