@@ -925,13 +925,26 @@
                     ? await renderEigenSectie(section.ritten, section.pmId)
                     : await renderAndereRitten(section.ritten, section.pmId);
 
+                // ⭐ Check of deze PM piratenskip kinderen heeft
+                const heeftPiratenskip = section.ritten.some(r =>
+                    (r.ophaal_volgorde || []).some(item => item && item.is_piratenskip)
+                );
+                const piratenskipBadge = heeftPiratenskip
+                    ? `<span style="
+                        background:#FF9800;color:white;
+                        border-radius:10px;padding:2px 8px;
+                        font-size:12px;font-weight:bold;
+                        margin-left:8px;vertical-align:middle;
+                      ">🏴‍☠️ Pirateskip</span>`
+                    : '';
+
                 html += `
                     <div class="pm-section ${section.isCurrentUser ? 'expanded current-user' : ''}" id="pm-${section.pmId}">
                         <div class="pm-section-header-clickable" onclick="togglePMSection('${section.pmId}')">
                             <div class="chevron-icon">▶</div>
                             <div class="pm-section-avatar">${section.initial}</div>
                             <div class="pm-section-info">
-                                <h3>${section.pmNaam}</h3>
+                                <h3>${section.pmNaam}${piratenskipBadge}</h3>
                                 <p>${section.totaal} kinderen • ${section.ritten.length} ritten</p>
                             </div>
                         </div>
@@ -1076,7 +1089,36 @@
                 alleKinderen = alleKinderen.concat(kinderen);
                 const reinboge = kinderen.filter(k => k.is_reinboge);
                 const regulier = kinderen.filter(k => !k.is_reinboge);
-                
+
+                // ⭐ Piratenskip banner bovenaan
+                const piratenskipKinderen = kinderen.filter(k => k.is_piratenskip);
+                if (piratenskipKinderen.length > 0) {
+                    const alleAfgeleverd = piratenskipKinderen.every(k => k.afgevinkt);
+                    html += `
+                        <div style="
+                            margin-bottom:16px;
+                            padding:14px 16px;
+                            background:${alleAfgeleverd ? '#E8F5E9' : '#FFF3E0'};
+                            border:2px solid ${alleAfgeleverd ? '#4CAF50' : '#FF9800'};
+                            border-radius:12px;
+                            display:flex;
+                            align-items:center;
+                            gap:12px;
+                        ">
+                            <span style="font-size:24px;">🏴‍☠️</span>
+                            <div style="flex:1;">
+                                <div style="font-weight:bold;font-size:15px;color:${alleAfgeleverd ? '#2E7D32' : '#E65100'};">
+                                    ${alleAfgeleverd ? '✓ Alle Pirateskip kinderen afgeleverd!' : `LET OP: ${piratenskipKinderen.length} ${piratenskipKinderen.length === 1 ? 'kind' : 'kinderen'} afzetten bij Pirateskip BSO`}
+                                </div>
+                                <div style="font-size:13px;color:#757575;margin-top:2px;">
+                                    ${alleAfgeleverd ? 'Pirateskip BSO tussenstop voltooid' : piratenskipKinderen.map(k => k.naam).join(', ')}
+                                </div>
+                            </div>
+                            ${alleAfgeleverd ? '<span style="background:#4CAF50;color:white;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:bold;">✓ Klaar</span>' : ''}
+                        </div>
+                    `;
+                }
+
                 if (reinboge.length > 0) {
                     const overstappersUitgevoerd = rit.overstappers_uitgevoerd === true;
                     const heeftOverstappers = reinboge.some(k => overstappersVandaag.some(ov => {
@@ -1122,35 +1164,6 @@
                 }
             }
             
-            // ⭐ Piratenskip banner - toon als er piratenskip kinderen in de rit zitten
-            const piratenskipKinderen = alleKinderen.filter(k => k.is_piratenskip);
-            if (piratenskipKinderen.length > 0) {
-                const alleAfgeleverd = piratenskipKinderen.every(k => k.afgevinkt);
-                html += `
-                    <div style="
-                        margin-top:16px;
-                        padding:14px 16px;
-                        background:${alleAfgeleverd ? '#E8F5E9' : '#FFF3E0'};
-                        border:2px solid ${alleAfgeleverd ? '#4CAF50' : '#FF9800'};
-                        border-radius:12px;
-                        display:flex;
-                        align-items:center;
-                        gap:12px;
-                    ">
-                        <span style="font-size:24px;">🏴‍☠️</span>
-                        <div style="flex:1;">
-                            <div style="font-weight:bold;font-size:15px;color:${alleAfgeleverd ? '#2E7D32' : '#E65100'};">
-                                ${alleAfgeleverd ? '✓ Alle Pirateskip kinderen afgeleverd!' : `LET OP: ${piratenskipKinderen.length} ${piratenskipKinderen.length === 1 ? 'kind' : 'kinderen'} afzetten bij Pirateskip BSO`}
-                            </div>
-                            <div style="font-size:13px;color:#757575;margin-top:2px;">
-                                ${alleAfgeleverd ? 'Pirateskip BSO tussenstop voltooid' : piratenskipKinderen.map(k => k.naam).join(', ')}
-                            </div>
-                        </div>
-                        ${alleAfgeleverd ? '<span style="background:#4CAF50;color:white;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:bold;">✓ Klaar</span>' : ''}
-                    </div>
-                `;
-            }
-
             const totaalKinderen = alleKinderen.length;
             const afgevinkt = alleKinderen.filter(k => k.afgevinkt).length;
             const alleAfgevinkt = totaalKinderen > 0 && afgevinkt === totaalKinderen;
