@@ -1122,6 +1122,35 @@
                 }
             }
             
+            // ⭐ Piratenskip banner - toon als er piratenskip kinderen in de rit zitten
+            const piratenskipKinderen = alleKinderen.filter(k => k.is_piratenskip);
+            if (piratenskipKinderen.length > 0) {
+                const alleAfgeleverd = piratenskipKinderen.every(k => k.afgevinkt);
+                html += `
+                    <div style="
+                        margin-top:16px;
+                        padding:14px 16px;
+                        background:${alleAfgeleverd ? '#E8F5E9' : '#FFF3E0'};
+                        border:2px solid ${alleAfgeleverd ? '#4CAF50' : '#FF9800'};
+                        border-radius:12px;
+                        display:flex;
+                        align-items:center;
+                        gap:12px;
+                    ">
+                        <span style="font-size:24px;">🏴‍☠️</span>
+                        <div style="flex:1;">
+                            <div style="font-weight:bold;font-size:15px;color:${alleAfgeleverd ? '#2E7D32' : '#E65100'};">
+                                ${alleAfgeleverd ? '✓ Alle Pirateskip kinderen afgeleverd!' : `LET OP: ${piratenskipKinderen.length} ${piratenskipKinderen.length === 1 ? 'kind' : 'kinderen'} afzetten bij Pirateskip BSO`}
+                            </div>
+                            <div style="font-size:13px;color:#757575;margin-top:2px;">
+                                ${alleAfgeleverd ? 'Pirateskip BSO tussenstop voltooid' : piratenskipKinderen.map(k => k.naam).join(', ')}
+                            </div>
+                        </div>
+                        ${alleAfgeleverd ? '<span style="background:#4CAF50;color:white;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:bold;">✓ Klaar</span>' : ''}
+                    </div>
+                `;
+            }
+
             const totaalKinderen = alleKinderen.length;
             const afgevinkt = alleKinderen.filter(k => k.afgevinkt).length;
             const alleAfgevinkt = totaalKinderen > 0 && afgevinkt === totaalKinderen;
