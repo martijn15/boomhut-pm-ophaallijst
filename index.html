@@ -830,6 +830,16 @@
                         if (item && item.kindId) alleKindIds.add(item.kindId);
                     });
                 });
+
+                // ⭐ Tel ook Talint kinderen mee
+                const dagNaamTeller = getDagNaam();
+                const talintSnapTeller = await get(ref(db, `talint_kinderen/${dagNaamTeller}`));
+                if (talintSnapTeller.exists() && talintSnapTeller.val()) {
+                    const talintVal = talintSnapTeller.val();
+                    const talintIds = Array.isArray(talintVal) ? talintVal : Object.values(talintVal);
+                    talintIds.forEach(id => { if (id) alleKindIds.add(id); });
+                }
+
                 const totaal = alleKindIds.size;
                 document.getElementById('totaalAantal').textContent = totaal;
                 document.getElementById('totaalTeller').style.display = totaal > 0 ? 'block' : 'none';
