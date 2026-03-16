@@ -416,6 +416,9 @@
             overflow: hidden;
         }
         .extra-sectie.fietsen { border-color: #81C784; }
+        .extra-sectie.talint { border-color: #9C27B0; }
+        .extra-sectie.talint .extra-sectie-header { background: #F3E5F5; }
+        .extra-sectie.talint .extra-sectie-icon { background: #E1BEE7; }
         .extra-sectie.zelfstandig { border-color: #64B5F6; }
         .extra-sectie-header {
             display: flex;
@@ -1563,21 +1566,22 @@
             try {
                 const datumKey = currentDatum.replace(/-/g, '_');
                 const snapshot = await get(ref(db, `vervoer_verdeling/${datumKey}`));
-                if (!snapshot.exists()) return;
 
                 const fietsenRitten = [];
                 const zelfstandigRitten = [];
 
-                snapshot.forEach(child => {
-                    const rit = child.val();
-                    const key = child.key || '';
-                    const naam = (rit.vervoerNaam || '').toLowerCase();
-                    if (naam.includes('fiets') || key.includes('fiets')) {
-                        fietsenRitten.push({ ...rit, key: child.key });
-                    } else if (naam.includes('zelfstandig') || key.includes('zelfstandig')) {
-                        zelfstandigRitten.push({ ...rit, key: child.key });
-                    }
-                });
+                if (snapshot.exists()) {
+                    snapshot.forEach(child => {
+                        const rit = child.val();
+                        const key = child.key || '';
+                        const naam = (rit.vervoerNaam || '').toLowerCase();
+                        if (naam.includes('fiets') || key.includes('fiets')) {
+                            fietsenRitten.push({ ...rit, key: child.key });
+                        } else if (naam.includes('zelfstandig') || key.includes('zelfstandig')) {
+                            zelfstandigRitten.push({ ...rit, key: child.key });
+                        }
+                    });
+                }
 
                 const categorieen = [
                     { ritten: fietsenRitten,     label: 'Fietst mee met Stint',  icon: '🚲', type: 'fietsen' },
@@ -1640,8 +1644,85 @@
                     `;
                     container.innerHTML += sectieHtml;
                 }
+                // ⭐ TALINT SECTIE
+                await renderTalintSectie(container, datumKey);
+
             } catch (e) {
                 console.error('Error loading fietsen/zelfstandig:', e);
+            }
+        }
+
+        async function renderTalintSectie(container, datumKey) {
+            try {
+                // Haal weekdag op
+                const datum = new Date(currentDatum);
+                const dagen = ['zondag','maandag','dinsdag','woensdag','donderdag','vrijdag','zaterdag'];
+                const weekdag = dagen[datum.getDay()];
+
+                // Laad talint kinderen voor deze dag
+                const talintSnap = await get(ref(db, `talint_kinderen/${weekdag}`));
+                if (!talintSnap.exists() || !talintSnap.value) return;
+
+                const kindIds = [];
+                if (Array.isArray(talintSnap.val())) {
+                    talintSnap.val().forEach(id => { if (id) kindIds.push(id); });
+                } else {
+                    talintSnap.forEach(child => { if (child.val()) kindIds.push(child.val()); });
+                }
+
+                if (kindIds.length === 0) return;
+
+                // Laad kinddata
+                const kinderen = [];
+                for (const kindId of kindIds) {
+                    const kindSnap = await get(ref(db, `kinderen/${kindId}`));
+                    if (kindSnap.exists()) {
+                        const data = kindSnap.val();
+                        kinderen.push({ id: kindId, naam: data.naam || 'Onbekend', leeftijd: data.leeftijd || 0 });
+                    }
+                }
+
+                if (kinderen.length === 0) return;
+
+                // Afvink status
+                const statusSnap = await get(ref(db, `vervoer_verdeling/${datumKey}/status_talint`));
+                const statusData = statusSnap.exists() ? statusSnap.val() : {};
+                const afgevinktCount = kinderen.filter(k => statusData[k.id] === true).length;
+
+                kinderen.sort((a, b) => a.naam.localeCompare(b.naam));
+
+                let kinderenHtml = '';
+                kinderen.forEach(kind => {
+                    const afgevinkt = statusData[kind.id] === true;
+                    kinderenHtml += `
+                        <div class="extra-kind-card ${afgevinkt ? 'afgevinkt' : ''}" onclick="toggleExtraKind('${datumKey}', 'talint', '${kind.id}')">
+                            <div class="checkbox ${afgevinkt ? 'checked' : ''}"></div>
+                            <div style="flex:1;">
+                                <div class="extra-kind-naam">${kind.naam}</div>
+                                <div class="extra-kind-details">${kind.leeftijd} jaar • Komt zelfstandig van Talint</div>
+                            </div>
+                            ${afgevinkt ? '<span style="background:#4CAF50;color:white;border-radius:10px;padding:3px 10px;font-size:12px;font-weight:bold;">✓ Aangekomen</span>' : ''}
+                        </div>
+                    `;
+                });
+
+                const sectieHtml = `
+                    <div class="extra-sectie talint" id="extra-talint">
+                        <div class="extra-sectie-header" onclick="toggleExtraSectie('talint')">
+                            <div class="chevron-icon">▶</div>
+                            <div class="extra-sectie-icon">🎓</div>
+                            <div class="extra-sectie-info">
+                                <h3>Talint</h3>
+                                <p>${kinderen.length} kinderen • ${afgevinktCount}/${kinderen.length} aangekomen</p>
+                            </div>
+                        </div>
+                        <div class="extra-sectie-content">${kinderenHtml}</div>
+                    </div>
+                `;
+                container.innerHTML += sectieHtml;
+
+            } catch (e) {
+                console.error('Error loading talint:', e);
             }
         }
 
