@@ -1655,13 +1655,15 @@
         async function renderTalintSectie(container, datumKey) {
             try {
                 // Haal weekdag op
-                const datum = new Date(currentDatum);
+                // Gebruik datumstring direct voor weekdag berekening (tijdzone-safe)
+                const datumDelen = currentDatum.split('-');
+                const datum = new Date(parseInt(datumDelen[0]), parseInt(datumDelen[1]) - 1, parseInt(datumDelen[2]));
                 const dagen = ['zondag','maandag','dinsdag','woensdag','donderdag','vrijdag','zaterdag'];
                 const weekdag = dagen[datum.getDay()];
 
                 // Laad talint kinderen voor deze dag
                 const talintSnap = await get(ref(db, `talint_kinderen/${weekdag}`));
-                if (!talintSnap.exists() || !talintSnap.value) return;
+                if (!talintSnap.exists() || !talintSnap.val()) return;
 
                 const kindIds = [];
                 if (Array.isArray(talintSnap.val())) {
