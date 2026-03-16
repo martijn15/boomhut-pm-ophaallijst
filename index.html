@@ -1365,9 +1365,11 @@
             }
         };
 
-        window.toggleKind = async function(kindId, isPiratenskip, isReinbogeKind) {
+         window.toggleKind = async function(kindId, isPiratenskip, isReinbogeKind) {
             try {
                 const datumKey = currentDatum.replace(/-/g, '_');
+
+                // Bepaal Firebase pad
                 let path, field;
                 if (isPiratenskip) {
                     path = `piratenskip_kinderen/${kindId}`;
@@ -1380,79 +1382,38 @@
                     field = 'afgevinkt';
                 }
 
-                // ⭐ SNELLE UI UPDATE: zoek de kaart en toggle direct zonder wachten op Firebase
-                const alleKaarten = document.querySelectorAll('.kind-card');
+                // ⭐ Zoek kaart en toggle UI direct (supersnel)
                 let gevondenKaart = null;
-                for (const kaart of alleKaarten) {
-                    const onclick = kaart.getAttribute('onclick') || '';
-                    if (onclick.includes(`'${kindId}'`)) {
+                for (const kaart of document.querySelectorAll('.kind-card')) {
+                    if ((kaart.getAttribute('onclick') || '').includes(`'${kindId}'`)) {
                         gevondenKaart = kaart;
                         break;
                     }
                 }
-                const huidigeStatusUI = gevondenKaart ? gevondenKaart.classList.contains('afgevinkt') : null;
-                const nieuweStatusUI = !huidigeStatusUI;
-
-                // Update UI direct
+                const nieuweStatus = gevondenKaart ? !gevondenKaart.classList.contains('afgevinkt') : true;
                 if (gevondenKaart) {
-                    if (nieuweStatusUI) {
-                        gevondenKaart.classList.add('afgevinkt');
-                    } else {
-                        gevondenKaart.classList.remove('afgevinkt');
-                    }
+                    gevondenKaart.classList.toggle('afgevinkt');
                 }
 
-                // Schrijf naar Firebase op achtergrond
-                const snap = await get(ref(db, path));
-                if (snap.exists()) {
-                    const snapVal = snap.val();
-                    const huidigeStatus = snapVal && snapVal[field] === true;
-                    const nieuweStatus = !huidigeStatus;
-                    await update(ref(db, path), { [field]: nieuweStatus });
-                    
-                    // ⭐ Check: is dit busje rit 2 PM en is dit het laatste kind?
-                    if (nieuweStatus) {
-                        const eigenRitten = alleRittenPerPM[currentPM.id] || [];
-                        const rit2 = eigenRitten.find(r => isBusrit(r.key) && getBusritNummer(r.key) === 2);
-                        if (rit2 && !busjeIsVertrokken) {
-                            const kinderenRit2 = await loadKinderenVoorRit(rit2);
-                            const alleAf = kinderenRit2.length > 0 && kinderenRit2.every(k => k.afgevinkt);
-                            if (alleAf) {
-                                // Automatisch busje_vertrokken = true zetten!
-                                await update(ref(db, `vervoer_verdeling/${datumKey}/${rit2.key}`), {
-                                    busje_vertrokken: true
-                                });
-                                busjeIsVertrokken = true;
-                                document.getElementById('busjeVertrokkenSection').classList.add('hidden');
-                            }
-                        }
-                    }
-                    
-                    // Alleen herladen als busje rit 2 check nodig is
+                // ⭐ Schrijf naar Firebase zonder te wachten
+                update(ref(db, path), { [field]: nieuweStatus });
+
+                // Busje rit 2 check (alleen als kind aangevinkt wordt)
+                if (nieuweStatus) {
                     const eigenRitten = alleRittenPerPM[currentPM.id] || [];
                     const rit2 = eigenRitten.find(r => isBusrit(r.key) && getBusritNummer(r.key) === 2);
-                    if (rit2 && nieuweStatus) {
+                    if (rit2 && !busjeIsVertrokken) {
                         const kinderenRit2 = await loadKinderenVoorRit(rit2);
                         const alleAf = kinderenRit2.length > 0 && kinderenRit2.every(k => k.afgevinkt);
-                        if (alleAf && !busjeIsVertrokken) {
+                        if (alleAf) {
                             await update(ref(db, `vervoer_verdeling/${datumKey}/${rit2.key}`), { busje_vertrokken: true });
                             busjeIsVertrokken = true;
                             document.getElementById('busjeVertrokkenSection').classList.add('hidden');
                         }
                     }
-                    // Minimale UI sync - alleen tellers updaten
-                    await renderPMSections();
                 }
             } catch (error) {
                 console.error('Error toggling:', error);
-                // Bij fout: herstel UI
-                if (gevondenKaart) {
-                    if (nieuweStatusUI) {
-                        gevondenKaart.classList.remove('afgevinkt');
-                    } else {
-                        gevondenKaart.classList.add('afgevinkt');
-                    }
-                }
             }
         };
 
@@ -1709,6 +1670,31 @@
                 alert('❌ Fout: ' + e.message);
             }
         };
+
+        // ⭐ Update alleen de teller in de PM header zonder alles te herladen
+        function _updateAfvinkTeller() {
+            const alleKaarten = document.querySelectorAll('.pm-section.current-user .kind-card');
+            const totaal = alleKaarten.length;
+            const afgevinkt = Array.from(alleKaarten).filter(k => k.classList.contains('afgevinkt')).length;
+            
+            // Update teller in header
+            const header = document.querySelector('.pm-section.current-user .pm-section-info p');
+            if (header) {
+                const rittenText = header.textContent.split('•')[1] || '';
+                header.textContent = `${totaal} kinderen •${rittenText}`;
+            }
+
+            // Toon/verberg vink-alle-af knop
+            const vinkKnop = document.querySelector('[id^="vinkAllesAf_"]');
+            const verwijderKnop = document.querySelector('.pm-section.current-user .pm-section-content button[onclick^="verwijderPM"]');
+            
+            if (totaal > 0 && afgevinkt === totaal) {
+                if (vinkKnop) vinkKnop.closest('div').style.display = 'none';
+                if (!verwijderKnop) renderPMSections(); // herladen voor verwijder knop
+            } else {
+                if (verwijderKnop) verwijderKnop.closest('div').style.display = 'none';
+            }
+        }
 
         window.toggleExtraSectie = function(type) {
             const sectie = document.getElementById(`extra-${type}`);
