@@ -1373,7 +1373,14 @@
                     path = `reinboge_alle_kinderen/${kindId}`;
                     field = 'afgevinkt';
                 } else if (kindId.startsWith('reinboge_pirateskip_')) {
-                    path = `reinboge_alle_kinderen/${kindId}`;
+                    // ⭐ FIX Liam: check of kind in reinboge_alle_kinderen staat (Amarins/Eise)
+                    // of in reinboge_pirateskip_kinderen (Liam - oude methode)
+                    const reinbogeAlleSnap = await get(ref(db, `reinboge_alle_kinderen/${kindId}`));
+                    if (reinbogeAlleSnap.exists()) {
+                        path = `reinboge_alle_kinderen/${kindId}`;
+                    } else {
+                        path = `reinboge_pirateskip_kinderen/${kindId}`;
+                    }
                     field = 'afgevinkt';
                 } else {
                     path = `kinderen_per_dag/${datumKey}/${kindId}`;
