@@ -1372,22 +1372,42 @@
                 if (isPiratenskip) {
                     path = `piratenskip_kinderen/${kindId}`;
                     field = 'afgeleverd';
-                } else if (kindId.startsWith('reinboge_boomhut_')) {
-                    path = `reinboge_alle_kinderen/${kindId}`;
-                    field = 'afgevinkt';
-                } else if (kindId.startsWith('reinboge_pirateskip_')) {
+                } else if (kindId.startsWith('reinboge_boomhut_') || kindId.startsWith('reinboge_pirateskip_')) {
                     path = `reinboge_alle_kinderen/${kindId}`;
                     field = 'afgevinkt';
                 } else {
                     path = `kinderen_per_dag/${datumKey}/${kindId}`;
                     field = 'afgevinkt';
                 }
+
+                // ⭐ SNELLE UI UPDATE: zoek de kaart en toggle direct zonder wachten op Firebase
+                const alleKaarten = document.querySelectorAll('.kind-card');
+                let gevondenKaart = null;
+                for (const kaart of alleKaarten) {
+                    const onclick = kaart.getAttribute('onclick') || '';
+                    if (onclick.includes(`'${kindId}'`)) {
+                        gevondenKaart = kaart;
+                        break;
+                    }
+                }
+                const huidigeStatusUI = gevondenKaart ? gevondenKaart.classList.contains('afgevinkt') : null;
+                const nieuweStatusUI = !huidigeStatusUI;
+
+                // Update UI direct
+                if (gevondenKaart) {
+                    if (nieuweStatusUI) {
+                        gevondenKaart.classList.add('afgevinkt');
+                    } else {
+                        gevondenKaart.classList.remove('afgevinkt');
+                    }
+                }
+
+                // Schrijf naar Firebase op achtergrond
                 const snap = await get(ref(db, path));
                 if (snap.exists()) {
                     const snapVal = snap.val();
                     const huidigeStatus = snapVal && snapVal[field] === true;
                     const nieuweStatus = !huidigeStatus;
-                    console.log(`🔄 toggleKind: ${kindId} | path=${path} | field=${field} | ${huidigeStatus} → ${nieuweStatus}`);
                     await update(ref(db, path), { [field]: nieuweStatus });
                     
                     // ⭐ Check: is dit busje rit 2 PM en is dit het laatste kind?
@@ -1408,9 +1428,32 @@
                         }
                     }
                     
+                    // Alleen herladen als busje rit 2 check nodig is
+                    const eigenRitten = alleRittenPerPM[currentPM.id] || [];
+                    const rit2 = eigenRitten.find(r => isBusrit(r.key) && getBusritNummer(r.key) === 2);
+                    if (rit2 && nieuweStatus) {
+                        const kinderenRit2 = await loadKinderenVoorRit(rit2);
+                        const alleAf = kinderenRit2.length > 0 && kinderenRit2.every(k => k.afgevinkt);
+                        if (alleAf && !busjeIsVertrokken) {
+                            await update(ref(db, `vervoer_verdeling/${datumKey}/${rit2.key}`), { busje_vertrokken: true });
+                            busjeIsVertrokken = true;
+                            document.getElementById('busjeVertrokkenSection').classList.add('hidden');
+                        }
+                    }
+                    // Minimale UI sync - alleen tellers updaten
                     await renderPMSections();
                 }
-            } catch (error) { console.error('Error toggling:', error); }
+            } catch (error) {
+                console.error('Error toggling:', error);
+                // Bij fout: herstel UI
+                if (gevondenKaart) {
+                    if (nieuweStatusUI) {
+                        gevondenKaart.classList.remove('afgevinkt');
+                    } else {
+                        gevondenKaart.classList.add('afgevinkt');
+                    }
+                }
+            }
         };
 
         window.verwijderPMOphaallijst = async function(pmId) {
