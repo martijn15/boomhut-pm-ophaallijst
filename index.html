@@ -1377,32 +1377,18 @@
                     path = `reinboge_alle_kinderen/${kindId}`;
                     field = 'afgevinkt';
                 } else if (kindId.startsWith('reinboge_pirateskip_')) {
-                    // ⭐ FIX Liam: Amarins/Eise staan in reinboge_alle_kinderen
-                    // Liam staat in reinboge_pirateskip_kinderen met veld 'afgeleverd'
-                    const reinbogeAlleSnap = await get(ref(db, `reinboge_alle_kinderen/${kindId}`));
-                    if (reinbogeAlleSnap.exists()) {
-                        path = `reinboge_alle_kinderen/${kindId}`;
-                        field = 'afgevinkt';
-                    } else {
-                        // Liam - via piratenskip_kind_id ophalen
-                        const reinbogeData = (await get(ref(db, `reinboge_alle_kinderen/${kindId}`))).val();
-                        const piratenskipKindId = reinbogeData?.piratenskip_kind_id;
-                        if (piratenskipKindId) {
-                            path = `piratenskip_kinderen/${piratenskipKindId}`;
-                            field = 'afgeleverd';
-                        } else {
-                            path = `reinboge_pirateskip_kinderen/${kindId}`;
-                            field = 'afgevinkt';
-                        }
-                    }
+                    path = `reinboge_alle_kinderen/${kindId}`;
+                    field = 'afgevinkt';
                 } else {
                     path = `kinderen_per_dag/${datumKey}/${kindId}`;
                     field = 'afgevinkt';
                 }
                 const snap = await get(ref(db, path));
                 if (snap.exists()) {
-                    const huidigeStatus = snap.val()[field] || false;
+                    const snapVal = snap.val();
+                    const huidigeStatus = snapVal && snapVal[field] === true;
                     const nieuweStatus = !huidigeStatus;
+                    console.log(`🔄 toggleKind: ${kindId} | path=${path} | field=${field} | ${huidigeStatus} → ${nieuweStatus}`);
                     await update(ref(db, path), { [field]: nieuweStatus });
                     
                     // ⭐ Check: is dit busje rit 2 PM en is dit het laatste kind?
