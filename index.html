@@ -1284,6 +1284,10 @@
         }
 
         function buildKindCard(kind, ritKey, pmId) {
+            // Debug: log pmId vs currentPM.id voor reinboge kinderen
+            if (kind.is_reinboge) {
+                console.log(`🔍 buildKindCard: ${kind.naam} | pmId=${pmId} | currentPM.id=${currentPM?.id} | isOwnList=${pmId === currentPM?.id}`);
+            }
             const isOverstapper = overstappersVandaag.some(ov => {
                 const ovNaam = ov.includes('(') ? ov.split('(')[0].trim().toLowerCase() : ov.toLowerCase();
                 return ovNaam === kind.naam.toLowerCase();
