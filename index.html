@@ -1223,33 +1223,32 @@
                     if (item.is_piratenskip) {
                         const snap = await get(ref(db, `piratenskip_kinderen/${item.kindId}`));
                         if (snap.exists()) kindData = snap.val();
-                    } else {
-                        // Eerst proberen in kinderen_per_dag
-                        const snap = await get(ref(db, `kinderen_per_dag/${datumKey}/${item.kindId}`));
-                        if (snap.exists()) {
-                            kindData = snap.val();
-                        } else if (item.kindId.startsWith('reinboge_boomhut_')) {
-                            // ⭐ Reinboge boomhut kinderen (Hanna, Hedzer etc.)
-                            const reinbogeSnap = await get(ref(db, `reinboge_alle_kinderen/${item.kindId}`));
+                    } else if (item.kindId.startsWith('reinboge_boomhut_')) {
+                        // ⭐ Reinboge boomhut kinderen (Hanna, Hedzer etc.)
+                        const reinbogeSnap = await get(ref(db, `reinboge_alle_kinderen/${item.kindId}`));
+                        if (reinbogeSnap.exists()) {
+                            kindData = reinbogeSnap.val();
+                            isReinbogeKind = true;
+                        }
+                    } else if (item.kindId.startsWith('reinboge_pirateskip_')) {
+                        // ⭐ Reinboge pirateskip kinderen - ALTIJD uit reinboge_alle_kinderen laden
+                        // zodat is_reinboge_kind correct true is (ook voor Liam)
+                        const reinbogeAlleSnap = await get(ref(db, `reinboge_alle_kinderen/${item.kindId}`));
+                        if (reinbogeAlleSnap.exists()) {
+                            kindData = reinbogeAlleSnap.val();
+                            isReinbogeKind = true;
+                        } else {
+                            const reinbogeSnap = await get(ref(db, `reinboge_pirateskip_kinderen/${item.kindId}`));
                             if (reinbogeSnap.exists()) {
                                 kindData = reinbogeSnap.val();
                                 isReinbogeKind = true;
                             }
-                        } else if (item.kindId.startsWith('reinboge_pirateskip_')) {
-                            // ⭐ Reinboge pirateskip kinderen (Amarins, Eise etc.)
-                            // Eerst proberen in reinboge_alle_kinderen (nieuw, zonder piratenskip_kind_id)
-                            const reinbogeAlleSnap = await get(ref(db, `reinboge_alle_kinderen/${item.kindId}`));
-                            if (reinbogeAlleSnap.exists()) {
-                                kindData = reinbogeAlleSnap.val();
-                                isReinbogeKind = true;
-                            } else {
-                                // Fallback: oude methode via reinboge_pirateskip_kinderen (Liam)
-                                const reinbogeSnap = await get(ref(db, `reinboge_pirateskip_kinderen/${item.kindId}`));
-                                if (reinbogeSnap.exists()) {
-                                    kindData = reinbogeSnap.val();
-                                    isReinbogeKind = true;
-                                }
-                            }
+                        }
+                    } else {
+                        // Reguliere kinderen uit kinderen_per_dag
+                        const snap = await get(ref(db, `kinderen_per_dag/${datumKey}/${item.kindId}`));
+                        if (snap.exists()) {
+                            kindData = snap.val();
                         }
                     }
                     if (kindData) {
