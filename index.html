@@ -31,6 +31,166 @@
             font-weight: bold; 
             margin: 0;
         }
+
+        /* ========================================
+           AUTH SCREEN (wachtwoord invoer)
+        ======================================== */
+        #authScreen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 60px);
+            padding: 32px 24px;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 380px;
+            background: white;
+            border-radius: 24px;
+            padding: 36px 28px;
+            box-shadow: 0 8px 32px rgba(33, 150, 243, 0.15);
+            border: 1px solid rgba(33, 150, 243, 0.15);
+        }
+
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .auth-logo .logo-icon {
+            font-size: 56px;
+            display: block;
+            margin-bottom: 12px;
+        }
+        .auth-logo h2 {
+            font-size: 22px;
+            font-weight: bold;
+            color: #1976D2;
+            margin-bottom: 6px;
+        }
+        .auth-logo p {
+            font-size: 14px;
+            color: #757575;
+        }
+
+        .auth-field {
+            margin-bottom: 20px;
+        }
+        .auth-field label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #424242;
+            margin-bottom: 8px;
+        }
+        .auth-field .password-wrapper {
+            position: relative;
+        }
+        .auth-field input[type="password"],
+        .auth-field input[type="text"] {
+            width: 100%;
+            padding: 14px 48px 14px 16px;
+            border: 2px solid #E0E0E0;
+            border-radius: 12px;
+            font-size: 18px;
+            letter-spacing: 4px;
+            color: #212121;
+            outline: none;
+            transition: border-color 0.2s;
+            background: #FAFAFA;
+        }
+        .auth-field input:focus {
+            border-color: #2196F3;
+            background: white;
+        }
+        .auth-field input.error {
+            border-color: #F44336;
+            background: #FFF5F5;
+        }
+        .toggle-pw {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: #BDBDBD;
+            padding: 4px;
+            line-height: 1;
+        }
+        .toggle-pw:hover { color: #757575; }
+
+        .auth-error {
+            background: #FFF5F5;
+            border: 1px solid #FFCDD2;
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 14px;
+            color: #C62828;
+            margin-bottom: 16px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+        .auth-error.visible { display: flex; }
+
+        .auth-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .auth-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(33, 150, 243, 0.45);
+        }
+        .auth-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .auth-loading {
+            text-align: center;
+            padding: 48px 24px;
+            color: #757575;
+        }
+        .auth-loading .spinner {
+            border: 4px solid #E3F2FD;
+            border-top: 4px solid #2196F3;
+            border-radius: 50%;
+            width: 48px; height: 48px;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        /* Uitlog knop (klein, in appbar) */
+        #uitlogKnop {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.5);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        #uitlogKnop:hover { background: rgba(255,255,255,0.35); }
         
         .login-screen { 
             padding: 16px; 
@@ -539,10 +699,42 @@
             <div id="totaalTeller" style="display:none;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.5);border-radius:20px;padding:4px 12px;font-size:13px;font-weight:bold;color:white;white-space:nowrap;">
                 👦 <span id="totaalAantal">0</span> kinderen
             </div>
+            <!-- Uitlog knop (alleen zichtbaar als ingelogd) -->
+            <button id="uitlogKnop" onclick="uitloggen()" class="hidden">🔒 Uitloggen</button>
+        </div>
+
+        <!-- ========== AUTH SCREEN ========== -->
+        <div id="authScreen">
+            <div class="auth-loading" id="authLoading">
+                <div class="spinner"></div>
+                <div>Laden...</div>
+            </div>
+            <div class="auth-card hidden" id="authCard">
+                <div class="auth-logo">
+                    <span class="logo-icon">🌳</span>
+                    <h2>De Boomhut BSO</h2>
+                    <p>Voer het wachtwoord in om verder te gaan</p>
+                </div>
+                <div class="auth-error" id="authError">
+                    <span>⚠️</span>
+                    <span id="authErrorTekst">Onjuist wachtwoord. Probeer opnieuw.</span>
+                </div>
+                <div class="auth-field">
+                    <label for="pwInput">Wachtwoord</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="pwInput" placeholder="••••••••" autocomplete="current-password"
+                            onkeydown="if(event.key==='Enter') doLogin()" oninput="clearAuthError()">
+                        <button type="button" class="toggle-pw" onclick="togglePwZichtbaar()" id="togglePwBtn">👁️</button>
+                    </div>
+                </div>
+                <button class="auth-btn" id="loginBtn" onclick="doLogin()">
+                    <span>🔓</span> Inloggen
+                </button>
+            </div>
         </div>
         
-        <!-- LOGIN SCREEN -->
-        <div id="loginScreen" class="login-screen">
+        <!-- LOGIN SCREEN (PM selectie) -->
+        <div id="loginScreen" class="login-screen hidden">
             <div class="welkom-header">
                 <div class="welkom-icon">👤</div>
                 <div class="welkom-text">
@@ -609,6 +801,7 @@
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getDatabase, ref, get, update, remove, onValue, off } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyAo65QoOD-Lj-UEJJlBjSIX1-BWZEIhw1o",
@@ -622,15 +815,133 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+        const auth = getAuth(app);
+
+        // ============================================================
+        // AUTH LOGICA
+        // ============================================================
+        
+        // Gedeeld account voor de hele BSO (verberg email voor gebruikers)
+        const BSO_EMAIL = 'boomhut@boomhut-vervoer.nl';
+
+        // Persistentie: sessie wordt bewaard op het apparaat (ook na sluiten browser)
+        setPersistence(auth, browserLocalPersistence);
+
+        // Luister naar auth status verandering
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Ingelogd → toon app
+                toonApp();
+            } else {
+                // Niet ingelogd → toon wachtwoord scherm
+                toonAuthScherm();
+            }
+        });
+
+        function toonAuthScherm() {
+            document.getElementById('authScreen').classList.remove('hidden');
+            document.getElementById('authLoading').classList.add('hidden');
+            document.getElementById('authCard').classList.remove('hidden');
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('lijstScreen').classList.add('hidden');
+            document.getElementById('terugKnop').style.display = 'none';
+            document.getElementById('uitlogKnop').classList.add('hidden');
+        }
+
+        function toonApp() {
+            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('uitlogKnop').classList.remove('hidden');
+            loadPMs();
+        }
+
+        window.doLogin = async function() {
+            const pw = document.getElementById('pwInput').value.trim();
+            if (!pw) {
+                toonAuthFout('Vul een wachtwoord in.');
+                return;
+            }
+
+            const btn = document.getElementById('loginBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span>⏳</span> Bezig...';
+
+            try {
+                await signInWithEmailAndPassword(auth, BSO_EMAIL, pw);
+                // onAuthStateChanged regelt de rest
+            } catch (error) {
+                console.error('Login fout:', error.code);
+                btn.disabled = false;
+                btn.innerHTML = '<span>🔓</span> Inloggen';
+
+                if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                    toonAuthFout('Onjuist wachtwoord. Probeer opnieuw.');
+                } else if (error.code === 'auth/too-many-requests') {
+                    toonAuthFout('Te veel pogingen. Wacht even en probeer opnieuw.');
+                } else {
+                    toonAuthFout('Inloggen mislukt. Controleer je verbinding.');
+                }
+                document.getElementById('pwInput').classList.add('error');
+            }
+        };
+
+        window.uitloggen = async function() {
+            const bevestig = confirm('Wil je uitloggen?');
+            if (!bevestig) return;
+            try {
+                stopBusjeStatusListener();
+                await signOut(auth);
+                // Reset app state
+                currentPM = null;
+                currentDatum = null;
+                alleRittenPerPM = {};
+                activeBusritTab = {};
+                busjeIsVertrokken = false;
+                document.getElementById('totaalTeller').style.display = 'none';
+                document.getElementById('extraSectiesContainer').innerHTML = '';
+                document.getElementById('lijstScreen').classList.add('hidden');
+                document.getElementById('loginScreen').classList.add('hidden');
+                // wachtwoord veld leegmaken
+                document.getElementById('pwInput').value = '';
+                clearAuthError();
+            } catch (e) {
+                console.error('Uitloggen fout:', e);
+            }
+        };
+
+        function toonAuthFout(tekst) {
+            const errEl = document.getElementById('authError');
+            document.getElementById('authErrorTekst').textContent = tekst;
+            errEl.classList.add('visible');
+        }
+
+        window.clearAuthError = function() {
+            document.getElementById('authError').classList.remove('visible');
+            document.getElementById('pwInput').classList.remove('error');
+        };
+
+        window.togglePwZichtbaar = function() {
+            const input = document.getElementById('pwInput');
+            const btn = document.getElementById('togglePwBtn');
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                btn.textContent = '👁️';
+            }
+        };
+
+        // ============================================================
+        // APP LOGICA (zelfde als origineel)
+        // ============================================================
 
         let currentPM = null;
         let currentDatum = null;
         let alleRittenPerPM = {};
         let overstappersVandaag = [];
         let reinbogeKindIds = [];
-        // ⭐ Track actieve busrit tab per PM
         let activeBusritTab = {};
-        // ⭐ Realtime listener voor busje_vertrokken status
         let busjeStatusListener = null;
         let busjeIsVertrokken = false;
 
@@ -642,19 +953,16 @@
         const pmSectionsContainer = document.getElementById('pmSectionsContainer');
         const tweeRittenBanner = document.getElementById('tweeRittenBanner');
 
-        // ⭐ Detecteer busrit nummer uit key
         function getBusritNummer(key) {
             if (key.includes('rit 1') || key.includes('rit_1') || key.includes('rit1')) return 1;
             if (key.includes('rit 2') || key.includes('rit_2') || key.includes('rit2')) return 2;
             return null;
         }
 
-        // ⭐ Is dit een busrit?
         function isBusrit(key) {
             return key.toLowerCase().includes('busje') || key.toLowerCase().includes('bus');
         }
 
-        // STAP 1: LAAD PMs
         async function loadPMs() {
             try {
                 const snapshot = await get(ref(db, 'pedagogisch_medewerkers'));
@@ -737,7 +1045,6 @@
             currentDatum = datum;
             document.querySelectorAll('.weekdag-btn').forEach(btn => btn.classList.remove('selected'));
             if (event && event.currentTarget) event.currentTarget.classList.add('selected');
-            // ⭐ Direct legen zodat oude fietsen/zelfstandig secties niet blijven hangen
             document.getElementById('extraSectiesContainer').innerHTML = '';
             await loadAllePMLijsten();
         };
@@ -774,7 +1081,6 @@
                     });
                 });
 
-                // ⭐ Check of ingelogde PM überhaupt ritten heeft vandaag
                 const eigenRitten = alleRittenPerPM[currentPM.id] || [];
                 if (eigenRitten.length === 0) {
                     document.getElementById('extraSectiesContainer').innerHTML = '';
@@ -798,7 +1104,6 @@
                         </div>
                     `;
                     pmChips.innerHTML = '';
-                    // Toon wel de andere PM chips zodat je kunt meekijken
                     await renderPMChips();
                     return;
                 }
@@ -810,7 +1115,6 @@
                     tweeRittenBanner.classList.remove('hidden');
                 }
 
-                // ⭐ Check of eigen rit 'wachtVoorBusjeRit2' heeft → toon wachtbanner + start listener
                 const wachtRit = eigenRitten.find(r => r.wachtVoorBusjeRit2 === true);
                 if (wachtRit) {
                     setupBusjeStatusListener(wachtRit);
@@ -823,7 +1127,6 @@
                 await loadOverstappers();
                 await renderPMChips();
 
-                // ⭐ Tel totaal unieke kinderen over alle PMs
                 const alleKindIds = new Set();
                 Object.values(alleRittenPerPM).flat().forEach(rit => {
                     (rit.ophaal_volgorde || []).forEach(item => {
@@ -831,7 +1134,6 @@
                     });
                 });
 
-                // ⭐ Tel ook Talint kinderen mee
                 const dagNaamTeller = getDagNaam();
                 const talintSnapTeller = await get(ref(db, `talint_kinderen/${dagNaamTeller}`));
                 if (talintSnapTeller.exists() && talintSnapTeller.val()) {
@@ -938,17 +1240,11 @@
                     ? await renderEigenSectie(section.ritten, section.pmId)
                     : await renderAndereRitten(section.ritten, section.pmId);
 
-                // ⭐ Check of deze PM piratenskip kinderen heeft
                 const heeftPiratenskip = section.ritten.some(r =>
                     (r.ophaal_volgorde || []).some(item => item && item.is_piratenskip)
                 );
                 const piratenskipBadge = heeftPiratenskip
-                    ? `<span style="
-                        background:#FF9800;color:white;
-                        border-radius:10px;padding:2px 8px;
-                        font-size:12px;font-weight:bold;
-                        margin-left:8px;vertical-align:middle;
-                      ">🏴‍☠️ Pirateskip</span>`
+                    ? `<span style="background:#FF9800;color:white;border-radius:10px;padding:2px 8px;font-size:12px;font-weight:bold;margin-left:8px;vertical-align:middle;">🏴‍☠️ Pirateskip</span>`
                     : '';
 
                 html += `
@@ -970,39 +1266,26 @@
             pmSectionsContainer.innerHTML = html;
         }
 
-        // ⭐ ANDERE PM's: Toon ook tabs als ze 2 busritten hebben (readonly)
         async function renderAndereRitten(ritten, pmId) {
             const busritten = ritten.filter(r => isBusrit(r.key));
-
-            // Geen 2 busritten? Gewone weergave
             if (busritten.length < 2) {
                 return await renderRittenVoorPM(ritten, pmId);
             }
-
             busritten.sort((a, b) => (getBusritNummer(a.key) || 99) - (getBusritNummer(b.key) || 99));
-
             if (!activeBusritTab[pmId]) activeBusritTab[pmId] = 1;
-
             const telPerRit = {};
             for (const rit of busritten) {
                 const nr = getBusritNummer(rit.key) || 0;
                 const kinderen = await loadKinderenVoorRit(rit);
                 telPerRit[nr] = kinderen.length;
             }
-
             let tabsHtml = '<div class="busrit-tabs">';
             for (const rit of busritten) {
                 const nr = getBusritNummer(rit.key);
                 const isActive = activeBusritTab[pmId] === nr;
-                tabsHtml += `
-                    <div class="busrit-tab ${isActive ? 'active' : ''}" onclick="switchBusritTab('${pmId}', ${nr})">
-                        🚌 Busrit ${nr}
-                        <span class="tab-badge">${telPerRit[nr] || 0}</span>
-                    </div>
-                `;
+                tabsHtml += `<div class="busrit-tab ${isActive ? 'active' : ''}" onclick="switchBusritTab('${pmId}', ${nr})">🚌 Busrit ${nr}<span class="tab-badge">${telPerRit[nr] || 0}</span></div>`;
             }
             tabsHtml += '</div>';
-
             let panelsHtml = '';
             for (const rit of busritten) {
                 const nr = getBusritNummer(rit.key);
@@ -1010,48 +1293,29 @@
                 const ritContent = await renderRittenVoorPM([rit], pmId, nr);
                 panelsHtml += `<div class="busrit-panel ${isActive ? 'active' : ''}" id="busrit-panel-${pmId}-${nr}">${ritContent}</div>`;
             }
-
             return tabsHtml + panelsHtml;
         }
 
-        // ⭐ EIGEN SECTIE: Met busrit tabs als er 2 busritten zijn
         async function renderEigenSectie(ritten, pmId) {
             const busritten = ritten.filter(r => isBusrit(r.key));
-            const andereRitten = ritten.filter(r => !isBusrit(r.key));
-
-            // Geen 2 busritten? Gewone weergave
             if (busritten.length < 2) {
                 return await renderRittenVoorPM(ritten, pmId);
             }
-
-            busritten.sort((a, b) => {
-                const nrA = getBusritNummer(a.key) || 99;
-                const nrB = getBusritNummer(b.key) || 99;
-                return nrA - nrB;
-            });
-
+            busritten.sort((a, b) => (getBusritNummer(a.key) || 99) - (getBusritNummer(b.key) || 99));
             if (!activeBusritTab[pmId]) activeBusritTab[pmId] = 1;
-
             const telPerRit = {};
             for (const rit of busritten) {
                 const nr = getBusritNummer(rit.key) || 0;
                 const kinderen = await loadKinderenVoorRit(rit);
                 telPerRit[nr] = kinderen.length;
             }
-
             let tabsHtml = '<div class="busrit-tabs">';
             for (const rit of busritten) {
                 const nr = getBusritNummer(rit.key);
                 const isActive = activeBusritTab[pmId] === nr;
-                tabsHtml += `
-                    <div class="busrit-tab ${isActive ? 'active' : ''}" onclick="switchBusritTab('${pmId}', ${nr})">
-                        🚌 Busrit ${nr}
-                        <span class="tab-badge">${telPerRit[nr] || 0}</span>
-                    </div>
-                `;
+                tabsHtml += `<div class="busrit-tab ${isActive ? 'active' : ''}" onclick="switchBusritTab('${pmId}', ${nr})">🚌 Busrit ${nr}<span class="tab-badge">${telPerRit[nr] || 0}</span></div>`;
             }
             tabsHtml += '</div>';
-
             let panelsHtml = '';
             for (const rit of busritten) {
                 const nr = getBusritNummer(rit.key);
@@ -1059,8 +1323,6 @@
                 const ritContent = await renderRittenVoorPM([rit], pmId, nr);
                 panelsHtml += `<div class="busrit-panel ${isActive ? 'active' : ''}" id="busrit-panel-${pmId}-${nr}">${ritContent}</div>`;
             }
-
-            // ⭐ Check rit 2 status voor busje_vertrokken knop
             const rit2 = busritten.find(r => getBusritNummer(r.key) === 2);
             if (rit2) {
                 const kinderenRit2 = await loadKinderenVoorRit(rit2);
@@ -1072,20 +1334,14 @@
                     busjeVertrokkenSection.classList.add('hidden');
                 }
             }
-
             return tabsHtml + panelsHtml;
         }
 
-        // ⭐ SWITCH BUSRIT TAB
         window.switchBusritTab = function(pmId, nr) {
             activeBusritTab[pmId] = nr;
-
-            // Update tab styling
             document.querySelectorAll(`#pm-${pmId} .busrit-tab`).forEach((tab, i) => {
                 tab.classList.toggle('active', i + 1 === nr);
             });
-
-            // Update panel visibility
             document.querySelectorAll(`#pm-${pmId} .busrit-panel`).forEach(panel => {
                 panel.classList.remove('active');
             });
@@ -1103,21 +1359,11 @@
                 const reinboge = kinderen.filter(k => k.is_reinboge);
                 const regulier = kinderen.filter(k => !k.is_reinboge);
 
-                // ⭐ Piratenskip banner bovenaan
                 const piratenskipKinderen = kinderen.filter(k => k.is_piratenskip);
                 if (piratenskipKinderen.length > 0) {
                     const alleAfgeleverd = piratenskipKinderen.every(k => k.afgevinkt);
                     html += `
-                        <div style="
-                            margin-bottom:16px;
-                            padding:14px 16px;
-                            background:${alleAfgeleverd ? '#E8F5E9' : '#FFF3E0'};
-                            border:2px solid ${alleAfgeleverd ? '#4CAF50' : '#FF9800'};
-                            border-radius:12px;
-                            display:flex;
-                            align-items:center;
-                            gap:12px;
-                        ">
+                        <div style="margin-bottom:16px;padding:14px 16px;background:${alleAfgeleverd ? '#E8F5E9' : '#FFF3E0'};border:2px solid ${alleAfgeleverd ? '#4CAF50' : '#FF9800'};border-radius:12px;display:flex;align-items:center;gap:12px;">
                             <span style="font-size:24px;">🏴‍☠️</span>
                             <div style="flex:1;">
                                 <div style="font-weight:bold;font-size:15px;color:${alleAfgeleverd ? '#2E7D32' : '#E65100'};">
@@ -1144,14 +1390,7 @@
                     reinbogeHeader += '<span><span style="font-size:20px;">🏫</span> REINBOGE SCHOOL</span>';
 
                     if (isOwnRit && heeftOverstappers && !overstappersUitgevoerd) {
-                        reinbogeHeader += `<button onclick="event.stopPropagation(); overstappersUitgestap('${rit.key}')" style="
-                            background:linear-gradient(135deg, #FF9800, #F57C00);
-                            color:white;border:none;border-radius:12px;
-                            padding:8px 14px;font-size:13px;font-weight:bold;
-                            cursor:pointer;white-space:nowrap;
-                            box-shadow:0 2px 8px rgba(255,152,0,0.4);
-                            position:relative;z-index:10;
-                        ">🔄 Overstappers uitgestapt</button>`;
+                        reinbogeHeader += `<button onclick="event.stopPropagation(); overstappersUitgestap('${rit.key}')" style="background:linear-gradient(135deg, #FF9800, #F57C00);color:white;border:none;border-radius:12px;padding:8px 14px;font-size:13px;font-weight:bold;cursor:pointer;white-space:nowrap;box-shadow:0 2px 8px rgba(255,152,0,0.4);position:relative;z-index:10;">🔄 Overstappers uitgestapt</button>`;
                     } else if (overstappersUitgevoerd) {
                         reinbogeHeader += '<span style="background:#4CAF50;color:white;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:bold;">✓ Uitgestapt</span>';
                     }
@@ -1159,7 +1398,6 @@
                     reinbogeHeader += '</div>';
                     html += reinbogeHeader;
 
-                    // Als overstappers uitgestap: verberg ze uit de lijst
                     const zichtbareReinboge = overstappersUitgevoerd
                         ? reinboge.filter(k => !overstappersVandaag.some(ov => {
                             const ovNaam = ov.includes('(') ? ov.split('(')[0].trim().toLowerCase() : ov.toLowerCase();
@@ -1184,16 +1422,9 @@
             
             if (!alleAfgevinkt && isOwnList && totaalKinderen > 0) {
                 const btnId = busritNrFilter ? `vinkAllesAf_${pmId}_${busritNrFilter}` : `vinkAllesAf_${pmId}`;
-                const rittenJson = JSON.stringify(ritten.map(r => r.key));
                 html += `
                     <div style="margin-top:24px;padding-top:20px;border-top:2px solid #E0E0E0;">
-                        <button id="${btnId}" onclick="vinkAlleKinderenAf('${pmId}', ${busritNrFilter || 'null'})" style="
-                            width:100%;padding:18px;
-                            background:linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
-                            color:white;border:none;border-radius:16px;font-size:18px;font-weight:bold;
-                            cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;
-                            box-shadow:0 4px 12px rgba(33,150,243,0.4);transition: all 0.3s;
-                        " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+                        <button id="${btnId}" onclick="vinkAlleKinderenAf('${pmId}', ${busritNrFilter || 'null'})" style="width:100%;padding:18px;background:linear-gradient(135deg, #2196F3 0%, #1976D2 100%);color:white;border:none;border-radius:16px;font-size:18px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;box-shadow:0 4px 12px rgba(33,150,243,0.4);transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
                             <span style="font-size:28px;">✓</span>
                             <span>Vink Alle Kinderen Af (${afgevinkt}/${totaalKinderen})</span>
                         </button>
@@ -1205,13 +1436,7 @@
             if (alleAfgevinkt && isOwnList && totaalKinderen > 0) {
                 html += `
                     <div style="margin-top:24px;padding-top:20px;border-top:2px solid #E0E0E0;">
-                        <button onclick="verwijderPMOphaallijst('${pmId}')" style="
-                            width:100%;padding:18px;
-                            background:linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
-                            color:white;border:none;border-radius:16px;font-size:18px;font-weight:bold;
-                            cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;
-                            box-shadow:0 4px 12px rgba(76,175,80,0.4);transition: all 0.3s;
-                        " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+                        <button onclick="verwijderPMOphaallijst('${pmId}')" style="width:100%;padding:18px;background:linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);color:white;border:none;border-radius:16px;font-size:18px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;box-shadow:0 4px 12px rgba(76,175,80,0.4);transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
                             <span style="font-size:28px;">✅</span>
                             <span>Klaar! Verwijder Ophaallijst</span>
                         </button>
@@ -1237,15 +1462,12 @@
                         const snap = await get(ref(db, `piratenskip_kinderen/${item.kindId}`));
                         if (snap.exists()) kindData = snap.val();
                     } else if (item.kindId.startsWith('reinboge_boomhut_')) {
-                        // ⭐ Reinboge boomhut kinderen (Hanna, Hedzer etc.)
                         const reinbogeSnap = await get(ref(db, `reinboge_alle_kinderen/${item.kindId}`));
                         if (reinbogeSnap.exists()) {
                             kindData = reinbogeSnap.val();
                             isReinbogeKind = true;
                         }
                     } else if (item.kindId.startsWith('reinboge_pirateskip_')) {
-                        // ⭐ Reinboge pirateskip kinderen - ALTIJD uit reinboge_alle_kinderen laden
-                        // zodat is_reinboge_kind correct true is (ook voor Liam)
                         const reinbogeAlleSnap = await get(ref(db, `reinboge_alle_kinderen/${item.kindId}`));
                         if (reinbogeAlleSnap.exists()) {
                             kindData = reinbogeAlleSnap.val();
@@ -1258,7 +1480,6 @@
                             }
                         }
                     } else {
-                        // Reguliere kinderen uit kinderen_per_dag
                         const snap = await get(ref(db, `kinderen_per_dag/${datumKey}/${item.kindId}`));
                         if (snap.exists()) {
                             kindData = snap.val();
@@ -1272,12 +1493,9 @@
                                           (kindData.school && kindData.school.toLowerCase().includes('reinboge')) ||
                                           kindData.is_reinboge ||
                                           reinbogeKindIds.includes(kindNaam);
-                        // ⭐ Reinboge kinderen: afgevinkt staat op reinboge_alle_kinderen node
                         const afgevinkt = item.is_piratenskip
                             ? (kindData.afgeleverd || false)
-                            : isReinbogeKind
-                                ? (kindData.afgevinkt || false)
-                                : (kindData.afgevinkt || false);
+                            : (kindData.afgevinkt || false);
                         kinderen.push({
                             id: item.kindId,
                             naam: kindData.naam || 'Onbekend',
@@ -1296,10 +1514,6 @@
         }
 
         function buildKindCard(kind, ritKey, pmId) {
-            // Debug: log pmId vs currentPM.id voor reinboge kinderen
-            if (kind.is_reinboge) {
-                console.log(`🔍 buildKindCard: ${kind.naam} | pmId=${pmId} | currentPM.id=${currentPM?.id} | isOwnList=${pmId === currentPM?.id}`);
-            }
             const isOverstapper = overstappersVandaag.some(ov => {
                 const ovNaam = ov.includes('(') ? ov.split('(')[0].trim().toLowerCase() : ov.toLowerCase();
                 return ovNaam === kind.naam.toLowerCase();
@@ -1351,12 +1565,9 @@
             try {
                 const datumKey = currentDatum.replace(/-/g, '_');
                 let ritten = alleRittenPerPM[pmId] || [];
-                
-                // Als busritNr opgegeven, filter alleen die rit
                 if (busritNr) {
                     ritten = ritten.filter(r => getBusritNummer(r.key) === busritNr);
                 }
-                
                 const alleKinderen = [];
                 for (const rit of ritten) {
                     const kinderen = await loadKinderenVoorRit(rit);
@@ -1378,11 +1589,9 @@
             }
         };
 
-         window.toggleKind = async function(kindId, isPiratenskip, isReinbogeKind) {
+        window.toggleKind = async function(kindId, isPiratenskip, isReinbogeKind) {
             try {
                 const datumKey = currentDatum.replace(/-/g, '_');
-
-                // Bepaal Firebase pad
                 let path, field;
                 if (isPiratenskip) {
                     path = `piratenskip_kinderen/${kindId}`;
@@ -1395,7 +1604,6 @@
                     field = 'afgevinkt';
                 }
 
-                // ⭐ Zoek kaart en toggle UI direct (supersnel)
                 let gevondenKaart = null;
                 for (const kaart of document.querySelectorAll('.kind-card')) {
                     if ((kaart.getAttribute('onclick') || '').includes(`'${kindId}'`)) {
@@ -1408,10 +1616,8 @@
                     gevondenKaart.classList.toggle('afgevinkt');
                 }
 
-                // ⭐ Schrijf naar Firebase zonder te wachten
                 update(ref(db, path), { [field]: nieuweStatus });
 
-                // Busje rit 2 check (alleen als kind aangevinkt wordt)
                 if (nieuweStatus) {
                     const eigenRitten = alleRittenPerPM[currentPM.id] || [];
                     const rit2 = eigenRitten.find(r => isBusrit(r.key) && getBusritNummer(r.key) === 2);
@@ -1446,52 +1652,35 @@
             }
         };
 
-        // ⭐ SETUP REALTIME LISTENER voor busje_vertrokken (stint-PM wacht)
         function setupBusjeStatusListener(wachtRit) {
             stopBusjeStatusListener();
-            
             const datumKey = currentDatum.replace(/-/g, '_');
             const wachtBanner = document.getElementById('wachtBanner');
             wachtBanner.classList.remove('hidden');
-            
-            // Zoek de busje rit 2 key van WELKE PM dan ook (niet per se de eigen PM)
             const allePMRitten = Object.values(alleRittenPerPM).flat();
-            
-            // Eerst zoeken op key naam (meest betrouwbaar)
             let busjeRit2 = allePMRitten.find(r => isBusrit(r.key) && getBusritNummer(r.key) === 2);
-            
-            // Fallback: zoek op vervoerNaam als key niet matcht
             if (!busjeRit2) {
                 busjeRit2 = allePMRitten.find(r => {
                     const naam = (r.vervoerNaam || '').toLowerCase();
                     return naam.includes('busje') && naam.includes('rit 2');
                 });
             }
-            
             if (!busjeRit2) {
-                console.warn('⚠️ Geen busje rit 2 gevonden om op te luisteren');
-                // Toch banner tonen in wacht-stand
                 updateWachtBanner(false);
                 return;
             }
-            
-            console.log('👂 Luisteren naar busje_vertrokken op:', busjeRit2.key);
-            
             const busjeRef = ref(db, `vervoer_verdeling/${datumKey}/${busjeRit2.key}/busje_vertrokken`);
             busjeStatusListener = onValue(busjeRef, (snapshot) => {
                 const vertrokken = snapshot.val() === true;
-                console.log('📡 busje_vertrokken update:', vertrokken);
                 busjeIsVertrokken = vertrokken;
                 updateWachtBanner(vertrokken);
             });
-            
-            // ⭐ Meteen initiële status tonen (ook als busje al vertrokken was vóór inloggen)
             updateWachtBanner(busjeRit2.busje_vertrokken === true);
         }
 
         function stopBusjeStatusListener() {
             if (busjeStatusListener) {
-                busjeStatusListener(); // unsubscribe
+                busjeStatusListener();
                 busjeStatusListener = null;
             }
         }
@@ -1501,9 +1690,7 @@
             const icon = document.getElementById('wachtBannerIcon');
             const titel = document.getElementById('wachtBannerTitel');
             const tekst = document.getElementById('wachtBannerTekst');
-            
             banner.classList.remove('hidden', 'wachten', 'vertrokken');
-            
             if (vertrokken) {
                 banner.classList.add('vertrokken');
                 icon.textContent = '✅';
@@ -1517,34 +1704,26 @@
             }
         }
 
-        // ⭐ BUS-PM: markeer busje rit 2 als vertrokken
         window.markeerBusjeVertrokken = async function() {
             try {
                 const datumKey = currentDatum.replace(/-/g, '_');
                 const eigenRitten = alleRittenPerPM[currentPM.id] || [];
                 const rit2 = eigenRitten.find(r => isBusrit(r.key) && getBusritNummer(r.key) === 2);
                 if (!rit2) return;
-                
-                await update(ref(db, `vervoer_verdeling/${datumKey}/${rit2.key}`), {
-                    busje_vertrokken: true
-                });
+                await update(ref(db, `vervoer_verdeling/${datumKey}/${rit2.key}`), { busje_vertrokken: true });
                 document.getElementById('busjeVertrokkenSection').classList.add('hidden');
             } catch (e) {
                 alert('❌ Fout: ' + e.message);
             }
         };
 
-        // ⭐ FIETSEN + ZELFSTANDIG SECTIES
-        // ⭐ Laad kinderen voor een fietsen/zelfstandig rit uit vervoer_verdeling
         async function loadExtraKinderenVoorRit(rit) {
             const kinderen = [];
             const kindIds = rit.kindIds || [];
             const datumKey = currentDatum.replace(/-/g, '_');
-
             for (const kindId of kindIds) {
                 if (!kindId) continue;
                 let kindData = null;
-
                 if (kindId.startsWith('reinboge_boomhut_') || kindId.startsWith('reinboge_pirateskip_')) {
                     const snap = await get(ref(db, `reinboge_alle_kinderen/${kindId}`));
                     if (snap.exists()) kindData = snap.val();
@@ -1557,13 +1736,8 @@
                         if (snap2.exists()) kindData = snap2.val();
                     }
                 }
-
                 if (kindData) {
-                    kinderen.push({
-                        id: kindId,
-                        naam: kindData.naam || 'Onbekend',
-                        leeftijd: kindData.leeftijd || 0,
-                    });
+                    kinderen.push({ id: kindId, naam: kindData.naam || 'Onbekend', leeftijd: kindData.leeftijd || 0 });
                 }
             }
             return kinderen;
@@ -1572,14 +1746,11 @@
         async function renderFietsenZelfstandig() {
             const container = document.getElementById('extraSectiesContainer');
             container.innerHTML = '';
-
             try {
                 const datumKey = currentDatum.replace(/-/g, '_');
                 const snapshot = await get(ref(db, `vervoer_verdeling/${datumKey}`));
-
                 const fietsenRitten = [];
                 const zelfstandigRitten = [];
-
                 if (snapshot.exists()) {
                     snapshot.forEach(child => {
                         const rit = child.val();
@@ -1592,37 +1763,27 @@
                         }
                     });
                 }
-
                 const categorieen = [
                     { ritten: fietsenRitten,     label: 'Fietst mee met Stint',  icon: '🚲', type: 'fietsen' },
                     { ritten: zelfstandigRitten, label: 'Zelfstandig naar BSO', icon: '🚶', type: 'zelfstandig' },
                 ];
-
                 for (const cat of categorieen) {
                     if (cat.ritten.length === 0) continue;
-
                     let alleKinderen = [];
                     for (const rit of cat.ritten) {
                         const kinderen = await loadExtraKinderenVoorRit(rit);
                         alleKinderen = alleKinderen.concat(kinderen);
                     }
-
-                    // Dedupliceer op id
                     const seen = new Set();
                     alleKinderen = alleKinderen.filter(k => {
                         if (seen.has(k.id)) return false;
                         seen.add(k.id);
                         return true;
                     });
-
                     if (alleKinderen.length === 0) continue;
-
-                    // Afvink-status ophalen
                     const statusSnap = await get(ref(db, `vervoer_verdeling/${datumKey}/status_${cat.type}`));
                     const statusData = statusSnap.exists() ? statusSnap.val() : {};
-
                     const afgevinktCount = alleKinderen.filter(k => statusData[k.id] === true).length;
-
                     alleKinderen.sort((a, b) => a.naam.localeCompare(b.naam));
                     let kinderenHtml = '';
                     alleKinderen.forEach(kind => {
@@ -1638,7 +1799,6 @@
                             </div>
                         `;
                     });
-
                     const sectieHtml = `
                         <div class="extra-sectie ${cat.type}" id="extra-${cat.type}">
                             <div class="extra-sectie-header" onclick="toggleExtraSectie('${cat.type}')">
@@ -1654,9 +1814,7 @@
                     `;
                     container.innerHTML += sectieHtml;
                 }
-                // ⭐ TALINT SECTIE
                 await renderTalintSectie(container, datumKey);
-
             } catch (e) {
                 console.error('Error loading fietsen/zelfstandig:', e);
             }
@@ -1664,27 +1822,19 @@
 
         async function renderTalintSectie(container, datumKey) {
             try {
-                // Haal weekdag op
-                // Gebruik datumstring direct voor weekdag berekening (tijdzone-safe)
                 const datumDelen = currentDatum.split('-');
                 const datum = new Date(parseInt(datumDelen[0]), parseInt(datumDelen[1]) - 1, parseInt(datumDelen[2]));
                 const dagen = ['zondag','maandag','dinsdag','woensdag','donderdag','vrijdag','zaterdag'];
                 const weekdag = dagen[datum.getDay()];
-
-                // Laad talint kinderen voor deze dag
                 const talintSnap = await get(ref(db, `talint_kinderen/${weekdag}`));
                 if (!talintSnap.exists() || !talintSnap.val()) return;
-
                 const kindIds = [];
                 if (Array.isArray(talintSnap.val())) {
                     talintSnap.val().forEach(id => { if (id) kindIds.push(id); });
                 } else {
                     talintSnap.forEach(child => { if (child.val()) kindIds.push(child.val()); });
                 }
-
                 if (kindIds.length === 0) return;
-
-                // Laad kinddata
                 const kinderen = [];
                 for (const kindId of kindIds) {
                     const kindSnap = await get(ref(db, `kinderen/${kindId}`));
@@ -1693,16 +1843,11 @@
                         kinderen.push({ id: kindId, naam: data.naam || 'Onbekend', leeftijd: data.leeftijd || 0 });
                     }
                 }
-
                 if (kinderen.length === 0) return;
-
-                // Afvink status
                 const statusSnap = await get(ref(db, `vervoer_verdeling/${datumKey}/status_talint`));
                 const statusData = statusSnap.exists() ? statusSnap.val() : {};
                 const afgevinktCount = kinderen.filter(k => statusData[k.id] === true).length;
-
                 kinderen.sort((a, b) => a.naam.localeCompare(b.naam));
-
                 let kinderenHtml = '';
                 kinderen.forEach(kind => {
                     const afgevinkt = statusData[kind.id] === true;
@@ -1717,8 +1862,7 @@
                         </div>
                     `;
                 });
-
-                const sectieHtml = `
+                container.innerHTML += `
                     <div class="extra-sectie talint" id="extra-talint">
                         <div class="extra-sectie-header" onclick="toggleExtraSectie('talint')">
                             <div class="chevron-icon">▶</div>
@@ -1731,8 +1875,6 @@
                         <div class="extra-sectie-content">${kinderenHtml}</div>
                     </div>
                 `;
-                container.innerHTML += sectieHtml;
-
             } catch (e) {
                 console.error('Error loading talint:', e);
             }
@@ -1741,13 +1883,7 @@
         window.overstappersUitgestap = async function(ritKey) {
             try {
                 const datumKey = currentDatum.replace(/-/g, '_');
-
-                // Schrijf naar Firebase
-                await update(ref(db, `vervoer_verdeling/${datumKey}/${ritKey}`), {
-                    overstappers_uitgevoerd: true
-                });
-
-                // Update lokale cache zodat renderPMSections het direct ziet
+                await update(ref(db, `vervoer_verdeling/${datumKey}/${ritKey}`), { overstappers_uitgevoerd: true });
                 for (const pmId in alleRittenPerPM) {
                     const ritten = alleRittenPerPM[pmId];
                     const rit = ritten.find(r => r.key === ritKey);
@@ -1756,7 +1892,6 @@
                         break;
                     }
                 }
-
                 await renderPMSections();
             } catch (e) {
                 console.error('Error overstappers uitgestap:', e);
@@ -1764,37 +1899,11 @@
             }
         };
 
-        // ⭐ Update alleen de teller in de PM header zonder alles te herladen
-        function _updateAfvinkTeller() {
-            const alleKaarten = document.querySelectorAll('.pm-section.current-user .kind-card');
-            const totaal = alleKaarten.length;
-            const afgevinkt = Array.from(alleKaarten).filter(k => k.classList.contains('afgevinkt')).length;
-            
-            // Update teller in header
-            const header = document.querySelector('.pm-section.current-user .pm-section-info p');
-            if (header) {
-                const rittenText = header.textContent.split('•')[1] || '';
-                header.textContent = `${totaal} kinderen •${rittenText}`;
-            }
-
-            // Toon/verberg vink-alle-af knop
-            const vinkKnop = document.querySelector('[id^="vinkAllesAf_"]');
-            const verwijderKnop = document.querySelector('.pm-section.current-user .pm-section-content button[onclick^="verwijderPM"]');
-            
-            if (totaal > 0 && afgevinkt === totaal) {
-                if (vinkKnop) vinkKnop.closest('div').style.display = 'none';
-                if (!verwijderKnop) renderPMSections(); // herladen voor verwijder knop
-            } else {
-                if (verwijderKnop) verwijderKnop.closest('div').style.display = 'none';
-            }
-        }
-
         window.toggleExtraSectie = function(type) {
             const sectie = document.getElementById(`extra-${type}`);
             if (!sectie) return;
             const wasExpanded = sectie.classList.contains('expanded');
             sectie.classList.toggle('expanded');
-            
             if (!wasExpanded) {
                 setTimeout(() => {
                     const stickyHeight = document.querySelector('.sticky-datum-section')?.offsetHeight || 180;
@@ -1810,9 +1919,7 @@
                 const path = `vervoer_verdeling/${datumKey}/status_${categorie}/${kindId}`;
                 const snap = await get(ref(db, path));
                 const huidigeStatus = snap.exists() ? snap.val() : false;
-                await update(ref(db, `vervoer_verdeling/${datumKey}/status_${categorie}`), {
-                    [kindId]: !huidigeStatus
-                });
+                await update(ref(db, `vervoer_verdeling/${datumKey}/status_${categorie}`), { [kindId]: !huidigeStatus });
                 await renderFietsenZelfstandig();
             } catch (e) {
                 console.error('Error toggling extra kind:', e);
@@ -1832,8 +1939,6 @@
             loginScreen.classList.remove('hidden');
             document.getElementById('terugKnop').style.display = 'none';
         };
-
-        loadPMs();
     </script>
 </body>
 </html>
