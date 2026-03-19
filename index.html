@@ -1,7 +1,7 @@
 <!--
   ============================================================
-  © 2025 Martijn - De Boomhut BSO
-  PM Ophaallijst Webapp
+  © 2026 BrAIn Apps · Martijn van den Brakel
+  PM Ophaallijst Webapp · BrAIn Apps
   
   Alle rechten voorbehouden.
   Dit werk is auteursrechtelijk beschermd.
@@ -586,8 +586,24 @@
                 <button class="auth-btn" id="loginBtn" onclick="doLogin()">
                     <span>🔓</span> Inloggen
                 </button>
-                <!-- ⭐ COPYRIGHT ZICHTBAAR OP LOGINSCHERM -->
-                <div class="copyright-footer">© 2025 Martijn · De Boomhut BSO · Alle rechten voorbehouden</div>
+                <!-- ⭐ LOGO + COPYRIGHT ZICHTBAAR OP LOGINSCHERM -->
+                <div style="margin-top:24px;text-align:center;">
+                    <svg width="160" viewBox="0 0 320 80" style="display:inline-block;">
+                        <path d="M52 52 Q44 44 45 34 Q46 24 56 19 Q64 15 70 21 Q74 27 73 34 Q79 28 86 31 Q93 36 92 45 Q98 40 103 47 Q106 54 100 59 Q94 63 87 61 Q82 67 74 65 Q66 69 58 65 Q52 61 52 52 Z" fill="#185FA5" opacity="0.9"/>
+                        <circle cx="60" cy="34" r="2.5" fill="#85B7EB" opacity="0.9"/>
+                        <circle cx="70" cy="27" r="2" fill="#85B7EB" opacity="0.7"/>
+                        <circle cx="88" cy="42" r="2.5" fill="#85B7EB" opacity="0.9"/>
+                        <circle cx="80" cy="52" r="2" fill="#B5D4F4" opacity="0.8"/>
+                        <line x1="60" y1="34" x2="70" y2="27" stroke="#85B7EB" stroke-width="1" opacity="0.7"/>
+                        <line x1="70" y1="27" x2="88" y2="42" stroke="#85B7EB" stroke-width="1" opacity="0.7"/>
+                        <line x1="88" y1="42" x2="80" y2="52" stroke="#85B7EB" stroke-width="1" opacity="0.6"/>
+                        <text x="112" y="50" font-family="-apple-system,sans-serif" font-size="28" font-weight="500" fill="#424242">Br</text>
+                        <text x="138" y="50" font-family="-apple-system,sans-serif" font-size="28" font-weight="500" fill="#185FA5">AI</text>
+                        <text x="162" y="50" font-family="-apple-system,sans-serif" font-size="28" font-weight="500" fill="#424242">n</text>
+                        <text x="112" y="66" font-family="-apple-system,sans-serif" font-size="11" font-weight="400" fill="#9E9E9E" letter-spacing="4">Apps</text>
+                    </svg>
+                    <div style="font-size:11px;color:#BDBDBD;margin-top:6px;">© 2026 BrAIn Apps · Martijn van den Brakel · Alle rechten voorbehouden</div>
+                </div>
             </div>
         </div>
         
@@ -606,7 +622,7 @@
             </div>
             <!-- ⭐ COPYRIGHT ZICHTBAAR OP PM SELECTIE SCHERM -->
             <div style="text-align:center;padding:24px 16px 8px;font-size:11px;color:#BDBDBD;">
-                © 2025 Martijn · De Boomhut BSO · Alle rechten voorbehouden
+                © 2026 BrAIn Apps · Martijn van den Brakel · Alle rechten voorbehouden
             </div>
         </div>
 
@@ -652,13 +668,13 @@
 
             <!-- ⭐ COPYRIGHT ONDERAAN LIJST SCHERM -->
             <div style="text-align:center;padding:16px;font-size:11px;color:#BDBDBD;">
-                © 2025 Martijn · De Boomhut BSO · Alle rechten voorbehouden
+                © 2026 BrAIn Apps · Martijn van den Brakel · Alle rechten voorbehouden
             </div>
         </div>
     </div>
 
     <script type="module">
-        // © 2025 Martijn - De Boomhut BSO - Alle rechten voorbehouden
+        // © 2026 BrAIn Apps · Martijn van den Brakel - Alle rechten voorbehouden
 
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getDatabase, ref, get, update, remove, onValue, off } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
