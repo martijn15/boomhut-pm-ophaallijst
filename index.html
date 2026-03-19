@@ -1,3 +1,14 @@
+<!--
+  ============================================================
+  © 2025 Martijn - De Boomhut BSO
+  PM Ophaallijst Webapp
+  
+  Alle rechten voorbehouden.
+  Dit werk is auteursrechtelijk beschermd.
+  Kopiëren, aanpassen of hergebruiken zonder
+  uitdrukkelijke toestemming van de auteur is verboden.
+  ============================================================
+-->
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -32,9 +43,6 @@
             margin: 0;
         }
 
-        /* ========================================
-           AUTH SCREEN (wachtwoord invoer)
-        ======================================== */
         #authScreen {
             display: flex;
             flex-direction: column;
@@ -164,6 +172,14 @@
             transform: none;
         }
 
+        /* ⭐ COPYRIGHT FOOTER */
+        .copyright-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 11px;
+            color: #BDBDBD;
+        }
+
         .auth-loading {
             text-align: center;
             padding: 48px 24px;
@@ -178,7 +194,6 @@
             margin: 0 auto 16px;
         }
 
-        /* Uitlog knop (klein, in appbar) */
         #uitlogKnop {
             background: rgba(255,255,255,0.2);
             border: 1px solid rgba(255,255,255,0.5);
@@ -196,7 +211,6 @@
             padding: 16px; 
         }
         
-        /* WELKOM HEADER */
         .welkom-header {
             padding: 20px;
             background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
@@ -233,7 +247,6 @@
             margin-bottom: 12px;
         }
         
-        /* PM CARDS */
         .pm-card {
             background: white;
             border: 1px solid rgba(33, 150, 243, 0.2);
@@ -269,24 +282,11 @@
             font-weight: bold;
             font-size: 18px;
         }
-        .pm-content {
-            flex: 1;
-        }
-        .pm-content h3 { 
-            font-size: 16px; 
-            margin-bottom: 4px; 
-            font-weight: bold;
-        }
-        .pm-content p { 
-            color: #757575; 
-            font-size: 13px; 
-        }
-        .pm-chevron {
-            color: #BDBDBD;
-            font-size: 20px;
-        }
+        .pm-content { flex: 1; }
+        .pm-content h3 { font-size: 16px; margin-bottom: 4px; font-weight: bold; }
+        .pm-content p { color: #757575; font-size: 13px; }
+        .pm-chevron { color: #BDBDBD; font-size: 20px; }
         
-        /* ⭐⭐⭐ STICKY DATUM SECTION ⭐⭐⭐ */
         .sticky-datum-section {
             position: sticky;
             top: 0;
@@ -295,7 +295,6 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
-        /* WEEKDAG KNOPPEN */
         .weekdag-container {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -322,7 +321,6 @@
         .weekdag-btn .dag-naam { font-size: 12px; font-weight: bold; color: #2196F3; margin-bottom: 4px; }
         .weekdag-btn .dag-nummer { font-size: 24px; font-weight: bold; color: #2196F3; }
         
-        /* PM CHIPS BANNER */
         .werkende-pms-banner {
             background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
             padding: 16px 20px;
@@ -345,7 +343,6 @@
         .pm-chip:hover { background: #2196F3; color: white; transform: translateY(-1px); }
         .pm-chip.active { background: #4CAF50; border-color: #4CAF50; color: white; }
 
-        /* ⭐ WAARSCHUWINGSBANNER 2 RITTEN */
         .twee-ritten-banner {
             background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
             border: 2px solid #FFC107;
@@ -355,22 +352,10 @@
             align-items: center;
             gap: 12px;
         }
-        .twee-ritten-banner .banner-icon {
-            font-size: 28px;
-            flex-shrink: 0;
-        }
-        .twee-ritten-banner .banner-text h4 {
-            font-size: 15px;
-            font-weight: bold;
-            color: #E65100;
-            margin-bottom: 2px;
-        }
-        .twee-ritten-banner .banner-text p {
-            font-size: 13px;
-            color: #BF360C;
-        }
+        .twee-ritten-banner .banner-icon { font-size: 28px; flex-shrink: 0; }
+        .twee-ritten-banner .banner-text h4 { font-size: 15px; font-weight: bold; color: #E65100; margin-bottom: 2px; }
+        .twee-ritten-banner .banner-text p { font-size: 13px; color: #BF360C; }
 
-        /* ⭐ BUSRIT TABS (voor eigen lijst) */
         .busrit-tabs {
             display: flex;
             background: #F5F5F5;
@@ -392,23 +377,11 @@
             gap: 8px;
         }
         .busrit-tab:hover { background: #EEEEEE; color: #424242; }
-        .busrit-tab.active {
-            background: white;
-            color: #1976D2;
-            border-bottom: 3px solid #2196F3;
-        }
-        .busrit-tab .tab-badge {
-            background: #2196F3;
-            color: white;
-            border-radius: 12px;
-            padding: 2px 8px;
-            font-size: 12px;
-            min-width: 24px;
-        }
+        .busrit-tab.active { background: white; color: #1976D2; border-bottom: 3px solid #2196F3; }
+        .busrit-tab .tab-badge { background: #2196F3; color: white; border-radius: 12px; padding: 2px 8px; font-size: 12px; min-width: 24px; }
         .busrit-tab.active .tab-badge { background: #2196F3; }
         .busrit-tab:not(.active) .tab-badge { background: #BDBDBD; }
 
-        /* INKLAPBARE PM SECTIE */
         .pm-sections-container { padding: 16px; padding-bottom: 100px; }
         .pm-section {
             background: white;
@@ -463,29 +436,14 @@
         .pm-section-info { flex: 1; }
         .pm-section-info h3 { font-size: 18px; color: #212121; margin-bottom: 2px; }
         .pm-section-info p { font-size: 13px; color: #757575; }
-        .pm-section-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease-out;
-        }
-        .pm-section.expanded .pm-section-content {
-            max-height: 5000px;
-            padding: 16px;
-        }
-        /* Secties met busrit tabs: geen outer padding, tabs zitten er al in */
-        .pm-section.expanded .pm-section-content:has(.busrit-tabs) {
-            padding: 0;
-        }
-        /* Eigen sectie: geen padding, tabs nemen de ruimte */
-        .pm-section.current-user.expanded .pm-section-content {
-            padding: 0;
-        }
+        .pm-section-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; }
+        .pm-section.expanded .pm-section-content { max-height: 5000px; padding: 16px; }
+        .pm-section.expanded .pm-section-content:has(.busrit-tabs) { padding: 0; }
+        .pm-section.current-user.expanded .pm-section-content { padding: 0; }
         
-        /* BUSRIT CONTENT PANELS */
         .busrit-panel { display: none; padding: 16px; }
         .busrit-panel.active { display: block; }
         
-        /* SECTIE HEADERS */
         .sectie-header {
             background: #1976D2;
             color: white;
@@ -522,31 +480,12 @@
         .kind-card.readonly.piratenskip:hover { border-color: #FF9800; }
         .kind-card.readonly.reinboge-card:not(.afgevinkt):hover { border-color: #1976D2; }
         
-        .checkbox {
-            width: 28px; height: 28px;
-            border: 3px solid #BDBDBD;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
+        .checkbox { width: 28px; height: 28px; border: 3px solid #BDBDBD; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .kind-card.afgevinkt .checkbox { background: #4CAF50; border-color: #4CAF50; }
         .checkbox::after { content: '✓'; color: white; font-size: 18px; font-weight: bold; display: none; }
         .kind-card.afgevinkt .checkbox::after { display: block; }
         
-        .nummer-badge {
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            background: #4CAF50;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 18px;
-            flex-shrink: 0;
-        }
+        .nummer-badge { width: 40px; height: 40px; border-radius: 50%; background: #4CAF50; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; flex-shrink: 0; }
         .kind-card.piratenskip .nummer-badge { background: #FF9800; }
         .kind-card.afgevinkt .nummer-badge { background: #9E9E9E; }
         .kind-card.reinboge-card:not(.afgevinkt) .nummer-badge { background: #1976D2; }
@@ -557,77 +496,29 @@
         .kind-details { font-size: 14px; color: #757575; }
         
         .loading { text-align: center; padding: 60px 20px; color: #757575; }
-        .spinner {
-            border: 4px solid #E3F2FD;
-            border-top: 4px solid #2196F3;
-            border-radius: 50%;
-            width: 50px; height: 50px;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 20px;
-        }
+        .spinner { border: 4px solid #E3F2FD; border-top: 4px solid #2196F3; border-radius: 50%; width: 50px; height: 50px; animation: spin 0.8s linear infinite; margin: 0 auto 20px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        /* ⭐ FIETSEN / ZELFSTANDIG SECTIE */
-        .extra-sectie {
-            background: white;
-            border: 2px solid #E0E0E0;
-            border-radius: 16px;
-            margin-bottom: 12px;
-            overflow: hidden;
-        }
+        .extra-sectie { background: white; border: 2px solid #E0E0E0; border-radius: 16px; margin-bottom: 12px; overflow: hidden; }
         .extra-sectie.fietsen { border-color: #81C784; }
         .extra-sectie.talint { border-color: #9C27B0; }
         .extra-sectie.talint .extra-sectie-header { background: #F3E5F5; }
         .extra-sectie.talint .extra-sectie-icon { background: #E1BEE7; }
         .extra-sectie.zelfstandig { border-color: #64B5F6; }
-        .extra-sectie-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 16px;
-            cursor: pointer;
-            user-select: none;
-            transition: background 0.2s;
-        }
+        .extra-sectie-header { display: flex; align-items: center; gap: 12px; padding: 16px; cursor: pointer; user-select: none; transition: background 0.2s; }
         .extra-sectie.fietsen .extra-sectie-header { background: #F1F8E9; }
         .extra-sectie.zelfstandig .extra-sectie-header { background: #E3F2FD; }
         .extra-sectie-header:hover { filter: brightness(0.97); }
-        .extra-sectie-icon {
-            width: 48px; height: 48px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 24px;
-            flex-shrink: 0;
-        }
+        .extra-sectie-icon { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
         .extra-sectie.fietsen .extra-sectie-icon { background: #C8E6C9; }
         .extra-sectie.zelfstandig .extra-sectie-icon { background: #BBDEFB; }
         .extra-sectie-info { flex: 1; }
         .extra-sectie-info h3 { font-size: 17px; font-weight: bold; color: #212121; margin-bottom: 2px; }
         .extra-sectie-info p { font-size: 13px; color: #757575; }
-        .extra-sectie-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease-out;
-        }
-        .extra-sectie.expanded .extra-sectie-content {
-            max-height: 3000px;
-            padding: 16px;
-        }
-        .extra-sectie.expanded .extra-sectie-header {
-            border-bottom: 2px solid #E0E0E0;
-        }
-        .extra-kind-card {
-            background: white;
-            border: 2px solid #E0E0E0;
-            border-radius: 12px;
-            padding: 14px 15px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
+        .extra-sectie-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; }
+        .extra-sectie.expanded .extra-sectie-content { max-height: 3000px; padding: 16px; }
+        .extra-sectie.expanded .extra-sectie-header { border-bottom: 2px solid #E0E0E0; }
+        .extra-kind-card { background: white; border: 2px solid #E0E0E0; border-radius: 12px; padding: 14px 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: all 0.2s; }
         .extra-kind-card.afgevinkt { background: #E8F5E9; border-color: #4CAF50; }
         .extra-kind-card:hover { border-color: #2196F3; }
         .extra-kind-card .checkbox { width: 28px; height: 28px; border: 3px solid #BDBDBD; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -641,30 +532,10 @@
         .hidden { display: none !important; }
         .empty-state { text-align: center; padding: 40px 20px; color: #757575; }
 
-        /* ⭐ WACHT OP BUSJE BANNER (voor stint-PM) */
-        .wacht-banner {
-            margin: 0 16px 16px;
-            padding: 16px;
-            border-radius: 12px;
-            border: 2px solid;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.5s ease;
-        }
-        .wacht-banner.wachten {
-            background: #FFF8E1;
-            border-color: #FFC107;
-        }
-        .wacht-banner.vertrokken {
-            background: #E8F5E9;
-            border-color: #4CAF50;
-            animation: pulseGreen 1s ease-in-out 3;
-        }
-        @keyframes pulseGreen {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(76,175,80,0); }
-            50% { box-shadow: 0 0 0 8px rgba(76,175,80,0.3); }
-        }
+        .wacht-banner { margin: 0 16px 16px; padding: 16px; border-radius: 12px; border: 2px solid; display: flex; align-items: center; gap: 12px; transition: all 0.5s ease; }
+        .wacht-banner.wachten { background: #FFF8E1; border-color: #FFC107; }
+        .wacht-banner.vertrokken { background: #E8F5E9; border-color: #4CAF50; animation: pulseGreen 1s ease-in-out 3; }
+        @keyframes pulseGreen { 0%, 100% { box-shadow: 0 0 0 0 rgba(76,175,80,0); } 50% { box-shadow: 0 0 0 8px rgba(76,175,80,0.3); } }
         .wacht-banner .banner-icon { font-size: 32px; flex-shrink: 0; }
         .wacht-banner h4 { font-size: 15px; font-weight: bold; margin-bottom: 3px; }
         .wacht-banner.wachten h4 { color: #E65100; }
@@ -673,22 +544,8 @@
         .wacht-banner.wachten p { color: #BF360C; }
         .wacht-banner.vertrokken p { color: #2E7D32; }
 
-        /* ⭐ BUSJE RIT 2 VERTROKKEN KNOP */
-        .busje-vertrokken-section {
-            margin: 0 16px 16px;
-            padding: 12px;
-            background: #E3F2FD;
-            border-radius: 12px;
-            border: 1px solid #90CAF9;
-        }
-        .busje-vertrokken-info {
-            font-size: 12px;
-            color: #1565C0;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+        .busje-vertrokken-section { margin: 0 16px 16px; padding: 12px; background: #E3F2FD; border-radius: 12px; border: 1px solid #90CAF9; }
+        .busje-vertrokken-info { font-size: 12px; color: #1565C0; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
     </style>
 </head>
 <body>
@@ -699,11 +556,10 @@
             <div id="totaalTeller" style="display:none;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.5);border-radius:20px;padding:4px 12px;font-size:13px;font-weight:bold;color:white;white-space:nowrap;">
                 👦 <span id="totaalAantal">0</span> kinderen
             </div>
-            <!-- Uitlog knop (alleen zichtbaar als ingelogd) -->
             <button id="uitlogKnop" onclick="uitloggen()" class="hidden">🔒 Uitloggen</button>
         </div>
 
-        <!-- ========== AUTH SCREEN ========== -->
+        <!-- AUTH SCREEN -->
         <div id="authScreen">
             <div class="auth-loading" id="authLoading">
                 <div class="spinner"></div>
@@ -730,6 +586,8 @@
                 <button class="auth-btn" id="loginBtn" onclick="doLogin()">
                     <span>🔓</span> Inloggen
                 </button>
+                <!-- ⭐ COPYRIGHT ZICHTBAAR OP LOGINSCHERM -->
+                <div class="copyright-footer">© 2025 Martijn · De Boomhut BSO · Alle rechten voorbehouden</div>
             </div>
         </div>
         
@@ -746,6 +604,10 @@
             <div id="pmCardsContainer">
                 <div class="loading"><div class="spinner"></div><div>PM's laden...</div></div>
             </div>
+            <!-- ⭐ COPYRIGHT ZICHTBAAR OP PM SELECTIE SCHERM -->
+            <div style="text-align:center;padding:24px 16px 8px;font-size:11px;color:#BDBDBD;">
+                © 2025 Martijn · De Boomhut BSO · Alle rechten voorbehouden
+            </div>
         </div>
 
         <!-- STICKY LIJST SCREEN -->
@@ -758,7 +620,6 @@
                 </div>
             </div>
             
-            <!-- ⭐ TWEE RITTEN BANNER (dynamisch getoond) -->
             <div id="tweeRittenBanner" class="twee-ritten-banner hidden">
                 <div class="banner-icon">⚠️</div>
                 <div class="banner-text">
@@ -767,22 +628,15 @@
                 </div>
             </div>
 
-            <!-- ⭐ BUSJE RIT 2 VERTROKKEN KNOP (voor bus-PM, alleen als alle rit2 kinderen af) -->
             <div id="busjeVertrokkenSection" class="busje-vertrokken-section hidden">
                 <div class="busje-vertrokken-info">
                     ℹ️ Automatisch verzonden bij laatste kind. Hieronder alleen als backup.
                 </div>
-                <button onclick="markeerBusjeVertrokken()" style="
-                    width:100%;padding:14px;
-                    background:linear-gradient(135deg,#607D8B,#455A64);
-                    color:white;border:none;border-radius:12px;font-size:15px;font-weight:bold;
-                    cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;
-                ">
+                <button onclick="markeerBusjeVertrokken()" style="width:100%;padding:14px;background:linear-gradient(135deg,#607D8B,#455A64);color:white;border:none;border-radius:12px;font-size:15px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;">
                     <span>📤</span> Manueel Verzenden (backup)
                 </button>
             </div>
 
-            <!-- ⭐ WACHT OP BUSJE BANNER (voor stint-PM) -->
             <div id="wachtBanner" class="wacht-banner wachten hidden">
                 <div class="banner-icon" id="wachtBannerIcon">⏳</div>
                 <div>
@@ -795,10 +649,17 @@
                 <div class="loading"><div class="spinner"></div><div>Ophaallijsten laden...</div></div>
             </div>
             <div class="pm-sections-container" style="padding-top:0;" id="extraSectiesContainer"></div>
+
+            <!-- ⭐ COPYRIGHT ONDERAAN LIJST SCHERM -->
+            <div style="text-align:center;padding:16px;font-size:11px;color:#BDBDBD;">
+                © 2025 Martijn · De Boomhut BSO · Alle rechten voorbehouden
+            </div>
         </div>
     </div>
 
     <script type="module">
+        // © 2025 Martijn - De Boomhut BSO - Alle rechten voorbehouden
+
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getDatabase, ref, get, update, remove, onValue, off } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
@@ -817,25 +678,11 @@
         const db = getDatabase(app);
         const auth = getAuth(app);
 
-        // ============================================================
-        // AUTH LOGICA
-        // ============================================================
-        
-        // Gedeeld account voor de hele BSO (verberg email voor gebruikers)
         const BSO_EMAIL = 'boomhut@boomhut-vervoer.nl';
-
-        // Persistentie: sessie wordt bewaard op het apparaat (ook na sluiten browser)
         setPersistence(auth, browserLocalPersistence);
 
-        // Luister naar auth status verandering
         onAuthStateChanged(auth, (user) => {
-            if (user) {
-                // Ingelogd → toon app
-                toonApp();
-            } else {
-                // Niet ingelogd → toon wachtwoord scherm
-                toonAuthScherm();
-            }
+            if (user) { toonApp(); } else { toonAuthScherm(); }
         });
 
         function toonAuthScherm() {
@@ -857,23 +704,15 @@
 
         window.doLogin = async function() {
             const pw = document.getElementById('pwInput').value.trim();
-            if (!pw) {
-                toonAuthFout('Vul een wachtwoord in.');
-                return;
-            }
-
+            if (!pw) { toonAuthFout('Vul een wachtwoord in.'); return; }
             const btn = document.getElementById('loginBtn');
             btn.disabled = true;
             btn.innerHTML = '<span>⏳</span> Bezig...';
-
             try {
                 await signInWithEmailAndPassword(auth, BSO_EMAIL, pw);
-                // onAuthStateChanged regelt de rest
             } catch (error) {
-                console.error('Login fout:', error.code);
                 btn.disabled = false;
                 btn.innerHTML = '<span>🔓</span> Inloggen';
-
                 if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
                     toonAuthFout('Onjuist wachtwoord. Probeer opnieuw.');
                 } else if (error.code === 'auth/too-many-requests') {
@@ -891,22 +730,14 @@
             try {
                 stopBusjeStatusListener();
                 await signOut(auth);
-                // Reset app state
-                currentPM = null;
-                currentDatum = null;
-                alleRittenPerPM = {};
-                activeBusritTab = {};
-                busjeIsVertrokken = false;
+                currentPM = null; currentDatum = null; alleRittenPerPM = {}; activeBusritTab = {}; busjeIsVertrokken = false;
                 document.getElementById('totaalTeller').style.display = 'none';
                 document.getElementById('extraSectiesContainer').innerHTML = '';
                 document.getElementById('lijstScreen').classList.add('hidden');
                 document.getElementById('loginScreen').classList.add('hidden');
-                // wachtwoord veld leegmaken
                 document.getElementById('pwInput').value = '';
                 clearAuthError();
-            } catch (e) {
-                console.error('Uitloggen fout:', e);
-            }
+            } catch (e) { console.error('Uitloggen fout:', e); }
         };
 
         function toonAuthFout(tekst) {
@@ -923,27 +754,11 @@
         window.togglePwZichtbaar = function() {
             const input = document.getElementById('pwInput');
             const btn = document.getElementById('togglePwBtn');
-            if (input.type === 'password') {
-                input.type = 'text';
-                btn.textContent = '🙈';
-            } else {
-                input.type = 'password';
-                btn.textContent = '👁️';
-            }
+            if (input.type === 'password') { input.type = 'text'; btn.textContent = '🙈'; }
+            else { input.type = 'password'; btn.textContent = '👁️'; }
         };
 
-        // ============================================================
-        // APP LOGICA (zelfde als origineel)
-        // ============================================================
-
-        let currentPM = null;
-        let currentDatum = null;
-        let alleRittenPerPM = {};
-        let overstappersVandaag = [];
-        let reinbogeKindIds = [];
-        let activeBusritTab = {};
-        let busjeStatusListener = null;
-        let busjeIsVertrokken = false;
+        let currentPM = null, currentDatum = null, alleRittenPerPM = {}, overstappersVandaag = [], reinbogeKindIds = [], activeBusritTab = {}, busjeStatusListener = null, busjeIsVertrokken = false;
 
         const loginScreen = document.getElementById('loginScreen');
         const lijstScreen = document.getElementById('lijstScreen');
@@ -958,46 +773,27 @@
             if (key.includes('rit 2') || key.includes('rit_2') || key.includes('rit2')) return 2;
             return null;
         }
-
-        function isBusrit(key) {
-            return key.toLowerCase().includes('busje') || key.toLowerCase().includes('bus');
-        }
+        function isBusrit(key) { return key.toLowerCase().includes('busje') || key.toLowerCase().includes('bus'); }
 
         async function loadPMs() {
             try {
                 const snapshot = await get(ref(db, 'pedagogisch_medewerkers'));
-                if (!snapshot.exists()) {
-                    pmCardsContainer.innerHTML = '<div class="empty-state">Geen PM\'s gevonden</div>';
-                    return;
-                }
+                if (!snapshot.exists()) { pmCardsContainer.innerHTML = '<div class="empty-state">Geen PM\'s gevonden</div>'; return; }
                 const pms = [];
-                snapshot.forEach(child => {
-                    const data = child.val();
-                    pms.push({ id: child.key, naam: data.naam || 'Onbekend' });
-                });
+                snapshot.forEach(child => { const data = child.val(); pms.push({ id: child.key, naam: data.naam || 'Onbekend' }); });
                 pms.sort((a, b) => a.naam.localeCompare(b.naam));
                 let html = '';
                 pms.forEach(pm => {
                     const initial = pm.naam[0].toUpperCase();
-                    html += `
-                        <div class="pm-card" onclick="selectPM('${pm.id}', '${pm.naam.replace(/'/g, "\\'")}')">
-                            <div class="pm-icon-container"><div class="pm-avatar">${initial}</div></div>
-                            <div class="pm-content"><h3>${pm.naam}</h3><p>Bekijk ophaallijsten</p></div>
-                            <div class="pm-chevron">›</div>
-                        </div>
-                    `;
+                    html += `<div class="pm-card" onclick="selectPM('${pm.id}', '${pm.naam.replace(/'/g, "\\'")}')"><div class="pm-icon-container"><div class="pm-avatar">${initial}</div></div><div class="pm-content"><h3>${pm.naam}</h3><p>Bekijk ophaallijsten</p></div><div class="pm-chevron">›</div></div>`;
                 });
                 pmCardsContainer.innerHTML = html;
-            } catch (error) {
-                console.error('loadPMs fout:', error);
-                pmCardsContainer.innerHTML = '<div class="empty-state">Firebase fout: ' + error.message + '</div>';
-            }
+            } catch (error) { pmCardsContainer.innerHTML = '<div class="empty-state">Firebase fout: ' + error.message + '</div>'; }
         }
 
         window.selectPM = function(pmId, pmNaam) {
             currentPM = { id: pmId, naam: pmNaam };
-            loginScreen.classList.add('hidden');
-            lijstScreen.classList.remove('hidden');
+            loginScreen.classList.add('hidden'); lijstScreen.classList.remove('hidden');
             document.getElementById('terugKnop').style.display = 'flex';
             loadWeekdagKnoppen();
             const vandaag = new Date();
@@ -1012,31 +808,18 @@
             let html = '';
             weekDagen.forEach(dag => {
                 const isVandaag = dag.datum === vandaagString;
-                html += `
-                    <div class="weekdag-btn${isVandaag ? ' today' : ''}" onclick="selectDatum('${dag.datum}')">
-                        <div class="dag-naam">${dag.naam}</div>
-                        <div class="dag-nummer">${dag.nummer}</div>
-                    </div>
-                `;
+                html += `<div class="weekdag-btn${isVandaag ? ' today' : ''}" onclick="selectDatum('${dag.datum}')"><div class="dag-naam">${dag.naam}</div><div class="dag-nummer">${dag.nummer}</div></div>`;
             });
             weekdagButtons.innerHTML = html;
         }
 
         function getWeekDagen() {
-            const vandaag = new Date();
-            const dag = vandaag.getDay();
-            const maandag = new Date(vandaag);
-            maandag.setDate(vandaag.getDate() - (dag === 0 ? 6 : dag - 1));
-            const weekDagen = [];
-            const dagenNamen = ['MA', 'DI', 'WO', 'DO', 'VR'];
+            const vandaag = new Date(); const dag = vandaag.getDay();
+            const maandag = new Date(vandaag); maandag.setDate(vandaag.getDate() - (dag === 0 ? 6 : dag - 1));
+            const weekDagen = []; const dagenNamen = ['MA', 'DI', 'WO', 'DO', 'VR'];
             for (let i = 0; i < 5; i++) {
-                const datum = new Date(maandag);
-                datum.setDate(maandag.getDate() + i);
-                weekDagen.push({
-                    naam: dagenNamen[i],
-                    nummer: datum.getDate(),
-                    datum: `${datum.getFullYear()}-${String(datum.getMonth() + 1).padStart(2, '0')}-${String(datum.getDate()).padStart(2, '0')}`
-                });
+                const datum = new Date(maandag); datum.setDate(maandag.getDate() + i);
+                weekDagen.push({ naam: dagenNamen[i], nummer: datum.getDate(), datum: `${datum.getFullYear()}-${String(datum.getMonth() + 1).padStart(2, '0')}-${String(datum.getDate()).padStart(2, '0')}` });
             }
             return weekDagen;
         }
@@ -1054,459 +837,179 @@
             tweeRittenBanner.classList.add('hidden');
             document.getElementById('wachtBanner').classList.add('hidden');
             document.getElementById('busjeVertrokkenSection').classList.add('hidden');
-            busjeIsVertrokken = false;
-            stopBusjeStatusListener();
-            
+            busjeIsVertrokken = false; stopBusjeStatusListener();
             try {
                 const datumKey = currentDatum.replace(/-/g, '_');
                 const snapshot = await get(ref(db, `vervoer_verdeling/${datumKey}`));
-                
                 if (!snapshot.exists()) {
                     pmSectionsContainer.innerHTML = '<div class="empty-state">Geen ophaallijsten voor deze dag</div>';
                     pmChips.innerHTML = '<p style="color:#757575;font-size:13px;">Geen PM\'s ingepland</p>';
-                    document.getElementById('extraSectiesContainer').innerHTML = '';
-                    return;
+                    document.getElementById('extraSectiesContainer').innerHTML = ''; return;
                 }
-
                 alleRittenPerPM = {};
                 snapshot.forEach(child => {
-                    const rit = child.val();
-                    const pmId = rit.pmId;
+                    const rit = child.val(); const pmId = rit.pmId;
                     if (!alleRittenPerPM[pmId]) alleRittenPerPM[pmId] = [];
-                    alleRittenPerPM[pmId].push({ 
-                        key: child.key, 
-                        wachtVoorBusjeRit2: rit.wachtVoorBusjeRit2 || false,
-                        busje_vertrokken: rit.busje_vertrokken || false,
-                        ...rit 
-                    });
+                    alleRittenPerPM[pmId].push({ key: child.key, wachtVoorBusjeRit2: rit.wachtVoorBusjeRit2 || false, busje_vertrokken: rit.busje_vertrokken || false, ...rit });
                 });
-
                 const eigenRitten = alleRittenPerPM[currentPM.id] || [];
                 if (eigenRitten.length === 0) {
                     document.getElementById('extraSectiesContainer').innerHTML = '';
-                    pmSectionsContainer.innerHTML = `
-                        <div style="
-                            margin: 24px 16px;
-                            padding: 24px;
-                            background: #FFF3E0;
-                            border: 2px solid #FFB74D;
-                            border-radius: 16px;
-                            text-align: center;
-                        ">
-                            <div style="font-size:48px;margin-bottom:12px;">📋</div>
-                            <div style="font-size:18px;font-weight:bold;color:#E65100;margin-bottom:8px;">
-                                Geen ophaallijst beschikbaar
-                            </div>
-                            <div style="font-size:14px;color:#BF360C;">
-                                ${currentPM.naam} heeft vandaag geen vervoer toegewezen gekregen.<br>
-                                Neem contact op met de beheerder als dit niet klopt.
-                            </div>
-                        </div>
-                    `;
-                    pmChips.innerHTML = '';
-                    await renderPMChips();
-                    return;
+                    pmSectionsContainer.innerHTML = `<div style="margin:24px 16px;padding:24px;background:#FFF3E0;border:2px solid #FFB74D;border-radius:16px;text-align:center;"><div style="font-size:48px;margin-bottom:12px;">📋</div><div style="font-size:18px;font-weight:bold;color:#E65100;margin-bottom:8px;">Geen ophaallijst beschikbaar</div><div style="font-size:14px;color:#BF360C;">${currentPM.naam} heeft vandaag geen vervoer toegewezen gekregen.<br>Neem contact op met de beheerder als dit niet klopt.</div></div>`;
+                    pmChips.innerHTML = ''; await renderPMChips(); return;
                 }
-
-                const eigenBusritten = eigenRitten.filter(r => isBusrit(r.key));
-                const heeftTweeRitten = eigenBusritten.length >= 2;
-                
-                if (heeftTweeRitten) {
-                    tweeRittenBanner.classList.remove('hidden');
-                }
-
+                if (eigenRitten.filter(r => isBusrit(r.key)).length >= 2) tweeRittenBanner.classList.remove('hidden');
                 const wachtRit = eigenRitten.find(r => r.wachtVoorBusjeRit2 === true);
-                if (wachtRit) {
-                    setupBusjeStatusListener(wachtRit);
-                } else {
-                    document.getElementById('wachtBanner').classList.add('hidden');
-                    stopBusjeStatusListener();
-                }
-
-                await loadReinbogeKinderen();
-                await loadOverstappers();
-                await renderPMChips();
-
+                if (wachtRit) { setupBusjeStatusListener(wachtRit); } else { document.getElementById('wachtBanner').classList.add('hidden'); stopBusjeStatusListener(); }
+                await loadReinbogeKinderen(); await loadOverstappers(); await renderPMChips();
                 const alleKindIds = new Set();
-                Object.values(alleRittenPerPM).flat().forEach(rit => {
-                    (rit.ophaal_volgorde || []).forEach(item => {
-                        if (item && item.kindId) alleKindIds.add(item.kindId);
-                    });
-                });
-
+                Object.values(alleRittenPerPM).flat().forEach(rit => { (rit.ophaal_volgorde || []).forEach(item => { if (item && item.kindId) alleKindIds.add(item.kindId); }); });
                 const dagNaamTeller = getDagNaam();
                 const talintSnapTeller = await get(ref(db, `talint_kinderen/${dagNaamTeller}`));
                 if (talintSnapTeller.exists() && talintSnapTeller.val()) {
                     const talintVal = talintSnapTeller.val();
-                    const talintIds = Array.isArray(talintVal) ? talintVal : Object.values(talintVal);
-                    talintIds.forEach(id => { if (id) alleKindIds.add(id); });
+                    (Array.isArray(talintVal) ? talintVal : Object.values(talintVal)).forEach(id => { if (id) alleKindIds.add(id); });
                 }
-
                 const totaal = alleKindIds.size;
                 document.getElementById('totaalAantal').textContent = totaal;
                 document.getElementById('totaalTeller').style.display = totaal > 0 ? 'block' : 'none';
-
-                await renderPMSections();
-                await renderFietsenZelfstandig();
-                
-            } catch (error) {
-                console.error('Error:', error);
-                pmSectionsContainer.innerHTML = '<div class="empty-state">Fout bij laden</div>';
-            }
+                await renderPMSections(); await renderFietsenZelfstandig();
+            } catch (error) { pmSectionsContainer.innerHTML = '<div class="empty-state">Fout bij laden</div>'; }
         }
 
         async function loadReinbogeKinderen() {
             try {
-                const weekdag = getDagNaam();
-                const snapshot = await get(ref(db, `reinboge_kinderen/${weekdag}`));
+                const snapshot = await get(ref(db, `reinboge_kinderen/${getDagNaam()}`));
                 reinbogeKindIds = [];
                 if (snapshot.exists() && snapshot.val() != null) {
-                    const val = snapshot.val();
-                    const ids = Array.isArray(val) ? val : Object.values(val);
-                    for (const reinbogeId of ids) {
-                        if (!reinbogeId) continue;
-                        const kindSnap = await get(ref(db, `reinboge_alle_kinderen/${reinbogeId}`));
-                        if (kindSnap.exists() && kindSnap.val().naam) {
-                            reinbogeKindIds.push(kindSnap.val().naam.toLowerCase());
-                        }
-                    }
+                    const ids = Array.isArray(snapshot.val()) ? snapshot.val() : Object.values(snapshot.val());
+                    for (const id of ids) { if (!id) continue; const s = await get(ref(db, `reinboge_alle_kinderen/${id}`)); if (s.exists() && s.val().naam) reinbogeKindIds.push(s.val().naam.toLowerCase()); }
                 }
-            } catch (error) { console.error('Error loading reinboge:', error); }
+            } catch (e) {}
         }
 
         async function loadOverstappers() {
             try {
-                const weekdag = getDagNaam();
-                const snapshot = await get(ref(db, `overstappers/${weekdag}`));
+                const snapshot = await get(ref(db, `overstappers/${getDagNaam()}`));
                 overstappersVandaag = [];
-                if (snapshot.exists() && snapshot.val() != null) {
-                    const val = snapshot.val();
-                    overstappersVandaag = Array.isArray(val) ? val.filter(Boolean) : Object.values(val).filter(Boolean);
-                }
-            } catch (error) { console.error('Error loading overstappers:', error); }
+                if (snapshot.exists() && snapshot.val() != null) { const val = snapshot.val(); overstappersVandaag = Array.isArray(val) ? val.filter(Boolean) : Object.values(val).filter(Boolean); }
+            } catch (e) {}
         }
 
-        function getDagNaam() {
-            const date = new Date(currentDatum);
-            const dagen = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
-            return dagen[date.getDay()];
-        }
+        function getDagNaam() { const date = new Date(currentDatum); return ['zondag','maandag','dinsdag','woensdag','donderdag','vrijdag','zaterdag'][date.getDay()]; }
 
         async function renderPMChips() {
             const pmIds = Object.keys(alleRittenPerPM);
-            if (pmIds.length === 0) {
-                pmChips.innerHTML = '<p style="color:#757575;font-size:13px;">Geen PM\'s ingepland</p>';
-                return;
-            }
+            if (pmIds.length === 0) { pmChips.innerHTML = '<p style="color:#757575;font-size:13px;">Geen PM\'s ingepland</p>'; return; }
             const pmChipData = [];
-            for (const pmId of pmIds) {
-                const pmSnap = await get(ref(db, `pedagogisch_medewerkers/${pmId}`));
-                const pmNaam = pmSnap.exists() ? (pmSnap.val().naam || 'Onbekend') : 'Onbekend';
-                if (pmNaam === 'Onbekend') continue;
-                pmChipData.push({ pmId, pmNaam, isCurrentUser: pmId === currentPM.id });
-            }
-            pmChipData.sort((a, b) => {
-                if (a.isCurrentUser) return -1;
-                if (b.isCurrentUser) return 1;
-                return a.pmNaam.localeCompare(b.pmNaam);
-            });
-            let html = '';
-            pmChipData.forEach(pm => {
-                html += `<div class="pm-chip ${pm.isCurrentUser ? 'active' : ''}" onclick="togglePMSection('${pm.pmId}')">${pm.pmNaam}</div>`;
-            });
-            pmChips.innerHTML = html;
+            for (const pmId of pmIds) { const s = await get(ref(db, `pedagogisch_medewerkers/${pmId}`)); const naam = s.exists() ? (s.val().naam || 'Onbekend') : 'Onbekend'; if (naam === 'Onbekend') continue; pmChipData.push({ pmId, pmNaam: naam, isCurrentUser: pmId === currentPM.id }); }
+            pmChipData.sort((a, b) => a.isCurrentUser ? -1 : b.isCurrentUser ? 1 : a.pmNaam.localeCompare(b.pmNaam));
+            pmChips.innerHTML = pmChipData.map(pm => `<div class="pm-chip ${pm.isCurrentUser ? 'active' : ''}" onclick="togglePMSection('${pm.pmId}')">${pm.pmNaam}</div>`).join('');
         }
 
         async function renderPMSections() {
             const pmSections = [];
             for (const [pmId, ritten] of Object.entries(alleRittenPerPM)) {
-                const pmSnap = await get(ref(db, `pedagogisch_medewerkers/${pmId}`));
-                const pmNaam = pmSnap.exists() ? (pmSnap.val().naam || 'Onbekend') : 'Onbekend';
-                if (pmNaam === 'Onbekend') continue;
-                const isCurrentUser = pmId === currentPM.id;
-                let totaal = 0;
-                ritten.forEach(rit => totaal += (rit.kindIds || []).length);
-                pmSections.push({ pmId, pmNaam, isCurrentUser, initial: pmNaam.charAt(0).toUpperCase(), totaal, ritten });
+                const s = await get(ref(db, `pedagogisch_medewerkers/${pmId}`)); const pmNaam = s.exists() ? (s.val().naam || 'Onbekend') : 'Onbekend'; if (pmNaam === 'Onbekend') continue;
+                let totaal = 0; ritten.forEach(r => totaal += (r.kindIds || []).length);
+                pmSections.push({ pmId, pmNaam, isCurrentUser: pmId === currentPM.id, initial: pmNaam.charAt(0).toUpperCase(), totaal, ritten });
             }
-            pmSections.sort((a, b) => {
-                if (a.isCurrentUser) return -1;
-                if (b.isCurrentUser) return 1;
-                return a.pmNaam.localeCompare(b.pmNaam);
-            });
-
+            pmSections.sort((a, b) => a.isCurrentUser ? -1 : b.isCurrentUser ? 1 : a.pmNaam.localeCompare(b.pmNaam));
             let html = '';
             for (const section of pmSections) {
-                const sectionContent = section.isCurrentUser
-                    ? await renderEigenSectie(section.ritten, section.pmId)
-                    : await renderAndereRitten(section.ritten, section.pmId);
-
-                const heeftPiratenskip = section.ritten.some(r =>
-                    (r.ophaal_volgorde || []).some(item => item && item.is_piratenskip)
-                );
-                const piratenskipBadge = heeftPiratenskip
-                    ? `<span style="background:#FF9800;color:white;border-radius:10px;padding:2px 8px;font-size:12px;font-weight:bold;margin-left:8px;vertical-align:middle;">🏴‍☠️ Pirateskip</span>`
-                    : '';
-
-                html += `
-                    <div class="pm-section ${section.isCurrentUser ? 'expanded current-user' : ''}" id="pm-${section.pmId}">
-                        <div class="pm-section-header-clickable" onclick="togglePMSection('${section.pmId}')">
-                            <div class="chevron-icon">▶</div>
-                            <div class="pm-section-avatar">${section.initial}</div>
-                            <div class="pm-section-info">
-                                <h3>${section.pmNaam}${piratenskipBadge}</h3>
-                                <p>${section.totaal} kinderen • ${section.ritten.length} ritten</p>
-                            </div>
-                        </div>
-                        <div class="pm-section-content">
-                            ${sectionContent}
-                        </div>
-                    </div>
-                `;
+                const sectionContent = section.isCurrentUser ? await renderEigenSectie(section.ritten, section.pmId) : await renderAndereRitten(section.ritten, section.pmId);
+                const piratenskipBadge = section.ritten.some(r => (r.ophaal_volgorde || []).some(item => item && item.is_piratenskip)) ? `<span style="background:#FF9800;color:white;border-radius:10px;padding:2px 8px;font-size:12px;font-weight:bold;margin-left:8px;vertical-align:middle;">🏴‍☠️ Pirateskip</span>` : '';
+                html += `<div class="pm-section ${section.isCurrentUser ? 'expanded current-user' : ''}" id="pm-${section.pmId}"><div class="pm-section-header-clickable" onclick="togglePMSection('${section.pmId}')"><div class="chevron-icon">▶</div><div class="pm-section-avatar">${section.initial}</div><div class="pm-section-info"><h3>${section.pmNaam}${piratenskipBadge}</h3><p>${section.totaal} kinderen • ${section.ritten.length} ritten</p></div></div><div class="pm-section-content">${sectionContent}</div></div>`;
             }
             pmSectionsContainer.innerHTML = html;
         }
 
         async function renderAndereRitten(ritten, pmId) {
             const busritten = ritten.filter(r => isBusrit(r.key));
-            if (busritten.length < 2) {
-                return await renderRittenVoorPM(ritten, pmId);
-            }
+            if (busritten.length < 2) return await renderRittenVoorPM(ritten, pmId);
             busritten.sort((a, b) => (getBusritNummer(a.key) || 99) - (getBusritNummer(b.key) || 99));
             if (!activeBusritTab[pmId]) activeBusritTab[pmId] = 1;
             const telPerRit = {};
-            for (const rit of busritten) {
-                const nr = getBusritNummer(rit.key) || 0;
-                const kinderen = await loadKinderenVoorRit(rit);
-                telPerRit[nr] = kinderen.length;
-            }
-            let tabsHtml = '<div class="busrit-tabs">';
-            for (const rit of busritten) {
-                const nr = getBusritNummer(rit.key);
-                const isActive = activeBusritTab[pmId] === nr;
-                tabsHtml += `<div class="busrit-tab ${isActive ? 'active' : ''}" onclick="switchBusritTab('${pmId}', ${nr})">🚌 Busrit ${nr}<span class="tab-badge">${telPerRit[nr] || 0}</span></div>`;
-            }
-            tabsHtml += '</div>';
-            let panelsHtml = '';
-            for (const rit of busritten) {
-                const nr = getBusritNummer(rit.key);
-                const isActive = activeBusritTab[pmId] === nr;
-                const ritContent = await renderRittenVoorPM([rit], pmId, nr);
-                panelsHtml += `<div class="busrit-panel ${isActive ? 'active' : ''}" id="busrit-panel-${pmId}-${nr}">${ritContent}</div>`;
-            }
-            return tabsHtml + panelsHtml;
+            for (const rit of busritten) { const nr = getBusritNummer(rit.key) || 0; telPerRit[nr] = (await loadKinderenVoorRit(rit)).length; }
+            let html = '<div class="busrit-tabs">';
+            for (const rit of busritten) { const nr = getBusritNummer(rit.key); html += `<div class="busrit-tab ${activeBusritTab[pmId] === nr ? 'active' : ''}" onclick="switchBusritTab('${pmId}', ${nr})">🚌 Busrit ${nr}<span class="tab-badge">${telPerRit[nr] || 0}</span></div>`; }
+            html += '</div>';
+            for (const rit of busritten) { const nr = getBusritNummer(rit.key); html += `<div class="busrit-panel ${activeBusritTab[pmId] === nr ? 'active' : ''}" id="busrit-panel-${pmId}-${nr}">${await renderRittenVoorPM([rit], pmId, nr)}</div>`; }
+            return html;
         }
 
         async function renderEigenSectie(ritten, pmId) {
             const busritten = ritten.filter(r => isBusrit(r.key));
-            if (busritten.length < 2) {
-                return await renderRittenVoorPM(ritten, pmId);
-            }
+            if (busritten.length < 2) return await renderRittenVoorPM(ritten, pmId);
             busritten.sort((a, b) => (getBusritNummer(a.key) || 99) - (getBusritNummer(b.key) || 99));
             if (!activeBusritTab[pmId]) activeBusritTab[pmId] = 1;
             const telPerRit = {};
-            for (const rit of busritten) {
-                const nr = getBusritNummer(rit.key) || 0;
-                const kinderen = await loadKinderenVoorRit(rit);
-                telPerRit[nr] = kinderen.length;
-            }
-            let tabsHtml = '<div class="busrit-tabs">';
-            for (const rit of busritten) {
-                const nr = getBusritNummer(rit.key);
-                const isActive = activeBusritTab[pmId] === nr;
-                tabsHtml += `<div class="busrit-tab ${isActive ? 'active' : ''}" onclick="switchBusritTab('${pmId}', ${nr})">🚌 Busrit ${nr}<span class="tab-badge">${telPerRit[nr] || 0}</span></div>`;
-            }
-            tabsHtml += '</div>';
-            let panelsHtml = '';
-            for (const rit of busritten) {
-                const nr = getBusritNummer(rit.key);
-                const isActive = activeBusritTab[pmId] === nr;
-                const ritContent = await renderRittenVoorPM([rit], pmId, nr);
-                panelsHtml += `<div class="busrit-panel ${isActive ? 'active' : ''}" id="busrit-panel-${pmId}-${nr}">${ritContent}</div>`;
-            }
+            for (const rit of busritten) { const nr = getBusritNummer(rit.key) || 0; telPerRit[nr] = (await loadKinderenVoorRit(rit)).length; }
+            let html = '<div class="busrit-tabs">';
+            for (const rit of busritten) { const nr = getBusritNummer(rit.key); html += `<div class="busrit-tab ${activeBusritTab[pmId] === nr ? 'active' : ''}" onclick="switchBusritTab('${pmId}', ${nr})">🚌 Busrit ${nr}<span class="tab-badge">${telPerRit[nr] || 0}</span></div>`; }
+            html += '</div>';
+            for (const rit of busritten) { const nr = getBusritNummer(rit.key); html += `<div class="busrit-panel ${activeBusritTab[pmId] === nr ? 'active' : ''}" id="busrit-panel-${pmId}-${nr}">${await renderRittenVoorPM([rit], pmId, nr)}</div>`; }
             const rit2 = busritten.find(r => getBusritNummer(r.key) === 2);
-            if (rit2) {
-                const kinderenRit2 = await loadKinderenVoorRit(rit2);
-                const alleAf = kinderenRit2.length > 0 && kinderenRit2.every(k => k.afgevinkt);
-                const busjeVertrokkenSection = document.getElementById('busjeVertrokkenSection');
-                if (alleAf && !busjeIsVertrokken) {
-                    busjeVertrokkenSection.classList.remove('hidden');
-                } else {
-                    busjeVertrokkenSection.classList.add('hidden');
-                }
-            }
-            return tabsHtml + panelsHtml;
+            if (rit2) { const k = await loadKinderenVoorRit(rit2); const alleAf = k.length > 0 && k.every(k => k.afgevinkt); document.getElementById('busjeVertrokkenSection').classList.toggle('hidden', !(alleAf && !busjeIsVertrokken)); }
+            return html;
         }
 
         window.switchBusritTab = function(pmId, nr) {
             activeBusritTab[pmId] = nr;
-            document.querySelectorAll(`#pm-${pmId} .busrit-tab`).forEach((tab, i) => {
-                tab.classList.toggle('active', i + 1 === nr);
-            });
-            document.querySelectorAll(`#pm-${pmId} .busrit-panel`).forEach(panel => {
-                panel.classList.remove('active');
-            });
-            const activePanel = document.getElementById(`busrit-panel-${pmId}-${nr}`);
-            if (activePanel) activePanel.classList.add('active');
+            document.querySelectorAll(`#pm-${pmId} .busrit-tab`).forEach((tab, i) => tab.classList.toggle('active', i + 1 === nr));
+            document.querySelectorAll(`#pm-${pmId} .busrit-panel`).forEach(p => p.classList.remove('active'));
+            const ap = document.getElementById(`busrit-panel-${pmId}-${nr}`); if (ap) ap.classList.add('active');
         };
 
         async function renderRittenVoorPM(ritten, pmId, busritNrFilter = null) {
-            let html = '';
-            let alleKinderen = [];
-            
+            let html = '', alleKinderen = [];
             for (const rit of ritten) {
                 const kinderen = await loadKinderenVoorRit(rit);
                 alleKinderen = alleKinderen.concat(kinderen);
                 const reinboge = kinderen.filter(k => k.is_reinboge);
                 const regulier = kinderen.filter(k => !k.is_reinboge);
-
                 const piratenskipKinderen = kinderen.filter(k => k.is_piratenskip);
                 if (piratenskipKinderen.length > 0) {
-                    const alleAfgeleverd = piratenskipKinderen.every(k => k.afgevinkt);
-                    html += `
-                        <div style="margin-bottom:16px;padding:14px 16px;background:${alleAfgeleverd ? '#E8F5E9' : '#FFF3E0'};border:2px solid ${alleAfgeleverd ? '#4CAF50' : '#FF9800'};border-radius:12px;display:flex;align-items:center;gap:12px;">
-                            <span style="font-size:24px;">🏴‍☠️</span>
-                            <div style="flex:1;">
-                                <div style="font-weight:bold;font-size:15px;color:${alleAfgeleverd ? '#2E7D32' : '#E65100'};">
-                                    ${alleAfgeleverd ? '✓ Alle Pirateskip kinderen afgeleverd!' : `LET OP: ${piratenskipKinderen.length} ${piratenskipKinderen.length === 1 ? 'kind' : 'kinderen'} afzetten bij Pirateskip BSO`}
-                                </div>
-                                <div style="font-size:13px;color:#757575;margin-top:2px;">
-                                    ${alleAfgeleverd ? 'Pirateskip BSO tussenstop voltooid' : piratenskipKinderen.map(k => k.naam).join(', ')}
-                                </div>
-                            </div>
-                            ${alleAfgeleverd ? '<span style="background:#4CAF50;color:white;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:bold;">✓ Klaar</span>' : ''}
-                        </div>
-                    `;
+                    const alleAf = piratenskipKinderen.every(k => k.afgevinkt);
+                    html += `<div style="margin-bottom:16px;padding:14px 16px;background:${alleAf ? '#E8F5E9' : '#FFF3E0'};border:2px solid ${alleAf ? '#4CAF50' : '#FF9800'};border-radius:12px;display:flex;align-items:center;gap:12px;"><span style="font-size:24px;">🏴‍☠️</span><div style="flex:1;"><div style="font-weight:bold;font-size:15px;color:${alleAf ? '#2E7D32' : '#E65100'};">${alleAf ? '✓ Alle Pirateskip kinderen afgeleverd!' : `LET OP: ${piratenskipKinderen.length} ${piratenskipKinderen.length === 1 ? 'kind' : 'kinderen'} afzetten bij Pirateskip BSO`}</div><div style="font-size:13px;color:#757575;margin-top:2px;">${alleAf ? 'Pirateskip BSO tussenstop voltooid' : piratenskipKinderen.map(k => k.naam).join(', ')}</div></div>${alleAf ? '<span style="background:#4CAF50;color:white;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:bold;">✓ Klaar</span>' : ''}</div>`;
                 }
-
                 if (reinboge.length > 0) {
-                    const overstappersUitgevoerd = rit.overstappers_uitgevoerd === true;
-                    const heeftOverstappers = reinboge.some(k => overstappersVandaag.some(ov => {
-                        const ovNaam = ov.includes('(') ? ov.split('(')[0].trim().toLowerCase() : ov.toLowerCase();
-                        return ovNaam === k.naam.toLowerCase();
-                    }));
-                    const isOwnRit = pmId === currentPM.id;
-
-                    let reinbogeHeader = '<div class="sectie-header" style="display:flex;align-items:center;justify-content:space-between;gap:8px;">';
-                    reinbogeHeader += '<span><span style="font-size:20px;">🏫</span> REINBOGE SCHOOL</span>';
-
-                    if (isOwnRit && heeftOverstappers && !overstappersUitgevoerd) {
-                        reinbogeHeader += `<button onclick="event.stopPropagation(); overstappersUitgestap('${rit.key}')" style="background:linear-gradient(135deg, #FF9800, #F57C00);color:white;border:none;border-radius:12px;padding:8px 14px;font-size:13px;font-weight:bold;cursor:pointer;white-space:nowrap;box-shadow:0 2px 8px rgba(255,152,0,0.4);position:relative;z-index:10;">🔄 Overstappers uitgestapt</button>`;
-                    } else if (overstappersUitgevoerd) {
-                        reinbogeHeader += '<span style="background:#4CAF50;color:white;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:bold;">✓ Uitgestapt</span>';
-                    }
-
-                    reinbogeHeader += '</div>';
-                    html += reinbogeHeader;
-
-                    const zichtbareReinboge = overstappersUitgevoerd
-                        ? reinboge.filter(k => !overstappersVandaag.some(ov => {
-                            const ovNaam = ov.includes('(') ? ov.split('(')[0].trim().toLowerCase() : ov.toLowerCase();
-                            return ovNaam === k.naam.toLowerCase();
-                          }))
-                        : reinboge;
-
-                    zichtbareReinboge.forEach(kind => { html += buildKindCard(kind, rit.key, pmId); });
+                    const ovUitgevoerd = rit.overstappers_uitgevoerd === true;
+                    const heeftOv = reinboge.some(k => overstappersVandaag.some(ov => { const n = ov.includes('(') ? ov.split('(')[0].trim().toLowerCase() : ov.toLowerCase(); return n === k.naam.toLowerCase(); }));
+                    let rh = '<div class="sectie-header" style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><span><span style="font-size:20px;">🏫</span> REINBOGE SCHOOL</span>';
+                    if (pmId === currentPM.id && heeftOv && !ovUitgevoerd) rh += `<button onclick="event.stopPropagation(); overstappersUitgestap('${rit.key}')" style="background:linear-gradient(135deg,#FF9800,#F57C00);color:white;border:none;border-radius:12px;padding:8px 14px;font-size:13px;font-weight:bold;cursor:pointer;white-space:nowrap;box-shadow:0 2px 8px rgba(255,152,0,0.4);">🔄 Overstappers uitgestapt</button>`;
+                    else if (ovUitgevoerd) rh += '<span style="background:#4CAF50;color:white;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:bold;">✓ Uitgestapt</span>';
+                    rh += '</div>'; html += rh;
+                    const zichtbaar = ovUitgevoerd ? reinboge.filter(k => !overstappersVandaag.some(ov => { const n = ov.includes('(') ? ov.split('(')[0].trim().toLowerCase() : ov.toLowerCase(); return n === k.naam.toLowerCase(); })) : reinboge;
+                    zichtbaar.forEach(kind => { html += buildKindCard(kind, rit.key, pmId); });
                 }
-                if (regulier.length > 0) {
-                    if (reinboge.length > 0) {
-                        html += '<div class="sectie-header regulier"><span style="font-size:20px;">📍</span> REGULIERE SCHOLEN</div>';
-                    }
-                    regulier.forEach(kind => { html += buildKindCard(kind, rit.key, pmId); });
-                }
+                if (regulier.length > 0) { if (reinboge.length > 0) html += '<div class="sectie-header regulier"><span style="font-size:20px;">📍</span> REGULIERE SCHOLEN</div>'; regulier.forEach(kind => { html += buildKindCard(kind, rit.key, pmId); }); }
             }
-            
-            const totaalKinderen = alleKinderen.length;
-            const afgevinkt = alleKinderen.filter(k => k.afgevinkt).length;
-            const alleAfgevinkt = totaalKinderen > 0 && afgevinkt === totaalKinderen;
-            const isOwnList = pmId === currentPM.id;
-            
-            if (!alleAfgevinkt && isOwnList && totaalKinderen > 0) {
+            const totaal = alleKinderen.length, afgevinkt = alleKinderen.filter(k => k.afgevinkt).length;
+            const alleAf = totaal > 0 && afgevinkt === totaal, isOwn = pmId === currentPM.id;
+            if (!alleAf && isOwn && totaal > 0) {
                 const btnId = busritNrFilter ? `vinkAllesAf_${pmId}_${busritNrFilter}` : `vinkAllesAf_${pmId}`;
-                html += `
-                    <div style="margin-top:24px;padding-top:20px;border-top:2px solid #E0E0E0;">
-                        <button id="${btnId}" onclick="vinkAlleKinderenAf('${pmId}', ${busritNrFilter || 'null'})" style="width:100%;padding:18px;background:linear-gradient(135deg, #2196F3 0%, #1976D2 100%);color:white;border:none;border-radius:16px;font-size:18px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;box-shadow:0 4px 12px rgba(33,150,243,0.4);transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
-                            <span style="font-size:28px;">✓</span>
-                            <span>Vink Alle Kinderen Af (${afgevinkt}/${totaalKinderen})</span>
-                        </button>
-                        <div style="text-align:center;margin-top:12px;font-size:13px;color:#757575;">Vink alle kinderen in één keer af</div>
-                    </div>
-                `;
+                html += `<div style="margin-top:24px;padding-top:20px;border-top:2px solid #E0E0E0;"><button id="${btnId}" onclick="vinkAlleKinderenAf('${pmId}', ${busritNrFilter || 'null'})" style="width:100%;padding:18px;background:linear-gradient(135deg,#2196F3,#1976D2);color:white;border:none;border-radius:16px;font-size:18px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;box-shadow:0 4px 12px rgba(33,150,243,0.4);"><span style="font-size:28px;">✓</span><span>Vink Alle Kinderen Af (${afgevinkt}/${totaal})</span></button><div style="text-align:center;margin-top:12px;font-size:13px;color:#757575;">Vink alle kinderen in één keer af</div></div>`;
             }
-            
-            if (alleAfgevinkt && isOwnList && totaalKinderen > 0) {
-                html += `
-                    <div style="margin-top:24px;padding-top:20px;border-top:2px solid #E0E0E0;">
-                        <button onclick="verwijderPMOphaallijst('${pmId}')" style="width:100%;padding:18px;background:linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);color:white;border:none;border-radius:16px;font-size:18px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;box-shadow:0 4px 12px rgba(76,175,80,0.4);transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
-                            <span style="font-size:28px;">✅</span>
-                            <span>Klaar! Verwijder Ophaallijst</span>
-                        </button>
-                        <div style="text-align:center;margin-top:12px;font-size:13px;color:#757575;">Alle kinderen zijn opgehaald/afgeleverd</div>
-                    </div>
-                `;
+            if (alleAf && isOwn && totaal > 0) {
+                html += `<div style="margin-top:24px;padding-top:20px;border-top:2px solid #E0E0E0;"><button onclick="verwijderPMOphaallijst('${pmId}')" style="width:100%;padding:18px;background:linear-gradient(135deg,#4CAF50,#388E3C);color:white;border:none;border-radius:16px;font-size:18px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;box-shadow:0 4px 12px rgba(76,175,80,0.4);"><span style="font-size:28px;">✅</span><span>Klaar! Verwijder Ophaallijst</span></button><div style="text-align:center;margin-top:12px;font-size:13px;color:#757575;">Alle kinderen zijn opgehaald/afgeleverd</div></div>`;
             }
-            
             return html;
         }
 
         async function loadKinderenVoorRit(rit) {
-            const datumKey = currentDatum.replace(/-/g, '_');
-            const kinderen = [];
-            const seenNames = new Set();
-
+            const datumKey = currentDatum.replace(/-/g, '_'), kinderen = [], seenNames = new Set();
             if (rit.ophaal_volgorde && Array.isArray(rit.ophaal_volgorde)) {
                 for (const item of rit.ophaal_volgorde) {
-                    let kindData = null;
-                    let isReinbogeKind = false;
-
-                    if (item.is_piratenskip) {
-                        const snap = await get(ref(db, `piratenskip_kinderen/${item.kindId}`));
-                        if (snap.exists()) kindData = snap.val();
-                    } else if (item.kindId.startsWith('reinboge_boomhut_')) {
-                        const reinbogeSnap = await get(ref(db, `reinboge_alle_kinderen/${item.kindId}`));
-                        if (reinbogeSnap.exists()) {
-                            kindData = reinbogeSnap.val();
-                            isReinbogeKind = true;
-                        }
-                    } else if (item.kindId.startsWith('reinboge_pirateskip_')) {
-                        const reinbogeAlleSnap = await get(ref(db, `reinboge_alle_kinderen/${item.kindId}`));
-                        if (reinbogeAlleSnap.exists()) {
-                            kindData = reinbogeAlleSnap.val();
-                            isReinbogeKind = true;
-                        } else {
-                            const reinbogeSnap = await get(ref(db, `reinboge_pirateskip_kinderen/${item.kindId}`));
-                            if (reinbogeSnap.exists()) {
-                                kindData = reinbogeSnap.val();
-                                isReinbogeKind = true;
-                            }
-                        }
-                    } else {
-                        const snap = await get(ref(db, `kinderen_per_dag/${datumKey}/${item.kindId}`));
-                        if (snap.exists()) {
-                            kindData = snap.val();
-                        }
-                    }
+                    let kindData = null, isReinbogeKind = false;
+                    if (item.is_piratenskip) { const s = await get(ref(db, `piratenskip_kinderen/${item.kindId}`)); if (s.exists()) kindData = s.val(); }
+                    else if (item.kindId.startsWith('reinboge_boomhut_')) { const s = await get(ref(db, `reinboge_alle_kinderen/${item.kindId}`)); if (s.exists()) { kindData = s.val(); isReinbogeKind = true; } }
+                    else if (item.kindId.startsWith('reinboge_pirateskip_')) { const s = await get(ref(db, `reinboge_alle_kinderen/${item.kindId}`)); if (s.exists()) { kindData = s.val(); isReinbogeKind = true; } else { const s2 = await get(ref(db, `reinboge_pirateskip_kinderen/${item.kindId}`)); if (s2.exists()) { kindData = s2.val(); isReinbogeKind = true; } } }
+                    else { const s = await get(ref(db, `kinderen_per_dag/${datumKey}/${item.kindId}`)); if (s.exists()) kindData = s.val(); }
                     if (kindData) {
-                        const kindNaam = (kindData.naam || '').toLowerCase().trim();
-                        if (seenNames.has(kindNaam)) continue;
-                        seenNames.add(kindNaam);
-                        const isReinboge = isReinbogeKind ||
-                                          (kindData.school && kindData.school.toLowerCase().includes('reinboge')) ||
-                                          kindData.is_reinboge ||
-                                          reinbogeKindIds.includes(kindNaam);
-                        const afgevinkt = item.is_piratenskip
-                            ? (kindData.afgeleverd || false)
-                            : (kindData.afgevinkt || false);
-                        kinderen.push({
-                            id: item.kindId,
-                            naam: kindData.naam || 'Onbekend',
-                            leeftijd: kindData.leeftijd || 0,
-                            afgevinkt,
-                            ophaal_volgorde: item.ophaal_volgorde || 999,
-                            is_piratenskip: item.is_piratenskip || false,
-                            is_reinboge: isReinboge,
-                            is_reinboge_kind: isReinbogeKind,
-                            opmerking: kindData.opmerking || ''
-                        });
+                        const naam = (kindData.naam || '').toLowerCase().trim(); if (seenNames.has(naam)) continue; seenNames.add(naam);
+                        const isReinboge = isReinbogeKind || (kindData.school && kindData.school.toLowerCase().includes('reinboge')) || kindData.is_reinboge || reinbogeKindIds.includes(naam);
+                        kinderen.push({ id: item.kindId, naam: kindData.naam || 'Onbekend', leeftijd: kindData.leeftijd || 0, afgevinkt: item.is_piratenskip ? (kindData.afgeleverd || false) : (kindData.afgevinkt || false), ophaal_volgorde: item.ophaal_volgorde || 999, is_piratenskip: item.is_piratenskip || false, is_reinboge: isReinboge, is_reinboge_kind: isReinbogeKind, opmerking: kindData.opmerking || '' });
                     }
                 }
             }
@@ -1514,429 +1017,140 @@
         }
 
         function buildKindCard(kind, ritKey, pmId) {
-            const isOverstapper = overstappersVandaag.some(ov => {
-                const ovNaam = ov.includes('(') ? ov.split('(')[0].trim().toLowerCase() : ov.toLowerCase();
-                return ovNaam === kind.naam.toLowerCase();
-            });
-            const isOwnList = pmId === currentPM.id;
-            const klass = kind.afgevinkt ? 'afgevinkt' : '';
-            const piratenskipKlass = kind.is_piratenskip ? 'piratenskip' : '';
-            const reinbogeKlass = kind.is_reinboge ? 'reinboge-card' : '';
-            const readonlyKlass = !isOwnList ? 'readonly' : '';
-            const emoji = kind.is_piratenskip ? ' 🏴‍☠️' : (kind.is_reinboge ? ' 🏫' : '');
-            const overstapperIcon = isOverstapper ? '<span style="font-size:18px;">🔄</span>' : '';
-            const opmerkingIcon = kind.opmerking ? `<span style="font-size:16px;" title="${kind.opmerking}">📝</span>` : '';
-            const onclickAttr = isOwnList ? `onclick="toggleKind('${kind.id}', ${kind.is_piratenskip}, ${kind.is_reinboge_kind || false})"` : '';
-            return `
-                <div class="kind-card ${klass} ${piratenskipKlass} ${reinbogeKlass} ${readonlyKlass}" ${onclickAttr}>
-                    <div class="checkbox"></div>
-                    <div class="nummer-badge">${kind.ophaal_volgorde}</div>
-                    <div class="kind-info">
-                        <div class="kind-naam">${kind.naam}${emoji} ${overstapperIcon} ${opmerkingIcon}</div>
-                        <div class="kind-details">${kind.leeftijd} jaar${isOverstapper ? ' • Overstapper' : ''}</div>
-                    </div>
-                </div>
-            `;
+            const isOv = overstappersVandaag.some(ov => { const n = ov.includes('(') ? ov.split('(')[0].trim().toLowerCase() : ov.toLowerCase(); return n === kind.naam.toLowerCase(); });
+            const isOwn = pmId === currentPM.id;
+            return `<div class="kind-card ${kind.afgevinkt ? 'afgevinkt' : ''} ${kind.is_piratenskip ? 'piratenskip' : ''} ${kind.is_reinboge ? 'reinboge-card' : ''} ${!isOwn ? 'readonly' : ''}" ${isOwn ? `onclick="toggleKind('${kind.id}', ${kind.is_piratenskip}, ${kind.is_reinboge_kind || false})"` : ''}><div class="checkbox"></div><div class="nummer-badge">${kind.ophaal_volgorde}</div><div class="kind-info"><div class="kind-naam">${kind.naam}${kind.is_piratenskip ? ' 🏴‍☠️' : kind.is_reinboge ? ' 🏫' : ''} ${isOv ? '<span style="font-size:18px;">🔄</span>' : ''} ${kind.opmerking ? `<span style="font-size:16px;" title="${kind.opmerking}">📝</span>` : ''}</div><div class="kind-details">${kind.leeftijd} jaar${isOv ? ' • Overstapper' : ''}</div></div></div>`;
         }
 
         window.togglePMSection = function(pmId) {
-            const section = document.getElementById(`pm-${pmId}`);
-            if (!section) return;
+            const section = document.getElementById(`pm-${pmId}`); if (!section) return;
             const wasExpanded = section.classList.contains('expanded');
             if (pmId !== currentPM.id) section.classList.toggle('expanded');
-            const delay = (!wasExpanded && pmId !== currentPM.id) ? 400 : 50;
-            setTimeout(() => {
-                const stickySection = document.querySelector('.sticky-datum-section');
-                const stickyHeight = stickySection ? stickySection.offsetHeight : 180;
-                const sectionRect = section.getBoundingClientRect();
-                const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                const sectionTopFromPage = sectionRect.top + currentScrollTop;
-                window.scrollTo({ top: sectionTopFromPage - stickyHeight - 20, behavior: 'smooth' });
-            }, delay);
+            setTimeout(() => { const sh = document.querySelector('.sticky-datum-section')?.offsetHeight || 180; const r = section.getBoundingClientRect(); window.scrollTo({ top: r.top + window.pageYOffset - sh - 20, behavior: 'smooth' }); }, (!wasExpanded && pmId !== currentPM.id) ? 400 : 50);
         };
 
         window.vinkAlleKinderenAf = async function(pmId, busritNr) {
             const btnId = busritNr ? `vinkAllesAf_${pmId}_${busritNr}` : `vinkAllesAf_${pmId}`;
-            const knop = document.getElementById(btnId);
-            if (knop) {
-                knop.disabled = true;
-                knop.innerHTML = '<span style="font-size:28px;">⏳</span><span>Bezig...</span>';
-            }
+            const knop = document.getElementById(btnId); if (knop) { knop.disabled = true; knop.innerHTML = '<span style="font-size:28px;">⏳</span><span>Bezig...</span>'; }
             try {
                 const datumKey = currentDatum.replace(/-/g, '_');
-                let ritten = alleRittenPerPM[pmId] || [];
-                if (busritNr) {
-                    ritten = ritten.filter(r => getBusritNummer(r.key) === busritNr);
-                }
-                const alleKinderen = [];
-                for (const rit of ritten) {
-                    const kinderen = await loadKinderenVoorRit(rit);
-                    alleKinderen.push(...kinderen);
-                }
-                for (const kind of alleKinderen) {
-                    if (!kind.afgevinkt) {
-                        const path = kind.is_piratenskip
-                            ? `piratenskip_kinderen/${kind.id}`
-                            : `kinderen_per_dag/${datumKey}/${kind.id}`;
-                        const field = kind.is_piratenskip ? 'afgeleverd' : 'afgevinkt';
-                        await update(ref(db, path), { [field]: true });
-                    }
-                }
+                let ritten = alleRittenPerPM[pmId] || []; if (busritNr) ritten = ritten.filter(r => getBusritNummer(r.key) === busritNr);
+                const alleKinderen = []; for (const rit of ritten) { const k = await loadKinderenVoorRit(rit); alleKinderen.push(...k); }
+                for (const kind of alleKinderen) { if (!kind.afgevinkt) { const path = kind.is_piratenskip ? `piratenskip_kinderen/${kind.id}` : `kinderen_per_dag/${datumKey}/${kind.id}`; await update(ref(db, path), { [kind.is_piratenskip ? 'afgeleverd' : 'afgevinkt']: true }); } }
                 await renderPMSections();
-            } catch (error) {
-                console.error('Error bulk checking:', error);
-                alert('❌ Fout bij afvinken: ' + error.message);
-            }
+            } catch (error) { alert('❌ Fout bij afvinken: ' + error.message); }
         };
 
         window.toggleKind = async function(kindId, isPiratenskip, isReinbogeKind) {
             try {
                 const datumKey = currentDatum.replace(/-/g, '_');
                 let path, field;
-                if (isPiratenskip) {
-                    path = `piratenskip_kinderen/${kindId}`;
-                    field = 'afgeleverd';
-                } else if (kindId.startsWith('reinboge_boomhut_') || kindId.startsWith('reinboge_pirateskip_')) {
-                    path = `reinboge_alle_kinderen/${kindId}`;
-                    field = 'afgevinkt';
-                } else {
-                    path = `kinderen_per_dag/${datumKey}/${kindId}`;
-                    field = 'afgevinkt';
-                }
-
-                let gevondenKaart = null;
-                for (const kaart of document.querySelectorAll('.kind-card')) {
-                    if ((kaart.getAttribute('onclick') || '').includes(`'${kindId}'`)) {
-                        gevondenKaart = kaart;
-                        break;
-                    }
-                }
-                const nieuweStatus = gevondenKaart ? !gevondenKaart.classList.contains('afgevinkt') : true;
-                if (gevondenKaart) {
-                    gevondenKaart.classList.toggle('afgevinkt');
-                }
-
+                if (isPiratenskip) { path = `piratenskip_kinderen/${kindId}`; field = 'afgeleverd'; }
+                else if (kindId.startsWith('reinboge_boomhut_') || kindId.startsWith('reinboge_pirateskip_')) { path = `reinboge_alle_kinderen/${kindId}`; field = 'afgevinkt'; }
+                else { path = `kinderen_per_dag/${datumKey}/${kindId}`; field = 'afgevinkt'; }
+                let kaart = null;
+                for (const k of document.querySelectorAll('.kind-card')) { if ((k.getAttribute('onclick') || '').includes(`'${kindId}'`)) { kaart = k; break; } }
+                const nieuweStatus = kaart ? !kaart.classList.contains('afgevinkt') : true;
+                if (kaart) kaart.classList.toggle('afgevinkt');
                 update(ref(db, path), { [field]: nieuweStatus });
-
-                if (nieuweStatus) {
-                    const eigenRitten = alleRittenPerPM[currentPM.id] || [];
-                    const rit2 = eigenRitten.find(r => isBusrit(r.key) && getBusritNummer(r.key) === 2);
-                    if (rit2 && !busjeIsVertrokken) {
-                        const kinderenRit2 = await loadKinderenVoorRit(rit2);
-                        const alleAf = kinderenRit2.length > 0 && kinderenRit2.every(k => k.afgevinkt);
-                        if (alleAf) {
-                            await update(ref(db, `vervoer_verdeling/${datumKey}/${rit2.key}`), { busje_vertrokken: true });
-                            busjeIsVertrokken = true;
-                            document.getElementById('busjeVertrokkenSection').classList.add('hidden');
-                        }
-                    }
-                }
-            } catch (error) {
-                console.error('Error toggling:', error);
-            }
+                if (nieuweStatus) { const eigenRitten = alleRittenPerPM[currentPM.id] || []; const rit2 = eigenRitten.find(r => isBusrit(r.key) && getBusritNummer(r.key) === 2); if (rit2 && !busjeIsVertrokken) { const k = await loadKinderenVoorRit(rit2); if (k.length > 0 && k.every(k => k.afgevinkt)) { await update(ref(db, `vervoer_verdeling/${datumKey}/${rit2.key}`), { busje_vertrokken: true }); busjeIsVertrokken = true; document.getElementById('busjeVertrokkenSection').classList.add('hidden'); } } }
+            } catch (e) {}
         };
 
         window.verwijderPMOphaallijst = async function(pmId) {
-            const bevestig = confirm('Weet je zeker dat je al je ophaallijsten voor vandaag wilt verwijderen?');
-            if (!bevestig) return;
-            try {
-                const datumKey = currentDatum.replace(/-/g, '_');
-                const ritten = alleRittenPerPM[pmId] || [];
-                for (const rit of ritten) {
-                    await remove(ref(db, `vervoer_verdeling/${datumKey}/${rit.key}`));
-                }
-                await loadAllePMLijsten();
-                alert('✅ Ophaallijsten verwijderd!');
-            } catch (error) {
-                alert('❌ Fout bij verwijderen: ' + error.message);
-            }
+            if (!confirm('Weet je zeker dat je al je ophaallijsten voor vandaag wilt verwijderen?')) return;
+            try { const datumKey = currentDatum.replace(/-/g, '_'); for (const rit of alleRittenPerPM[pmId] || []) await remove(ref(db, `vervoer_verdeling/${datumKey}/${rit.key}`)); await loadAllePMLijsten(); alert('✅ Ophaallijsten verwijderd!'); }
+            catch (e) { alert('❌ Fout bij verwijderen: ' + e.message); }
         };
 
         function setupBusjeStatusListener(wachtRit) {
             stopBusjeStatusListener();
-            const datumKey = currentDatum.replace(/-/g, '_');
-            const wachtBanner = document.getElementById('wachtBanner');
-            wachtBanner.classList.remove('hidden');
+            document.getElementById('wachtBanner').classList.remove('hidden');
             const allePMRitten = Object.values(alleRittenPerPM).flat();
-            let busjeRit2 = allePMRitten.find(r => isBusrit(r.key) && getBusritNummer(r.key) === 2);
-            if (!busjeRit2) {
-                busjeRit2 = allePMRitten.find(r => {
-                    const naam = (r.vervoerNaam || '').toLowerCase();
-                    return naam.includes('busje') && naam.includes('rit 2');
-                });
-            }
-            if (!busjeRit2) {
-                updateWachtBanner(false);
-                return;
-            }
-            const busjeRef = ref(db, `vervoer_verdeling/${datumKey}/${busjeRit2.key}/busje_vertrokken`);
-            busjeStatusListener = onValue(busjeRef, (snapshot) => {
-                const vertrokken = snapshot.val() === true;
-                busjeIsVertrokken = vertrokken;
-                updateWachtBanner(vertrokken);
-            });
+            let busjeRit2 = allePMRitten.find(r => isBusrit(r.key) && getBusritNummer(r.key) === 2) || allePMRitten.find(r => { const n = (r.vervoerNaam || '').toLowerCase(); return n.includes('busje') && n.includes('rit 2'); });
+            if (!busjeRit2) { updateWachtBanner(false); return; }
+            const datumKey = currentDatum.replace(/-/g, '_');
+            busjeStatusListener = onValue(ref(db, `vervoer_verdeling/${datumKey}/${busjeRit2.key}/busje_vertrokken`), (s) => { busjeIsVertrokken = s.val() === true; updateWachtBanner(busjeIsVertrokken); });
             updateWachtBanner(busjeRit2.busje_vertrokken === true);
         }
 
-        function stopBusjeStatusListener() {
-            if (busjeStatusListener) {
-                busjeStatusListener();
-                busjeStatusListener = null;
-            }
-        }
+        function stopBusjeStatusListener() { if (busjeStatusListener) { busjeStatusListener(); busjeStatusListener = null; } }
 
         function updateWachtBanner(vertrokken) {
             const banner = document.getElementById('wachtBanner');
-            const icon = document.getElementById('wachtBannerIcon');
-            const titel = document.getElementById('wachtBannerTitel');
-            const tekst = document.getElementById('wachtBannerTekst');
             banner.classList.remove('hidden', 'wachten', 'vertrokken');
-            if (vertrokken) {
-                banner.classList.add('vertrokken');
-                icon.textContent = '✅';
-                titel.textContent = '✅ Busje is vertrokken!';
-                tekst.textContent = 'Je kunt nu vertrekken met je groep';
-            } else {
-                banner.classList.add('wachten');
-                icon.textContent = '⏳';
-                titel.textContent = '⏳ Wacht op Busje Rit 2';
-                tekst.textContent = 'Wacht op melding dat busje is vertrokken';
-            }
+            if (vertrokken) { banner.classList.add('vertrokken'); document.getElementById('wachtBannerIcon').textContent = '✅'; document.getElementById('wachtBannerTitel').textContent = '✅ Busje is vertrokken!'; document.getElementById('wachtBannerTekst').textContent = 'Je kunt nu vertrekken met je groep'; }
+            else { banner.classList.add('wachten'); document.getElementById('wachtBannerIcon').textContent = '⏳'; document.getElementById('wachtBannerTitel').textContent = '⏳ Wacht op Busje Rit 2'; document.getElementById('wachtBannerTekst').textContent = 'Wacht op melding dat busje is vertrokken'; }
         }
 
         window.markeerBusjeVertrokken = async function() {
-            try {
-                const datumKey = currentDatum.replace(/-/g, '_');
-                const eigenRitten = alleRittenPerPM[currentPM.id] || [];
-                const rit2 = eigenRitten.find(r => isBusrit(r.key) && getBusritNummer(r.key) === 2);
-                if (!rit2) return;
-                await update(ref(db, `vervoer_verdeling/${datumKey}/${rit2.key}`), { busje_vertrokken: true });
-                document.getElementById('busjeVertrokkenSection').classList.add('hidden');
-            } catch (e) {
-                alert('❌ Fout: ' + e.message);
-            }
+            try { const datumKey = currentDatum.replace(/-/g, '_'); const rit2 = (alleRittenPerPM[currentPM.id] || []).find(r => isBusrit(r.key) && getBusritNummer(r.key) === 2); if (!rit2) return; await update(ref(db, `vervoer_verdeling/${datumKey}/${rit2.key}`), { busje_vertrokken: true }); document.getElementById('busjeVertrokkenSection').classList.add('hidden'); }
+            catch (e) { alert('❌ Fout: ' + e.message); }
         };
 
         async function loadExtraKinderenVoorRit(rit) {
-            const kinderen = [];
-            const kindIds = rit.kindIds || [];
-            const datumKey = currentDatum.replace(/-/g, '_');
-            for (const kindId of kindIds) {
-                if (!kindId) continue;
-                let kindData = null;
-                if (kindId.startsWith('reinboge_boomhut_') || kindId.startsWith('reinboge_pirateskip_')) {
-                    const snap = await get(ref(db, `reinboge_alle_kinderen/${kindId}`));
-                    if (snap.exists()) kindData = snap.val();
-                } else {
-                    const snap = await get(ref(db, `kinderen_per_dag/${datumKey}/${kindId}`));
-                    if (snap.exists()) {
-                        kindData = snap.val();
-                    } else {
-                        const snap2 = await get(ref(db, `kinderen/${kindId}`));
-                        if (snap2.exists()) kindData = snap2.val();
-                    }
-                }
-                if (kindData) {
-                    kinderen.push({ id: kindId, naam: kindData.naam || 'Onbekend', leeftijd: kindData.leeftijd || 0 });
-                }
-            }
+            const kinderen = [], datumKey = currentDatum.replace(/-/g, '_');
+            for (const kindId of rit.kindIds || []) { if (!kindId) continue; let d = null; if (kindId.startsWith('reinboge_boomhut_') || kindId.startsWith('reinboge_pirateskip_')) { const s = await get(ref(db, `reinboge_alle_kinderen/${kindId}`)); if (s.exists()) d = s.val(); } else { const s = await get(ref(db, `kinderen_per_dag/${datumKey}/${kindId}`)); if (s.exists()) d = s.val(); else { const s2 = await get(ref(db, `kinderen/${kindId}`)); if (s2.exists()) d = s2.val(); } } if (d) kinderen.push({ id: kindId, naam: d.naam || 'Onbekend', leeftijd: d.leeftijd || 0 }); }
             return kinderen;
         }
 
         async function renderFietsenZelfstandig() {
-            const container = document.getElementById('extraSectiesContainer');
-            container.innerHTML = '';
+            const container = document.getElementById('extraSectiesContainer'); container.innerHTML = '';
             try {
-                const datumKey = currentDatum.replace(/-/g, '_');
-                const snapshot = await get(ref(db, `vervoer_verdeling/${datumKey}`));
-                const fietsenRitten = [];
-                const zelfstandigRitten = [];
-                if (snapshot.exists()) {
-                    snapshot.forEach(child => {
-                        const rit = child.val();
-                        const key = child.key || '';
-                        const naam = (rit.vervoerNaam || '').toLowerCase();
-                        if (naam.includes('fiets') || key.includes('fiets')) {
-                            fietsenRitten.push({ ...rit, key: child.key });
-                        } else if (naam.includes('zelfstandig') || key.includes('zelfstandig')) {
-                            zelfstandigRitten.push({ ...rit, key: child.key });
-                        }
-                    });
-                }
-                const categorieen = [
-                    { ritten: fietsenRitten,     label: 'Fietst mee met Stint',  icon: '🚲', type: 'fietsen' },
-                    { ritten: zelfstandigRitten, label: 'Zelfstandig naar BSO', icon: '🚶', type: 'zelfstandig' },
-                ];
-                for (const cat of categorieen) {
+                const datumKey = currentDatum.replace(/-/g, '_'), snapshot = await get(ref(db, `vervoer_verdeling/${datumKey}`));
+                const fietsenRitten = [], zelfstandigRitten = [];
+                if (snapshot.exists()) { snapshot.forEach(child => { const rit = child.val(), key = child.key || '', naam = (rit.vervoerNaam || '').toLowerCase(); if (naam.includes('fiets') || key.includes('fiets')) fietsenRitten.push({ ...rit, key: child.key }); else if (naam.includes('zelfstandig') || key.includes('zelfstandig')) zelfstandigRitten.push({ ...rit, key: child.key }); }); }
+                for (const cat of [{ ritten: fietsenRitten, label: 'Fietst mee met Stint', icon: '🚲', type: 'fietsen' }, { ritten: zelfstandigRitten, label: 'Zelfstandig naar BSO', icon: '🚶', type: 'zelfstandig' }]) {
                     if (cat.ritten.length === 0) continue;
-                    let alleKinderen = [];
-                    for (const rit of cat.ritten) {
-                        const kinderen = await loadExtraKinderenVoorRit(rit);
-                        alleKinderen = alleKinderen.concat(kinderen);
-                    }
-                    const seen = new Set();
-                    alleKinderen = alleKinderen.filter(k => {
-                        if (seen.has(k.id)) return false;
-                        seen.add(k.id);
-                        return true;
-                    });
+                    let alleKinderen = []; for (const rit of cat.ritten) alleKinderen = alleKinderen.concat(await loadExtraKinderenVoorRit(rit));
+                    const seen = new Set(); alleKinderen = alleKinderen.filter(k => { if (seen.has(k.id)) return false; seen.add(k.id); return true; });
                     if (alleKinderen.length === 0) continue;
-                    const statusSnap = await get(ref(db, `vervoer_verdeling/${datumKey}/status_${cat.type}`));
-                    const statusData = statusSnap.exists() ? statusSnap.val() : {};
+                    const statusData = (await get(ref(db, `vervoer_verdeling/${datumKey}/status_${cat.type}`))).val() || {};
                     const afgevinktCount = alleKinderen.filter(k => statusData[k.id] === true).length;
                     alleKinderen.sort((a, b) => a.naam.localeCompare(b.naam));
-                    let kinderenHtml = '';
-                    alleKinderen.forEach(kind => {
-                        const afgevinkt = statusData[kind.id] === true;
-                        kinderenHtml += `
-                            <div class="extra-kind-card ${afgevinkt ? 'afgevinkt' : ''}" onclick="toggleExtraKind('${datumKey}', '${cat.type}', '${kind.id}')">
-                                <div class="checkbox ${afgevinkt ? 'checked' : ''}"></div>
-                                <div style="flex:1;">
-                                    <div class="extra-kind-naam">${kind.naam}</div>
-                                    <div class="extra-kind-details">${kind.leeftijd} jaar</div>
-                                </div>
-                                ${afgevinkt ? '<span style="background:#4CAF50;color:white;border-radius:10px;padding:3px 10px;font-size:12px;font-weight:bold;">✓ Aangekomen</span>' : ''}
-                            </div>
-                        `;
-                    });
-                    const sectieHtml = `
-                        <div class="extra-sectie ${cat.type}" id="extra-${cat.type}">
-                            <div class="extra-sectie-header" onclick="toggleExtraSectie('${cat.type}')">
-                                <div class="chevron-icon">▶</div>
-                                <div class="extra-sectie-icon">${cat.icon}</div>
-                                <div class="extra-sectie-info">
-                                    <h3>${cat.label}</h3>
-                                    <p>${alleKinderen.length} kinderen • ${afgevinktCount}/${alleKinderen.length} aangekomen</p>
-                                </div>
-                            </div>
-                            <div class="extra-sectie-content">${kinderenHtml}</div>
-                        </div>
-                    `;
-                    container.innerHTML += sectieHtml;
+                    container.innerHTML += `<div class="extra-sectie ${cat.type}" id="extra-${cat.type}"><div class="extra-sectie-header" onclick="toggleExtraSectie('${cat.type}')"><div class="chevron-icon">▶</div><div class="extra-sectie-icon">${cat.icon}</div><div class="extra-sectie-info"><h3>${cat.label}</h3><p>${alleKinderen.length} kinderen • ${afgevinktCount}/${alleKinderen.length} aangekomen</p></div></div><div class="extra-sectie-content">${alleKinderen.map(kind => { const af = statusData[kind.id] === true; return `<div class="extra-kind-card ${af ? 'afgevinkt' : ''}" onclick="toggleExtraKind('${datumKey}', '${cat.type}', '${kind.id}')"><div class="checkbox"></div><div style="flex:1;"><div class="extra-kind-naam">${kind.naam}</div><div class="extra-kind-details">${kind.leeftijd} jaar</div></div>${af ? '<span style="background:#4CAF50;color:white;border-radius:10px;padding:3px 10px;font-size:12px;font-weight:bold;">✓ Aangekomen</span>' : ''}</div>`; }).join('')}</div></div>`;
                 }
                 await renderTalintSectie(container, datumKey);
-            } catch (e) {
-                console.error('Error loading fietsen/zelfstandig:', e);
-            }
+            } catch (e) {}
         }
 
         async function renderTalintSectie(container, datumKey) {
             try {
-                const datumDelen = currentDatum.split('-');
-                const datum = new Date(parseInt(datumDelen[0]), parseInt(datumDelen[1]) - 1, parseInt(datumDelen[2]));
-                const dagen = ['zondag','maandag','dinsdag','woensdag','donderdag','vrijdag','zaterdag'];
-                const weekdag = dagen[datum.getDay()];
-                const talintSnap = await get(ref(db, `talint_kinderen/${weekdag}`));
-                if (!talintSnap.exists() || !talintSnap.val()) return;
-                const kindIds = [];
-                if (Array.isArray(talintSnap.val())) {
-                    talintSnap.val().forEach(id => { if (id) kindIds.push(id); });
-                } else {
-                    talintSnap.forEach(child => { if (child.val()) kindIds.push(child.val()); });
-                }
+                const datumDelen = currentDatum.split('-'), datum = new Date(parseInt(datumDelen[0]), parseInt(datumDelen[1]) - 1, parseInt(datumDelen[2]));
+                const weekdag = ['zondag','maandag','dinsdag','woensdag','donderdag','vrijdag','zaterdag'][datum.getDay()];
+                const talintSnap = await get(ref(db, `talint_kinderen/${weekdag}`)); if (!talintSnap.exists() || !talintSnap.val()) return;
+                const kindIds = []; if (Array.isArray(talintSnap.val())) talintSnap.val().forEach(id => { if (id) kindIds.push(id); }); else talintSnap.forEach(c => { if (c.val()) kindIds.push(c.val()); });
                 if (kindIds.length === 0) return;
-                const kinderen = [];
-                for (const kindId of kindIds) {
-                    const kindSnap = await get(ref(db, `kinderen/${kindId}`));
-                    if (kindSnap.exists()) {
-                        const data = kindSnap.val();
-                        kinderen.push({ id: kindId, naam: data.naam || 'Onbekend', leeftijd: data.leeftijd || 0 });
-                    }
-                }
+                const kinderen = []; for (const id of kindIds) { const s = await get(ref(db, `kinderen/${id}`)); if (s.exists()) { const d = s.val(); kinderen.push({ id, naam: d.naam || 'Onbekend', leeftijd: d.leeftijd || 0 }); } }
                 if (kinderen.length === 0) return;
-                const statusSnap = await get(ref(db, `vervoer_verdeling/${datumKey}/status_talint`));
-                const statusData = statusSnap.exists() ? statusSnap.val() : {};
+                const statusData = (await get(ref(db, `vervoer_verdeling/${datumKey}/status_talint`))).val() || {};
                 const afgevinktCount = kinderen.filter(k => statusData[k.id] === true).length;
                 kinderen.sort((a, b) => a.naam.localeCompare(b.naam));
-                let kinderenHtml = '';
-                kinderen.forEach(kind => {
-                    const afgevinkt = statusData[kind.id] === true;
-                    kinderenHtml += `
-                        <div class="extra-kind-card ${afgevinkt ? 'afgevinkt' : ''}" onclick="toggleExtraKind('${datumKey}', 'talint', '${kind.id}')">
-                            <div class="checkbox ${afgevinkt ? 'checked' : ''}"></div>
-                            <div style="flex:1;">
-                                <div class="extra-kind-naam">${kind.naam}</div>
-                                <div class="extra-kind-details">${kind.leeftijd} jaar • Komt zelfstandig van Talint</div>
-                            </div>
-                            ${afgevinkt ? '<span style="background:#4CAF50;color:white;border-radius:10px;padding:3px 10px;font-size:12px;font-weight:bold;">✓ Aangekomen</span>' : ''}
-                        </div>
-                    `;
-                });
-                container.innerHTML += `
-                    <div class="extra-sectie talint" id="extra-talint">
-                        <div class="extra-sectie-header" onclick="toggleExtraSectie('talint')">
-                            <div class="chevron-icon">▶</div>
-                            <div class="extra-sectie-icon">🎓</div>
-                            <div class="extra-sectie-info">
-                                <h3>Talint</h3>
-                                <p>${kinderen.length} kinderen • ${afgevinktCount}/${kinderen.length} aangekomen</p>
-                            </div>
-                        </div>
-                        <div class="extra-sectie-content">${kinderenHtml}</div>
-                    </div>
-                `;
-            } catch (e) {
-                console.error('Error loading talint:', e);
-            }
+                container.innerHTML += `<div class="extra-sectie talint" id="extra-talint"><div class="extra-sectie-header" onclick="toggleExtraSectie('talint')"><div class="chevron-icon">▶</div><div class="extra-sectie-icon">🎓</div><div class="extra-sectie-info"><h3>Talint</h3><p>${kinderen.length} kinderen • ${afgevinktCount}/${kinderen.length} aangekomen</p></div></div><div class="extra-sectie-content">${kinderen.map(kind => { const af = statusData[kind.id] === true; return `<div class="extra-kind-card ${af ? 'afgevinkt' : ''}" onclick="toggleExtraKind('${datumKey}', 'talint', '${kind.id}')"><div class="checkbox"></div><div style="flex:1;"><div class="extra-kind-naam">${kind.naam}</div><div class="extra-kind-details">${kind.leeftijd} jaar • Komt zelfstandig van Talint</div></div>${af ? '<span style="background:#4CAF50;color:white;border-radius:10px;padding:3px 10px;font-size:12px;font-weight:bold;">✓ Aangekomen</span>' : ''}</div>`; }).join('')}</div></div>`;
+            } catch (e) {}
         }
 
         window.overstappersUitgestap = async function(ritKey) {
-            try {
-                const datumKey = currentDatum.replace(/-/g, '_');
-                await update(ref(db, `vervoer_verdeling/${datumKey}/${ritKey}`), { overstappers_uitgevoerd: true });
-                for (const pmId in alleRittenPerPM) {
-                    const ritten = alleRittenPerPM[pmId];
-                    const rit = ritten.find(r => r.key === ritKey);
-                    if (rit) {
-                        rit.overstappers_uitgevoerd = true;
-                        break;
-                    }
-                }
-                await renderPMSections();
-            } catch (e) {
-                console.error('Error overstappers uitgestap:', e);
-                alert('❌ Fout: ' + e.message);
-            }
+            try { const datumKey = currentDatum.replace(/-/g, '_'); await update(ref(db, `vervoer_verdeling/${datumKey}/${ritKey}`), { overstappers_uitgevoerd: true }); for (const pmId in alleRittenPerPM) { const rit = alleRittenPerPM[pmId].find(r => r.key === ritKey); if (rit) { rit.overstappers_uitgevoerd = true; break; } } await renderPMSections(); }
+            catch (e) { alert('❌ Fout: ' + e.message); }
         };
 
         window.toggleExtraSectie = function(type) {
-            const sectie = document.getElementById(`extra-${type}`);
-            if (!sectie) return;
-            const wasExpanded = sectie.classList.contains('expanded');
-            sectie.classList.toggle('expanded');
-            if (!wasExpanded) {
-                setTimeout(() => {
-                    const stickyHeight = document.querySelector('.sticky-datum-section')?.offsetHeight || 180;
-                    const rect = sectie.getBoundingClientRect();
-                    const top = rect.top + window.pageYOffset - stickyHeight - 20;
-                    window.scrollTo({ top, behavior: 'smooth' });
-                }, 400);
-            }
+            const sectie = document.getElementById(`extra-${type}`); if (!sectie) return;
+            const wasExpanded = sectie.classList.contains('expanded'); sectie.classList.toggle('expanded');
+            if (!wasExpanded) { setTimeout(() => { const sh = document.querySelector('.sticky-datum-section')?.offsetHeight || 180; const r = sectie.getBoundingClientRect(); window.scrollTo({ top: r.top + window.pageYOffset - sh - 20, behavior: 'smooth' }); }, 400); }
         };
 
         window.toggleExtraKind = async function(datumKey, categorie, kindId) {
-            try {
-                const path = `vervoer_verdeling/${datumKey}/status_${categorie}/${kindId}`;
-                const snap = await get(ref(db, path));
-                const huidigeStatus = snap.exists() ? snap.val() : false;
-                await update(ref(db, `vervoer_verdeling/${datumKey}/status_${categorie}`), { [kindId]: !huidigeStatus });
-                await renderFietsenZelfstandig();
-            } catch (e) {
-                console.error('Error toggling extra kind:', e);
-            }
+            try { const s = await get(ref(db, `vervoer_verdeling/${datumKey}/status_${categorie}/${kindId}`)); await update(ref(db, `vervoer_verdeling/${datumKey}/status_${categorie}`), { [kindId]: !(s.exists() ? s.val() : false) }); await renderFietsenZelfstandig(); }
+            catch (e) {}
         };
 
         window.gaNaarLogin = function() {
-            stopBusjeStatusListener();
-            currentPM = null;
-            currentDatum = null;
-            alleRittenPerPM = {};
-            activeBusritTab = {};
-            busjeIsVertrokken = false;
+            stopBusjeStatusListener(); currentPM = null; currentDatum = null; alleRittenPerPM = {}; activeBusritTab = {}; busjeIsVertrokken = false;
             document.getElementById('totaalTeller').style.display = 'none';
             document.getElementById('extraSectiesContainer').innerHTML = '';
-            lijstScreen.classList.add('hidden');
-            loginScreen.classList.remove('hidden');
+            lijstScreen.classList.add('hidden'); loginScreen.classList.remove('hidden');
             document.getElementById('terugKnop').style.display = 'none';
         };
     </script>
