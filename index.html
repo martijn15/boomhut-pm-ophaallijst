@@ -801,7 +801,11 @@
         function getBusritNummer(key) {
             if (key.includes('rit 1') || key.includes('rit_1') || key.includes('rit1')) return 1;
             if (key.includes('rit 2') || key.includes('rit_2') || key.includes('rit2')) return 2;
+            if (key.includes('rit2_nood') || key.includes('_nood')) return 2; // noodregeling rit 2
             return null;
+        }
+        function isNoodRit2(key) {
+            return key.includes('rit2_nood') || key.includes('_nood');
         }
         function isBusrit(key) { return key.toLowerCase().includes('busje') || key.toLowerCase().includes('bus'); }
 
@@ -878,7 +882,12 @@
                 }
                 alleRittenPerPM = {};
                 snapshot.forEach(child => {
-                    const rit = child.val(); const pmId = rit.pmId;
+                    const rit = child.val();
+                    const key = child.key || '';
+                    // Skip status entries
+                    if (key.startsWith('status_')) return;
+                    const pmId = rit.pmId;
+                    if (!pmId) return; // geen PM gekoppeld
                     if (!alleRittenPerPM[pmId]) alleRittenPerPM[pmId] = [];
                     alleRittenPerPM[pmId].push({ key: child.key, wachtVoorBusjeRit2: rit.wachtVoorBusjeRit2 || false, busje_vertrokken: rit.busje_vertrokken || false, ...rit });
                 });
