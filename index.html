@@ -1051,8 +1051,11 @@
                     else { const s = await get(ref(db, `kinderen_per_dag/${datumKey}/${item.kindId}`)); if (s.exists()) kindData = s.val(); }
                     if (kindData) {
                         const naam = (kindData.naam || '').toLowerCase().trim(); if (seenNames.has(naam)) continue; seenNames.add(naam);
-                        const isReinboge = isReinbogeKind || (kindData.school && kindData.school.toLowerCase().includes('reinboge')) || kindData.is_reinboge || reinbogeKindIds.includes(naam);
-                        kinderen.push({ id: item.kindId, naam: kindData.naam || 'Onbekend', leeftijd: kindData.leeftijd || 0, afgevinkt: item.is_piratenskip ? (kindData.afgeleverd || false) : (kindData.afgevinkt || false), ophaal_volgorde: item.ophaal_volgorde || 999, is_piratenskip: item.is_piratenskip || false, is_reinboge: isReinboge, is_reinboge_kind: isReinbogeKind, opmerking: kindData.opmerking || '' });
+                        // Noodregeling kinderen zijn gewone kinderen — geen Pirateskip/Reinboge markering
+                        const isNoodregeling = kindData.noodregeling === true || item.noodregeling === true;
+                        const isReinboge = !isNoodregeling && (isReinbogeKind || (kindData.school && kindData.school.toLowerCase().includes('reinboge')) || kindData.is_reinboge || reinbogeKindIds.includes(naam));
+                        const isPiratenskip = !isNoodregeling && (item.is_piratenskip || false);
+                        kinderen.push({ id: item.kindId, naam: kindData.naam || 'Onbekend', leeftijd: kindData.leeftijd || 0, afgevinkt: isPiratenskip ? (kindData.afgeleverd || false) : (kindData.afgevinkt || false), ophaal_volgorde: item.ophaal_volgorde || 999, is_piratenskip: isPiratenskip, is_reinboge: isReinboge, is_reinboge_kind: !isNoodregeling && isReinbogeKind, opmerking: kindData.opmerking || '', noodregeling: isNoodregeling });
                     }
                 }
             }
@@ -1060,9 +1063,10 @@
         }
 
         function buildKindCard(kind, ritKey, pmId) {
-            const isOv = overstappersVandaag.some(ov => { const n = ov.includes('(') ? ov.split('(')[0].trim().toLowerCase() : ov.toLowerCase(); return n === kind.naam.toLowerCase(); });
+            const isOv = !kind.noodregeling && overstappersVandaag.some(ov => { const n = ov.includes('(') ? ov.split('(')[0].trim().toLowerCase() : ov.toLowerCase(); return n === kind.naam.toLowerCase(); });
             const isOwn = pmId === currentPM.id;
-            return `<div class="kind-card ${kind.afgevinkt ? 'afgevinkt' : ''} ${kind.is_piratenskip ? 'piratenskip' : ''} ${kind.is_reinboge ? 'reinboge-card' : ''} ${!isOwn ? 'readonly' : ''}" ${isOwn ? `onclick="toggleKind('${kind.id}', ${kind.is_piratenskip}, ${kind.is_reinboge_kind || false})"` : ''}><div class="checkbox"></div><div class="nummer-badge">${kind.ophaal_volgorde}</div><div class="kind-info"><div class="kind-naam">${kind.naam}${kind.is_piratenskip ? ' 🏴‍☠️' : kind.is_reinboge ? ' 🏫' : ''} ${isOv ? '<span style="font-size:18px;">🔄</span>' : ''} ${kind.opmerking ? `<span style="font-size:16px;" title="${kind.opmerking}">📝</span>` : ''}</div><div class="kind-details">${kind.leeftijd} jaar${isOv ? ' • Overstapper' : ''}</div></div></div>`;
+            const noodLabel = kind.noodregeling ? '<span style="background:#FF9800;color:white;border-radius:6px;padding:1px 6px;font-size:11px;font-weight:bold;margin-left:4px;">🚨 nood</span>' : '';
+            return `<div class="kind-card ${kind.afgevinkt ? 'afgevinkt' : ''} ${kind.is_piratenskip ? 'piratenskip' : ''} ${kind.is_reinboge ? 'reinboge-card' : ''} ${!isOwn ? 'readonly' : ''}" ${isOwn ? `onclick="toggleKind('${kind.id}', ${kind.is_piratenskip}, ${kind.is_reinboge_kind || false})"` : ''}><div class="checkbox"></div><div class="nummer-badge">${kind.ophaal_volgorde}</div><div class="kind-info"><div class="kind-naam">${kind.naam}${kind.is_piratenskip ? ' 🏴‍☠️' : kind.is_reinboge ? ' 🏫' : ''}${noodLabel} ${isOv ? '<span style="font-size:18px;">🔄</span>' : ''} ${kind.opmerking ? `<span style="font-size:16px;" title="${kind.opmerking}">📝</span>` : ''}</div><div class="kind-details">${kind.leeftijd} jaar${isOv ? ' • Overstapper' : ''}${kind.noodregeling ? ' • Noodregeling' : ''}</div></div></div>`;
         }
 
         window.togglePMSection = function(pmId) {
