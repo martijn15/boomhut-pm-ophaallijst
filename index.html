@@ -799,13 +799,11 @@
         const tweeRittenBanner = document.getElementById('tweeRittenBanner');
 
         function getBusritNummer(key) {
+            // Noodregeling rit 2 eerst checken (voor de andere checks)
+            if (key.includes('_rit2_nood') || key.includes('_nood')) return 2;
             if (key.includes('rit 1') || key.includes('rit_1') || key.includes('rit1')) return 1;
             if (key.includes('rit 2') || key.includes('rit_2') || key.includes('rit2')) return 2;
-            if (key.includes('rit2_nood') || key.includes('_nood')) return 2; // noodregeling rit 2
             return null;
-        }
-        function isNoodRit2(key) {
-            return key.includes('rit2_nood') || key.includes('_nood');
         }
         function isBusrit(key) { return key.toLowerCase().includes('busje') || key.toLowerCase().includes('bus'); }
 
