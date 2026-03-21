@@ -886,6 +886,12 @@
                     const key = child.key || '';
                     // Skip status entries
                     if (key.startsWith('status_')) return;
+                    // Skip lege noodregeling rit 2 entries
+                    if (rit.noodregeling === true) {
+                        const volgorde = rit.ophaal_volgorde || [];
+                        const aantalKinderen = Array.isArray(volgorde) ? volgorde.filter(Boolean).length : Object.keys(volgorde).length;
+                        if (aantalKinderen === 0) return; // lege noodregeling rit overslaan
+                    }
                     const pmId = rit.pmId;
                     if (!pmId) return; // geen PM gekoppeld
                     if (!alleRittenPerPM[pmId]) alleRittenPerPM[pmId] = [];
